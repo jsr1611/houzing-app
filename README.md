@@ -1,5 +1,5 @@
-# Backend of Houzing Web App
+# Backend for Houzing Web App
 
 ## Requirements
 
-(DB Schema)[]
+![Entity relationship schema](./db_schema.png)
