@@ -20,13 +20,19 @@ public class LocationServiceImpl implements LocationService {
 
     public Location optionalLocation(Long id){
         Optional<Location> byId = locationRepository.findById(id);
-        return byId.orElse(null);
+        if (byId.isPresent())
+            byId.get();
+
+        return null;
     }
 
     @Override
     public HttpEntity<?> save(LocationDto dto) {
-        if (dto.getLongitude() == null || dto.getLatitude() == null)
-            throw new RuntimeException("Location not found");
+
+        if (dto.getLongitude() == null || dto.getLatitude() == null) {
+             Response response = new Response ("Not saved Location", false);
+             return ResponseEntity.ok(response);
+        }
 
         Location save = locationRepository.save(new Location(dto.getLongitude(), dto.getLatitude()));
         return ResponseEntity.ok(save);
@@ -35,39 +41,54 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public HttpEntity<?> edit(LocationDto dto, Long id) {
         Location location = optionalLocation(id);
+        Response response = new Response();
         if (location == null){
-            Response response = new Response(false, "Location Not saved", null);
-            return ResponseEntity.ok(response);
+            response.setSuccess(false);
+            response.setMessage("Id Not Found " + id);
         }
-        if (!location.getLatitude().equals(dto.getLatitude()))
-            location.setLatitude(dto.getLatitude());
+        else {
+            if (!location.getLatitude().equals(dto.getLatitude()))
+                location.setLatitude(dto.getLatitude());
 
-        if (!location.getLongitude().equals(dto.getLongitude()))
-            location.setLongitude(dto.getLongitude());
+            if (!location.getLongitude().equals(dto.getLongitude()))
+                location.setLongitude(dto.getLongitude());
 
-        Location save = locationRepository.save(location);
-        Response response = new Response(true, "Succesffuly save", save);
-
-        return ResponseEntity.ok(response);
+            Location save = locationRepository.save(location);
+            response.setMessage("Succesffuly save");
+            response.setSuccess(true);
+            response.setData(save);
+        }
+        return ResponseEntity.ok(response.isSuccess() ? 200 : 404);
     }
 
     @Override
     public HttpEntity<?> delete(Long id) {
         Location location = optionalLocation(id);
-        if (location == null)
-            throw new RuntimeException("Location not found");
-
-        locationRepository.delete(location);
-        return ResponseEntity.ok("Successfully delete !!!");
+        Response response = new Response();
+        if (location == null) {
+            response.setMessage("Fatal Delete Id " + id);
+            response.setSuccess(false);
+        }
+        else {
+            locationRepository.delete(location);
+            response.setMessage("Delete Location ");
+            response.setSuccess(true);
+        }
+        return ResponseEntity.ok(response.isSuccess() ? 200 : 404);
     }
 
     @Override
     public HttpEntity<?> findById(Long id) {
+        Response response = new Response();
         Location location = optionalLocation(id);
-        if (location == null)
-            throw new RuntimeException("Location not found");
-
-        return ResponseEntity.ok(location);
+        if (location == null){
+            response.setMessage("Fatal Delete Id " + id);
+            response.setSuccess(false);
+        } else {
+            response.setMessage("Location information ");
+            response.setSuccess(true);
+        }
+        return ResponseEntity.ok(response.isSuccess() ? 200 : 404);
     }
 
     @Override
