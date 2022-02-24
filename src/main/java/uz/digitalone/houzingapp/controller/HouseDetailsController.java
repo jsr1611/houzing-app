@@ -17,32 +17,27 @@ public class HouseDetailsController {
 
     @PostMapping
     public HttpEntity<?> save(@RequestBody HouseDetailsDto dto) {
-        Response response = houseDetailsService.save(dto);
-       return ResponseEntity.ok(response);
+        return houseDetailsService.save(dto);
     }
 
     @GetMapping
     public HttpEntity<?> findAll() {
-        Response response = houseDetailsService.findAll();
-       return ResponseEntity.ok(response);
+        return houseDetailsService.findAll();
     }
 
     @GetMapping("/{id}")
     public HttpEntity<?> findById(@PathVariable("id") Long id) {
-        Response response = houseDetailsService.findById(id);
-        return ResponseEntity.ok(response);
+        return houseDetailsService.findById(id);
     }
 
     @PutMapping("/{id}")
     public HttpEntity<?> editById(@PathVariable("id") Long id,
                          @RequestBody HouseDetailsDto dto){
-        Response response = houseDetailsService.editById(id, dto);
-        return ResponseEntity.status(response.isSuccess() ? 200 : 404).body(response);
+        return houseDetailsService.editById(id, dto);
     }
 
     @DeleteMapping("{id}")
     public HttpEntity<?> deleteById(@PathVariable("id") Long id){
-        Response response = houseDetailsService.deleteById(id);
-        return ResponseEntity.status(response.isSuccess() ? 200 : 404).body(response);
+        return houseDetailsService.deleteById(id);
     }
 }

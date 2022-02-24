@@ -1,5 +1,6 @@
 package uz.digitalone.houzingapp.service;
 
+import org.springframework.http.HttpEntity;
 import uz.digitalone.houzingapp.dto.HouseDetailsDto;
 import uz.digitalone.houzingapp.entity.HouseDetails;
 import uz.digitalone.houzingapp.response.Response;
@@ -12,20 +13,20 @@ public interface HouseDetailsService {
      * @param dto
      * @return
      */
-    Response save(HouseDetailsDto dto);
+    HttpEntity<?> save(HouseDetailsDto dto);
 
     /**
      * HouseDetails list
      * @return
      */
-    Response findAll();
+    HttpEntity<?> findAll();
 
     /**
      * HouseDetails on id
      * @param id
      * @return
      */
-    Response findById(Long id);
+    HttpEntity<?> findById(Long id);
 
 
     /**
@@ -34,12 +35,12 @@ public interface HouseDetailsService {
      * @param dto
      * @return
      */
-    Response editById(Long id, HouseDetailsDto dto);
+    HttpEntity<?> editById(Long id, HouseDetailsDto dto);
 
     /**
      * HouseDetails By Id deleted
      * @param id
      * @return
      */
-    Response deleteById(Long id);
+    HttpEntity<?> deleteById(Long id);
 }
