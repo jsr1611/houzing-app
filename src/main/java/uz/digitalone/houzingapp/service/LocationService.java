@@ -1,20 +1,39 @@
 package uz.digitalone.houzingapp.service;
 
+import org.springframework.http.HttpEntity;
 import uz.digitalone.houzingapp.dto.LocationDto;
-import uz.digitalone.houzingapp.entity.Location;
-
-import java.util.List;
 
 public interface LocationService {
 
-    Location save(LocationDto dto);
+    /**
+     * Location save
+     * @return saved location
+     */
+    HttpEntity<?> save(LocationDto dto);
 
-    Location edit(LocationDto dto, Long id);
+    /**
+     * Location edit only Id
+     * @return edited location
+     */
+    HttpEntity<?> edit(LocationDto dto, Long id);
 
-    Boolean delete(Long id);
+    /**
+     * Location Delete for Id
+     * @return true = Delete || false = id Not found
+     */
+    HttpEntity<?> delete(Long id);
 
-    Location findById(Long id);
+    /**
+     * Get Location Find By Id
+     * @return location || Id not found
+     */
+    HttpEntity<?> findById(Long id);
 
-    List<Location> findAll();
+    /**
+     * Get All Location
+     * @return Location lists
+     */
+
+    HttpEntity<?> findAll();
 
 }
