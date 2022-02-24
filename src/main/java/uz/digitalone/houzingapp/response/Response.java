@@ -35,4 +35,9 @@ public class Response {
         this.message = message;
         this.data = data;
     }
+
+    public Response(boolean success, String message) {
+        this.success = success;
+        this.message = message;
+    }
 }
