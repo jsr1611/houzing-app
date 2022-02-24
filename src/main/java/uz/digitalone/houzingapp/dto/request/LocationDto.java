@@ -1,4 +1,5 @@
-package uz.digitalone.houzingapp.dto;
+package uz.digitalone.houzingapp.dto.request;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,8 +8,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CategoryDto {
+public class LocationDto {
 
-    private String name;
-    private Long parentId;
+    private Double longitude;
+    private Double latitude;
+
 }

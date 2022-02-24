@@ -1,7 +1,7 @@
 package uz.digitalone.houzingapp.service;
 
 import org.springframework.http.HttpEntity;
-import uz.digitalone.houzingapp.dto.LocationDto;
+import uz.digitalone.houzingapp.dto.request.LocationDto;
 
 public interface LocationService {
 

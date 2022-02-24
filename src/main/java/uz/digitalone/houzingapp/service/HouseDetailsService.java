@@ -1,11 +1,7 @@
 package uz.digitalone.houzingapp.service;
 
 import org.springframework.http.HttpEntity;
-import uz.digitalone.houzingapp.dto.HouseDetailsDto;
-import uz.digitalone.houzingapp.entity.HouseDetails;
-import uz.digitalone.houzingapp.response.Response;
-
-import java.util.List;
+import uz.digitalone.houzingapp.dto.request.HouseDetailsDto;
 
 public interface HouseDetailsService {
     /**

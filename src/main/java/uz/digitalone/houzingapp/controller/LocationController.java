@@ -3,7 +3,7 @@ package uz.digitalone.houzingapp.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.*;
-import uz.digitalone.houzingapp.dto.LocationDto;
+import uz.digitalone.houzingapp.dto.request.LocationDto;
 import uz.digitalone.houzingapp.service.LocationService;
 
 @RestController

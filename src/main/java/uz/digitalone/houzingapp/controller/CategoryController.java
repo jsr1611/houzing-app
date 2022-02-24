@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
-import uz.digitalone.houzingapp.dto.CategoryDto;
+import uz.digitalone.houzingapp.dto.request.CategoryDto;
 import uz.digitalone.houzingapp.service.CategoryService;
 import uz.digitalone.houzingapp.utils.ApiPageable;
 

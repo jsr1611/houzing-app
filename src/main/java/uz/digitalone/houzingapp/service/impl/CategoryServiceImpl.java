@@ -5,10 +5,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import uz.digitalone.houzingapp.dto.CategoryDto;
+import uz.digitalone.houzingapp.dto.request.CategoryDto;
+import uz.digitalone.houzingapp.dto.response.Response;
 import uz.digitalone.houzingapp.entity.Category;
 import uz.digitalone.houzingapp.repository.CategoryRepository;
-import uz.digitalone.houzingapp.response.Response;
 import uz.digitalone.houzingapp.service.CategoryService;
 
 
@@ -26,7 +26,6 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public HttpEntity<?> saveCategory(CategoryDto categoryDto) {
-        Response response = new Response();
         Category category = new Category();
 
         category.setName(categoryDto.getName());
@@ -37,9 +36,7 @@ public class CategoryServiceImpl implements CategoryService {
             }
         }
         categoryRepository.save(category);
-        response.setSuccess(true);
-        response.setData(category);
-
+        Response response = new Response(true, "Successfully created.", category);
         return ResponseEntity.ok(response);
     }
 
@@ -54,7 +51,7 @@ public class CategoryServiceImpl implements CategoryService {
             response.setSuccess(true);
             response.setData(category);
         }
-        return ResponseEntity.status(response.isSuccess() ? 200 : 404).body(response);
+        return ResponseEntity.status(response.getStatus()).body(response);
     }
 
     @Override
@@ -88,7 +85,7 @@ public class CategoryServiceImpl implements CategoryService {
             category = categoryRepository.save(category);
             response.setData(category);
         }
-        return ResponseEntity.status(response.isSuccess() ? 200 : 400).body(response);
+        return ResponseEntity.status(response.getStatus()).body(response);
     }
 
     @Override

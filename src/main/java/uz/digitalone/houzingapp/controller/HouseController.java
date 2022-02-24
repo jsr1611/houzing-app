@@ -1,5 +1,6 @@
 package uz.digitalone.houzingapp.controller;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
@@ -14,8 +15,9 @@ import uz.digitalone.houzingapp.utils.ApiPageable;
 @RequestMapping("/api/v1/houses")
 public class HouseController {
 
-    private HouseService houseService;
+    private final HouseService houseService;
 
+    @ApiOperation(value = "Ushbu API yangi uy e`lonini qo`shish uchun ishlatiladi")
     @PostMapping
     public HttpEntity<?> create(@RequestBody HouseDto dto){
         return houseService.create(dto);

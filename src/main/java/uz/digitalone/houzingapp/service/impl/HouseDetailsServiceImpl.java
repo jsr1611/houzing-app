@@ -4,10 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import uz.digitalone.houzingapp.dto.HouseDetailsDto;
+import uz.digitalone.houzingapp.dto.request.HouseDetailsDto;
+import uz.digitalone.houzingapp.dto.response.Response;
 import uz.digitalone.houzingapp.entity.HouseDetails;
 import uz.digitalone.houzingapp.repository.HouseDetailsRepository;
-import uz.digitalone.houzingapp.response.Response;
 import uz.digitalone.houzingapp.service.HouseDetailsService;
 
 import java.util.ArrayList;
@@ -24,7 +24,6 @@ public class HouseDetailsServiceImpl implements HouseDetailsService {
 
     @Override
     public HttpEntity<?> save(HouseDetailsDto dto) {
-        Response response = new Response();
         HouseDetails houseDetails = new HouseDetails();
         if(dto.getRoom() != null) {
             houseDetails.setRoom(dto.getRoom());
@@ -37,8 +36,7 @@ public class HouseDetailsServiceImpl implements HouseDetailsService {
             houseDetails.setArea(dto.getArea());
         }
         houseDetails = houseDetailsRepository.save(houseDetails);
-        response.setData(houseDetails);
-        response.setSuccess(true);
+        Response response = new Response(true, "Successfully created.", houseDetails);
         return ResponseEntity.ok(response);
     }
 
@@ -67,7 +65,7 @@ public class HouseDetailsServiceImpl implements HouseDetailsService {
             response.setSuccess(false);
             response.setMessage("HouseDetails was not found with id {" + id + "}");
         }
-        return ResponseEntity.status(response.isSuccess() ? 200 : 404).body(response);
+        return ResponseEntity.status(response.getStatus()).body(response);
     }
 
     @Override
@@ -94,7 +92,7 @@ public class HouseDetailsServiceImpl implements HouseDetailsService {
             response.setSuccess(false);
             response.setMessage("HouseDetails was not found with id{" + id + "}");
         }
-        return ResponseEntity.status(response.isSuccess() ? 200 : 404).body(response);
+        return ResponseEntity.status(response.getStatus()).body(response);
     }
 
     @Override
@@ -110,6 +108,6 @@ public class HouseDetailsServiceImpl implements HouseDetailsService {
             response.setSuccess(false);
             response.setMessage("HouseDetails was not found with id {" + id + "}");
         }
-        return ResponseEntity.status(response.isSuccess() ? 200 : 404).body(response);
+        return ResponseEntity.status(response.getStatus()).body(response);
     }
 }

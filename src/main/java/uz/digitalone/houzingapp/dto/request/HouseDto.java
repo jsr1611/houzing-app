@@ -3,8 +3,6 @@ package uz.digitalone.houzingapp.dto.request;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import uz.digitalone.houzingapp.dto.HouseDetailsDto;
-import uz.digitalone.houzingapp.dto.LocationDto;
 import uz.digitalone.houzingapp.entity.Attachment;
 
 import java.util.List;
