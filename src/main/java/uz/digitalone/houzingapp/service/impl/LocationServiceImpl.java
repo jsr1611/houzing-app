@@ -58,7 +58,7 @@ public class LocationServiceImpl implements LocationService {
             response.setSuccess(true);
             response.setData(save);
         }
-        return ResponseEntity.ok(response.isSuccess() ? 200 : 404);
+        return ResponseEntity.status(response.isSuccess() ? 200 : 404).body(response);
     }
 
     @Override
@@ -74,7 +74,7 @@ public class LocationServiceImpl implements LocationService {
             response.setMessage("Delete Location ");
             response.setSuccess(true);
         }
-        return ResponseEntity.ok(response.isSuccess() ? 200 : 404);
+        return ResponseEntity.status(response.isSuccess() ? 200 : 404).body(response);
     }
 
     @Override
@@ -88,7 +88,7 @@ public class LocationServiceImpl implements LocationService {
             response.setMessage("Location information ");
             response.setSuccess(true);
         }
-        return ResponseEntity.ok(response.isSuccess() ? 200 : 404);
+        return ResponseEntity.status(response.isSuccess() ? 200 : 404).body(response);
     }
 
     @Override
