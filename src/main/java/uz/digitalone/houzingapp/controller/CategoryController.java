@@ -22,22 +22,22 @@ public class CategoryController {
         return categoryService.saveCategory(categoryDto);
     }
 
-    @GetMapping("/getOne/{id}")
+    @GetMapping("/{id}")
     public HttpEntity<?> getOne(@PathVariable Long id){
         return categoryService.getOne(id);
     }
 
-    @GetMapping
+    @GetMapping("/list")
     public HttpEntity<?> getAll(){
         return categoryService.getAll();
     }
 
-    @PutMapping("/updateCategory/{id}")
+    @PutMapping("/{id}")
     public HttpEntity<?> updateById(@RequestBody CategoryDto categoryDto, @PathVariable Long id){
         return categoryService.updateById(categoryDto, id);
     }
 
-    @DeleteMapping("/deleteCategory/{id}")
+    @DeleteMapping("/{id}")
     public HttpEntity<?> deleteCategory(@PathVariable Long id){
         return categoryService.deleteCategory(id);
     }
