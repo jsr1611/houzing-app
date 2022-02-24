@@ -24,4 +24,5 @@ public class Category extends AbsEntity {
     @ManyToOne
     @JoinColumn(name = "parent_id", nullable = true)
     private Category parent;
+
 }
