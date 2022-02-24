@@ -1,6 +1,8 @@
 package uz.digitalone.houzingapp.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uz.digitalone.houzingapp.dto.HouseDetailsDto;
 import uz.digitalone.houzingapp.entity.HouseDetails;
@@ -8,43 +10,69 @@ import uz.digitalone.houzingapp.repository.HouseDetailsRepository;
 import uz.digitalone.houzingapp.response.Response;
 import uz.digitalone.houzingapp.service.HouseDetailsService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class HouseDetailsServiceImpl implements HouseDetailsService {
+    /**
+     * HouseDetails - CRUD
+     */
     private final HouseDetailsRepository houseDetailsRepository;
 
     @Override
-    public Response save(HouseDetailsDto dto) {
+    public HttpEntity<?> save(HouseDetailsDto dto) {
+        Response response = new Response();
         HouseDetails houseDetails = new HouseDetails();
-        houseDetails.setRoom(dto.getRoom());
-        houseDetails.setBath(dto.getBath());
+        if(dto.getRoom() != null) {
+            houseDetails.setRoom(dto.getRoom());
+        }
+        if(dto.getBath() != null) {
+            houseDetails.setBath(dto.getBath());
+        }
         houseDetails.setHasGarage(dto.isHasGarage());
-        houseDetails.setArea(dto.getArea());
-        houseDetailsRepository.save(houseDetails);
-        return new Response(true, "Successfully saved", houseDetails);
+        if(dto.getArea() != null) {
+            houseDetails.setArea(dto.getArea());
+        }
+        houseDetails = houseDetailsRepository.save(houseDetails);
+        response.setData(houseDetails);
+        response.setSuccess(true);
+        return ResponseEntity.ok(response);
     }
 
     @Override
-    public Response findAll() {
+    public HttpEntity<?> findAll() {
+        Response response = new Response();
         List<HouseDetails> houseDetailsList = houseDetailsRepository.findAll();
-        return new Response(true, "HouseDetails list", houseDetailsList);
+        response.setSuccess(true);
+        if (houseDetailsList.size() == 0) {
+            response.setMessage("No HouseDetails were found");
+        } else {
+            response.setDataList(new ArrayList<>(houseDetailsList));
+        }
+        return ResponseEntity.ok(houseDetailsList);
     }
 
     @Override
-    public Response findById(Long id) {
+    public HttpEntity<?> findById(Long id) {
+        Response response = new Response();
         Optional<HouseDetails> optionalHouseDetails = houseDetailsRepository.findById(id);
         if (optionalHouseDetails.isPresent()) {
             HouseDetails houseDetails = optionalHouseDetails.get();
-            return new Response(true, "Registered by HouseDetails id{" + id + "}", houseDetails);
+            response.setSuccess(true);
+            response.setData(houseDetails);
+        } else {
+            response.setSuccess(false);
+            response.setMessage("HouseDetails was not found with id {" + id + "}");
         }
-        return new Response(false, "Not found", null);
+        return ResponseEntity.status(response.isSuccess() ? 200 : 404).body(response);
     }
 
     @Override
-    public Response editById(Long id, HouseDetailsDto dto) {
+    public HttpEntity<?> editById(Long id, HouseDetailsDto dto) {
+        Response response = new Response();
         Optional<HouseDetails> optionalHouseDetails = houseDetailsRepository.findById(id);
         if (optionalHouseDetails.isPresent()) {
             HouseDetails houseDetails = optionalHouseDetails.get();
@@ -58,18 +86,30 @@ public class HouseDetailsServiceImpl implements HouseDetailsService {
             if (dto.getArea() != null && !dto.getArea().equals(houseDetails.getArea())) {
                 houseDetails.setArea(dto.getArea());
             }
-            return new Response(true, "Successfully edited", houseDetails);
+            HouseDetails saved = houseDetailsRepository.save(houseDetails);
+            response.setSuccess(true);
+            response.setData(saved);
+
+        } else {
+            response.setSuccess(false);
+            response.setMessage("HouseDetails was not found with id{" + id + "}");
         }
-        return new Response(false, "Not found", null);
+        return ResponseEntity.status(response.isSuccess() ? 200 : 404).body(response);
     }
 
     @Override
-    public Response deleteById(Long id) {
+    public HttpEntity<?> deleteById(Long id) {
+        Response response = new Response();
         Optional<HouseDetails> optionalHouseDetails = houseDetailsRepository.findById(id);
         if (optionalHouseDetails.isPresent()) {
             HouseDetails houseDetails = optionalHouseDetails.get();
-            return new Response(true, "Successfully deleted", houseDetails);
+            response.setSuccess(true);
+            response.setMessage("Successfully deleted");
+            response.setData(houseDetails);
+        } else {
+            response.setSuccess(false);
+            response.setMessage("HouseDetails was not found with id {" + id + "}");
         }
-        return new Response(false, "Not found", null);
+        return ResponseEntity.status(response.isSuccess() ? 200 : 404).body(response);
     }
 }
