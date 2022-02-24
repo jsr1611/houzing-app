@@ -2,6 +2,7 @@ package uz.digitalone.houzingapp.service;
 
 import uz.digitalone.houzingapp.dto.HouseDetailsDto;
 import uz.digitalone.houzingapp.entity.HouseDetails;
+import uz.digitalone.houzingapp.response.Response;
 
 import java.util.List;
 
@@ -11,20 +12,20 @@ public interface HouseDetailsService {
      * @param dto
      * @return
      */
-    HouseDetails save(HouseDetailsDto dto);
+    Response save(HouseDetailsDto dto);
 
     /**
      * HouseDetails list
      * @return
      */
-    List<HouseDetails> findAll();
+    Response findAll();
 
     /**
      * HouseDetails on id
      * @param id
      * @return
      */
-    HouseDetails findById(Long id);
+    Response findById(Long id);
 
 
     /**
@@ -33,12 +34,12 @@ public interface HouseDetailsService {
      * @param dto
      * @return
      */
-    HouseDetails editById(Long id, HouseDetailsDto dto);
+    Response editById(Long id, HouseDetailsDto dto);
 
     /**
      * HouseDetails By Id deleted
      * @param id
      * @return
      */
-    HouseDetails deleteById(Long id);
+    Response deleteById(Long id);
 }

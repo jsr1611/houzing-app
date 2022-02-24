@@ -1,7 +1,9 @@
 package uz.digitalone.houzingapp.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.digitalone.houzingapp.dto.HouseDetailsDto;
 import uz.digitalone.houzingapp.entity.HouseDetails;
@@ -18,48 +20,33 @@ public class HouseDetailsController {
 
 
     @PostMapping
-    public Response save(@RequestBody HouseDetailsDto dto) {
-        HouseDetails houseDetails = houseDetailsService.save(dto);
-        if (houseDetails == null) {
-            return new Response(false, "Not saved", HttpStatus.NOT_FOUND);
-        }
-        return new Response(true, "Successfully saved", houseDetails);
+    public HttpEntity<?> save(@RequestBody HouseDetailsDto dto) {
+        Response response = houseDetailsService.save(dto);
+       return ResponseEntity.ok(response);
     }
 
     @GetMapping
-    public Response findAll() {
-        List<HouseDetails> houseDetailsList = houseDetailsService.findAll();
-        if (houseDetailsList == null) {
-            return new Response(false, "There is no such list", HttpStatus.NOT_FOUND);
-        }
-        return new Response(true, "The lists are successful", houseDetailsList);
+    public HttpEntity<?> findAll() {
+        Response response = houseDetailsService.findAll();
+       return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
-    public Response findById(@PathVariable("id") Long id) {
-        HouseDetails houseDetails = houseDetailsService.findById(id);
-        if (houseDetails == null) {
-            return new Response(false, "There is no such id{" + id + "}", HttpStatus.NOT_FOUND);
-        }
-        return new Response(true, "HouseDetails on id{" + id + "}", houseDetails);
+    public HttpEntity<?> findById(@PathVariable("id") Long id) {
+        Response response = houseDetailsService.findById(id);
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")
-    public Response editById(@PathVariable("id") Long id,
+    public HttpEntity<?> editById(@PathVariable("id") Long id,
                          @RequestBody HouseDetailsDto dto){
-        HouseDetails houseDetails = houseDetailsService.editById(id, dto);
-        if(houseDetails == null){
-            return new Response(false, "Not updated", HttpStatus.NOT_FOUND);
-        }
-        return new Response(true,"Successfully edited", houseDetails);
+        Response response = houseDetailsService.editById(id, dto);
+        return ResponseEntity.status(response.isSuccess() ? 200 : 404).body(response);
     }
 
     @DeleteMapping("{id}")
-    public Response deleteById(@PathVariable("id") Long id){
-        HouseDetails houseDetails = houseDetailsService.deleteById(id);
-        if(houseDetails == null){
-            return new Response(false, "Not deleted", HttpStatus.NOT_FOUND);
-        }
-        return new Response(true, "Successfully deleted", houseDetails);
+    public HttpEntity<?> deleteById(@PathVariable("id") Long id){
+        Response response = houseDetailsService.deleteById(id);
+        return ResponseEntity.status(response.isSuccess() ? 200 : 404).body(response);
     }
 }
