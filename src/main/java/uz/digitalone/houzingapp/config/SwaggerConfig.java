@@ -6,10 +6,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.AuthorizationScope;
-import springfox.documentation.service.Contact;
-import springfox.documentation.service.SecurityReference;
+import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
@@ -27,15 +24,21 @@ public class SwaggerConfig {
     public Docket api(){
         return new Docket(DocumentationType.SWAGGER_2)
                 .securityContexts(Collections.singletonList(getContext()))
+                .securitySchemes(Collections.singletonList(apiKey()))
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("uz.digitalone.houzingapp"))
                 .paths(PathSelectors.any())
                 .build().apiInfo(metadata());
     }
 
+    private ApiKey apiKey(){
+        return new ApiKey("JWT", "Authorization", "header");
+    }
+
     private SecurityContext getContext() {
         return SecurityContext.builder().securityReferences(defaultAuth()).build();
     }
+
 
     private List<SecurityReference> defaultAuth(){
         AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
