@@ -24,20 +24,13 @@ public class HouseDetailsServiceImpl implements HouseDetailsService {
 
     @Override
     public HttpEntity<?> save(HouseDetailsDto dto) {
-        HouseDetails houseDetails = new HouseDetails();
-        if(dto.getRoom() != null) {
-            houseDetails.setRoom(dto.getRoom());
-        }
-        if(dto.getBath() != null) {
-            houseDetails.setBath(dto.getBath());
-        }
-        houseDetails.setHasGarage(dto.isHasGarage());
-        if(dto.getArea() != null) {
-            houseDetails.setArea(dto.getArea());
-        }
-        houseDetails = houseDetailsRepository.save(houseDetails);
-        Response response = new Response(true, "Successfully created.", houseDetails);
-        return ResponseEntity.ok(response);
+        HouseDetails houseDetails = create(dto);
+        Response response = null;
+        if(houseDetails != null)
+            response = new Response(true, "Successfully created.", houseDetails);
+        else
+            response = new Response(false, "Something went wrong");
+        return ResponseEntity.status(response.getStatus()).body(response);
     }
 
     @Override
@@ -109,5 +102,25 @@ public class HouseDetailsServiceImpl implements HouseDetailsService {
             response.setMessage("HouseDetails was not found with id {" + id + "}");
         }
         return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @Override
+    public HouseDetails create(HouseDetailsDto dto) {
+        if(dto != null) {
+            HouseDetails houseDetails = new HouseDetails();
+            if (dto.getRoom() != null) {
+                houseDetails.setRoom(dto.getRoom());
+            }
+            if (dto.getBath() != null) {
+                houseDetails.setBath(dto.getBath());
+            }
+            houseDetails.setHasGarage(dto.isHasGarage());
+            if (dto.getArea() != null) {
+                houseDetails.setArea(dto.getArea());
+            }
+            houseDetails = houseDetailsRepository.save(houseDetails);
+            return houseDetails;
+        }
+        return null;
     }
 }
