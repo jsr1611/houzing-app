@@ -19,6 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import uz.digitalone.houzingapp.security.JwtFilter;
 import uz.digitalone.houzingapp.service.impl.MyUserService;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.Properties;
 
 @Configuration
@@ -48,7 +49,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final JwtFilter jwtFilter;
 
     @Autowired
-    public SecurityConfiguration(@Lazy MyUserService myUserService, @Lazy JwtFilter jwtFilter){
+    public SecurityConfiguration(@Lazy MyUserService myUserService, @Lazy JwtFilter jwtFilter) {
         this.myUserService = myUserService;
         this.jwtFilter = jwtFilter;
     }
@@ -78,14 +79,23 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(WHITE_LIST).permitAll()
                 .anyRequest()
                 .authenticated();
-//                .and()
-//                .httpBasic();
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        // Set unauthorized requests exception handler
+        http
+                .exceptionHandling()
+                .authenticationEntryPoint(
+                        (request, response, ex) -> {
+                            response.sendError(
+                                    HttpServletResponse.SC_UNAUTHORIZED,
+                                    ex.getMessage()
+                            );
+                        }
+                );
     }
 
     @Bean
-    public JavaMailSender javaMailSender(){
+    public JavaMailSender javaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost("smtp.mailgun.org");
         mailSender.setPort(587);
