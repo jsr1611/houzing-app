@@ -2,6 +2,7 @@ package uz.digitalone.houzingapp.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,6 @@ import uz.digitalone.houzingapp.repository.CategoryRepository;
 import uz.digitalone.houzingapp.service.CategoryService;
 
 
-import java.awt.print.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -108,7 +108,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public HttpEntity<?> findAllPageable(Pageable pageable) {
         Response response = new Response();
-        Page<Category> categoryAll = categoryRepository.findAll((org.springframework.data.domain.Pageable) pageable);
+        Page<Category> categoryAll = categoryRepository.findAll(pageable);
         List<Category> categoryAllContent = categoryAll.getContent();
 
         response.setSuccess(true);

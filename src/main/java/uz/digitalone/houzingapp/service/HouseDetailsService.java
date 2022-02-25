@@ -2,6 +2,7 @@ package uz.digitalone.houzingapp.service;
 
 import org.springframework.http.HttpEntity;
 import uz.digitalone.houzingapp.dto.request.HouseDetailsDto;
+import uz.digitalone.houzingapp.entity.HouseDetails;
 
 public interface HouseDetailsService {
     /**
@@ -39,4 +40,6 @@ public interface HouseDetailsService {
      * @return
      */
     HttpEntity<?> deleteById(Long id);
+
+    HouseDetails create(HouseDetailsDto detailsDto);
 }

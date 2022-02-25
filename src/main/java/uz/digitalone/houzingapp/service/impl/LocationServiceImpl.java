@@ -28,12 +28,13 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public HttpEntity<?> save(LocationDto dto) {
-        if (dto.getLongitude() == null || dto.getLatitude() == null) {
-             Response response = new Response (false, "Not saved Location");
+        Location location = create(dto);
+
+        if (location == null) {
+             Response response = new Response (false, "Location was not provided.");
              return ResponseEntity.ok(response);
         }
-        Location save = locationRepository.save(new Location(dto.getLongitude(), dto.getLatitude()));
-        Response response = new Response(true, "Successfully created.", save);
+        Response response = new Response(true, "Successfully created.", location);
         return ResponseEntity.ok(response);
     }
 
@@ -93,6 +94,14 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public HttpEntity<?> findAll() {
         return ResponseEntity.ok(locationRepository.findAll());
+    }
+
+    @Override
+    public Location create(LocationDto dto) {
+        if (dto.getLongitude() != null || dto.getLatitude() != null) {
+            return locationRepository.save(new Location(dto.getLongitude(), dto.getLatitude()));
+        }
+        return null;
     }
 }
 
