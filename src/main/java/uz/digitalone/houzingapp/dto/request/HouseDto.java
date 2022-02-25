@@ -22,5 +22,6 @@ public class HouseDto {
     private String region;
     private String country;
     private String zipCode;
-    private List<Attachment> attachmentList;
+    private AttachmentDto attachmentDto;
+    private Long categoryId;
 }

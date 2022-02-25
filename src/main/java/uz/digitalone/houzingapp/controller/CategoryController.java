@@ -1,14 +1,13 @@
 package uz.digitalone.houzingapp.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 import uz.digitalone.houzingapp.dto.request.CategoryDto;
 import uz.digitalone.houzingapp.service.CategoryService;
 import uz.digitalone.houzingapp.utils.ApiPageable;
-
-import java.awt.print.Pageable;
 
 @RestController
 @RequiredArgsConstructor

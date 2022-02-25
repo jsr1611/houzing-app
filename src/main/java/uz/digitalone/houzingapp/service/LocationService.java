@@ -2,6 +2,7 @@ package uz.digitalone.houzingapp.service;
 
 import org.springframework.http.HttpEntity;
 import uz.digitalone.houzingapp.dto.request.LocationDto;
+import uz.digitalone.houzingapp.entity.Location;
 
 public interface LocationService {
 
@@ -36,4 +37,5 @@ public interface LocationService {
 
     HttpEntity<?> findAll();
 
+    Location create(LocationDto locationDto);
 }

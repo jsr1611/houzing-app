@@ -3,18 +3,20 @@ package uz.digitalone.houzingapp.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import uz.digitalone.houzingapp.entity.template.AbcEntity;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "houses")
 public class House extends AbcEntity {
-
     private String name;
 
     private String description;
@@ -45,13 +47,38 @@ public class House extends AbcEntity {
 
     private String zipCode;
 
-    @ManyToOne
-    @JoinColumn(name = "attachment_id")
-    private Attachment attachment;
+    @OneToMany
+    @ToString.Exclude
+    private Set<Attachment> attachments = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
 
     private Boolean status;
+
+    public House(String name, String description,
+                 User user,
+                 HouseDetails houseDetails,
+                 Double price, Double salePrice,
+                 Location location,
+                 String address, String city,
+                 String region, String country, String zipCode,
+                 Set<Attachment> attachmentList,
+                 Category category) {
+        this.name = name;
+        this.description = description;
+        this.user = user;
+        this.houseDetails = houseDetails;
+        this.price = price;
+        this.salePrice = salePrice;
+        this.location = location;
+        this.address = address;
+        this.city = city;
+        this.region = region;
+        this.country = country;
+        this.zipCode = zipCode;
+        this.attachments = attachmentList;
+        this.category = category;
+    }
 }
