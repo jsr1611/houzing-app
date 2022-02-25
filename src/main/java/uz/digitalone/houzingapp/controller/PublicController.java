@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uz.digitalone.houzingapp.dto.request.LoginDto;
 import uz.digitalone.houzingapp.dto.request.RegUserDto;
+import uz.digitalone.houzingapp.dto.request.RoleCreateDto;
+import uz.digitalone.houzingapp.service.RoleService;
 import uz.digitalone.houzingapp.service.impl.MyUserService;
 
 import javax.validation.Valid;
@@ -18,6 +20,7 @@ import javax.validation.Valid;
 public class PublicController {
 
     private final MyUserService userService;
+    private final RoleService roleService;
 
     @PostMapping("/auth/register")
     public HttpEntity<?> register(@Valid @RequestBody RegUserDto dto){
@@ -25,7 +28,13 @@ public class PublicController {
     }
 
     @PostMapping("/auth/login")
-    public HttpEntity<?> login(@RequestBody LoginDto dto){
+    public HttpEntity<?> login(@Valid @RequestBody LoginDto dto){
         return userService.login(dto);
+    }
+
+
+    @PostMapping("/roles")
+    public HttpEntity<?> createRole(@Valid @RequestBody RoleCreateDto dto){
+        return roleService.saveRole(dto);
     }
 }
