@@ -13,11 +13,10 @@ This is a backend project for a real estate e-commerce website business.
 
 
 ### Requirements
-
 ![Entity relationship schema](./db_schema.png)
 
 
-### Technologies used:
+### Technologies 
 - Java 1.8 
 - Spring Boot 2.5.2
   - Spring Web, Spring Data JPA, Hibernate, Spring Security, Spring Validation, Spring Mail
