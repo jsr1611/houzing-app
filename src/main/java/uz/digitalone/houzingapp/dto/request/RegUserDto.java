@@ -16,25 +16,25 @@ import java.util.Set;
 @NoArgsConstructor
 public class RegUserDto {
 
-    @NotNull
-    @NotBlank
-    @Size(min = 3, max = 50)
+    @NotNull(message = "firstname field cannot be null")
+    @NotBlank(message = "firstname field cannot blank")
+    @Size(min = 3, max = 50, message = "firstname cannot be less than 3 letters or more than 50 letters")
     private String firstname;
 
-    @NotNull
-    @NotBlank
-    @Size(min = 3, max = 50)
+    @NotNull(message = "lastname field cannot be null")
+    @NotBlank(message = "lastname field cannot blank")
+    @Size(min = 3, max = 50, message = "lastname cannot be less than 3 letters or more than 50 letters")
     private String lastname;
 
 
-    @NotNull
-    @Email
+    @NotNull(message = "email field cannot be null")
+    @Email(message = "invalid email address")
     private String email;
 
-    @NotNull
-    @NotBlank
+    @NotNull(message = "password field cannot be null")
+    @NotBlank(message = "password field cannot be blank")
     private String password;
 
-    @NotNull
+    @NotNull(message = "role id list cannot be null")
     private Set<Long> roleIdSet;
 }
