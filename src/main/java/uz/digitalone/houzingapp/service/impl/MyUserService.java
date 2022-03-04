@@ -65,6 +65,13 @@ public class MyUserService implements UserDetailsService {
 
     public HttpEntity<?> register(RegUserDto dto) {
 
+        Boolean emailExists = null;
+        if(dto != null && dto.getEmail() != null){
+            emailExists = emailExists(dto.getEmail());
+        }
+        if(emailExists!= null && emailExists)
+            return ResponseEntity.status(422).body(new Response(false, "Email is invalid or already taken", dto.getEmail()));
+
         User user = new User();
         user.setFirstname(dto.getFirstname());
         user.setLastname(dto.getLastname());
@@ -80,6 +87,29 @@ public class MyUserService implements UserDetailsService {
         User savedUser = userRepository.save(user);
         Response response = new Response(true, "Successfully registered",savedUser.getEmail());
         return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    /**
+     * Check if user exists by email
+     * @param email user email
+     * @return "true" if user exists, else return "false"
+     */
+    private Boolean emailExists(String email) {
+        User user = findByEmail(email);
+        return user != null;
+    }
+
+    /**
+     * Find user by email and return it
+     * @param email user email address
+     * @return user object
+     */
+    private User findByEmail(String email) {
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        if(userOptional.isPresent()){
+            return userOptional.get();
+        }
+        return null;
     }
 
     public HttpEntity<?> login(LoginDto dto) {
