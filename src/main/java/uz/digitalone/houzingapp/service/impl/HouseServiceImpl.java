@@ -3,6 +3,7 @@ package uz.digitalone.houzingapp.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -12,10 +13,8 @@ import uz.digitalone.houzingapp.entity.*;
 import uz.digitalone.houzingapp.repository.HouseRepository;
 import uz.digitalone.houzingapp.service.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import javax.persistence.criteria.Predicate;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -68,9 +67,15 @@ public class HouseServiceImpl implements HouseService {
     }
 
     @Override
-    public HttpEntity<?> findAll(Pageable pageable) {
+    public HttpEntity<?> findAll(
+            String houseName, String firstName, String lastName, Integer room,
+            Double minPrice, Double maxPrice, String address, String city, String region,
+            String country, String zipCode, Pageable pageable) {
         Response response = new Response();
-        Page<House> incomingAll = houseRepository.findAll(pageable);
+        Page<House> incomingAll = houseRepository.findAll(
+                getSpecification(houseName, firstName, lastName, room, minPrice, maxPrice, address,
+                        city, region, country, zipCode),
+                pageable);
         List<House> incomingList = incomingAll.getContent();
         response.setSuccess(true);
         if(incomingList.size() == 0){
@@ -87,6 +92,55 @@ public class HouseServiceImpl implements HouseService {
         response.getMap().put("total_elements", incomingAll.getTotalElements());
         response.getMap().put("total_pages", incomingAll.getTotalPages());
         return ResponseEntity.ok(response);
+    }
+
+    private Specification<House> getSpecification(
+           final String houseName,
+           final String firstName,
+           final String lastName,
+           final Integer room,
+           final Double minPrice,
+           final Double maxPrice,
+           final String address,
+           final String city,
+           final String region,
+           final String country,
+           final String zipCode) {
+
+        return (root, criteriaQuery, criteriaBuilder) -> {
+
+            List<Predicate> predicateList = new ArrayList<>();
+
+            if(houseName != null){
+                predicateList.add(criteriaBuilder.like(root.get("name"),"%"+ houseName + "%"));
+            }
+            if(minPrice != null && maxPrice != null){
+                predicateList.add(criteriaBuilder.greaterThanOrEqualTo(root.get("salePrice"), minPrice));
+                predicateList.add(criteriaBuilder.lessThanOrEqualTo(root.get("salePrice"), maxPrice));
+            }
+
+            if(firstName != null && lastName != null) {
+
+                StringJoiner joiner = new StringJoiner(" ");
+                String fullName = joiner.add(firstName).add(lastName).toString().trim();
+                if (!"".equals(fullName)) {
+                    Predicate predicateFirstName;
+                    Predicate predicateLastName;
+
+                    if (!fullName.contains(" ")) {
+                        predicateFirstName = criteriaBuilder.like(criteriaBuilder.lower(root.get("user").get("firstname")), "%" + fullName.toLowerCase() + "%");
+                        predicateLastName = criteriaBuilder.like(criteriaBuilder.lower(root.get("user").get("lastname")), "%" + fullName.toLowerCase() + "%");
+                        predicateList.add(criteriaBuilder.or(predicateFirstName, predicateLastName));
+                    } else {
+                        predicateFirstName = criteriaBuilder.like(criteriaBuilder.lower(root.get("user").get("firstname")), "%" + firstName.toLowerCase() + "%");
+                        predicateLastName = criteriaBuilder.like(criteriaBuilder.lower(root.get("user").get("lastname")), "%" + lastName.toLowerCase() + "%");
+                        Predicate predicate = criteriaBuilder.and(predicateFirstName, predicateLastName);
+                        predicateList.add(predicate);
+                    }
+                }
+            }
+            return criteriaBuilder.and(predicateList.toArray(new Predicate[0]));
+        };
     }
 
     @Override
