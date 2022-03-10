@@ -38,4 +38,6 @@ public interface LocationService {
     HttpEntity<?> findAll();
 
     Location create(LocationDto locationDto);
+
+    Location findOne(LocationDto locationDto);
 }
