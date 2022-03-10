@@ -25,28 +25,34 @@ public class HouseServiceImpl implements HouseService {
     private final LocationService locationService;
     private final CategoryService categoryService;
     private final AttachmentService attachmentService;
+    private final MyUserService userService;
 
 
     @Override
     public HttpEntity<?> create(HouseDto dto) {
         House house = new House();
-
+        User user = MyUserService.currentUser;
+        house.setUser(user);
         house.setName(dto.getName());
         house.setDescription(dto.getDescription());
 
         HouseDetailsDto detailsDto = dto.getHouseDetailsDto();
         if(detailsDto != null){
             HouseDetails details = houseDetailsService.create(detailsDto);
-            if(details != null)
+            if(details != null && details.getRoom()>0)
                 house.setHouseDetails(details);
         }
         house.setPrice(dto.getPrice());
         house.setSalePrice(dto.getSalePrice());
         LocationDto locationDto = dto.getLocationDto();
-        if(locationDto != null){
-            Location location = locationService.create(locationDto);
+        if(locationDto != null && locationDto.getLongitude() != 0 && locationDto.getLatitude() != 0){
+            Location location = locationService.findOne(dto.getLocationDto());
             if(location != null)
                 house.setLocation(location);
+            else
+                location = locationService.create(locationDto);
+                if(location != null)
+                    house.setLocation(location);
         }
         house.setAddress(dto.getAddress());
         house.setCity(dto.getCity());
@@ -61,6 +67,8 @@ public class HouseServiceImpl implements HouseService {
         Category category = categoryService.findById(dto.getCategoryId());
         if(category != null)
             house.setCategory(category);
+        if(house.getHouseDetails() == null && house.getStatus() == null)
+            return ResponseEntity.status(400).body(new Response(false, "Error with house Details or status info", detailsDto));
         house = houseRepository.save(house);
         Response response = new Response(true, "Successfully created.", house);
         return ResponseEntity.ok(response);
