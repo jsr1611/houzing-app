@@ -20,10 +20,7 @@ import uz.digitalone.houzingapp.entity.Category;
 import uz.digitalone.houzingapp.repository.AttachmentRepository;
 import uz.digitalone.houzingapp.service.AttachmentService;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -55,18 +52,16 @@ public class AttachmentServiceImpl implements AttachmentService {
 
     @Override
     public HttpEntity<?> findAll(Pageable pageable) {
-        Response response = new Response();
+        Response response = null;
         Page<Attachment> attachmentPages = attachmentRepository.findAll(pageable);
         List<Attachment> attachmentAllContent = attachmentPages.getContent();
 
-        response.setSuccess(true);
         if(attachmentAllContent.size() == 0){
-            response.setMessage("No attachments were found");
+            response= new Response(true, "No attachments were found");
         }
         else {
-            response.setMessage("Attachment list");
+            response = new Response (true, "Attachment list", new ArrayList<>(attachmentAllContent));
         }
-        response.setDataList(new ArrayList<>(attachmentAllContent));
         response.getMap().put("size", attachmentPages.getSize());
         response.getMap().put("total_elements", attachmentPages.getTotalElements());
         response.getMap().put("total_pages", attachmentPages.getTotalPages());
@@ -75,16 +70,46 @@ public class AttachmentServiceImpl implements AttachmentService {
 
     @Override
     public Attachment findById(Long id) {
-        return null;
+        Optional<Attachment> optionalAttachment = attachmentRepository.findById(id);
+        return optionalAttachment.orElse(null);
     }
 
     @Override
-    public HttpEntity<?> edit(Long id, AttachmentDto dto) {
-        return null;
+    public HttpEntity<?> edit(Long id, String imgPath) {
+        Response response = null;
+        Attachment attachment = findById(id);
+        if(attachment != null){
+            attachment.setImgPath(imgPath);
+            attachment = attachmentRepository.save(attachment);
+            response = new Response(true, "Successfully updated.", attachment);
+        }else {
+            response = new Response(false, "Attachment with id {"+id+"} not found.");
+        }
+        return ResponseEntity.status(response.getStatus()).body(response);
     }
 
     @Override
     public HttpEntity<?> delete(Long id) {
-        return null;
+        Response response = null;
+        Attachment attachment = findById(id);
+        if(attachment!=null){
+            attachmentRepository.delete(attachment);
+            response = new Response(true, "Successfully deleted.");
+        }
+        else {
+            response = new Response(false, "Attachment with id {"+id+"} not found.");
+        }
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @Override
+    public Set<Attachment> update(Set<Attachment> attachments, AttachmentDto attachmentDto) {
+        Set<Attachment> updateAttachments = null;
+        // TODO: 3/12/22 Logic should be updated, because this is inefficient.
+        if(attachments != null && attachments.size()>0)
+            attachmentRepository.deleteAll(attachments);
+        if(attachmentDto.getImgPathList()!=null && attachmentDto.getImgPathList().size()>0)
+            updateAttachments = createList(attachmentDto);
+        return updateAttachments;
     }
 }
