@@ -26,8 +26,24 @@ public class HouseController {
 
     @ApiPageable
     @GetMapping
-    public HttpEntity<?> getAll(@ApiIgnore Pageable pageable){
-        return houseService.findAll(pageable);
+    public HttpEntity<?> getAll(
+                        @RequestParam(value = "house_name", required = false) String houseName,
+                        @RequestParam(value = "first_name", required = false) String firstName,
+                        @RequestParam(value = "last_name", required = false) String lastName,
+                        @RequestParam(value = "room", required = false) Integer room,
+                        @RequestParam(value = "min_price",required = false) Double minPrice,
+                        @RequestParam(value = "max_price",required = false) Double maxPrice,
+                        @RequestParam(value = "address",required = false) String address,
+                        @RequestParam(value = "city",required = false) String city,
+                        @RequestParam(value = "region",required = false) String region,
+                        @RequestParam(value = "country",required = false) String country,
+                        @RequestParam(value = "zip_code",required = false) String zipCode,
+                        @ApiIgnore Pageable pageable){
+        return houseService.findAll(
+                houseName, firstName, lastName, room,
+                minPrice, maxPrice, address,
+                city, region, country, zipCode, pageable
+        );
     }
 
     @PutMapping("/{id}")

@@ -36,6 +36,7 @@ public class MyUserService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
+    public static User currentUser;
 
 
     @Override
@@ -114,6 +115,7 @@ public class MyUserService implements UserDetailsService {
     public HttpEntity<?> login(LoginDto dto) {
         Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
         User principal = (User) authenticate.getPrincipal();
+        currentUser = principal;
         String generatedToken = jwtProvider.generateToken(principal.getEmail(), principal.getRoles());
         Response response = new Response(true, "Token", generatedToken);
 
