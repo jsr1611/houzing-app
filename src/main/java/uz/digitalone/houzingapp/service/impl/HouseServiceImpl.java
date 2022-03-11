@@ -26,7 +26,6 @@ public class HouseServiceImpl implements HouseService {
     private final LocationService locationService;
     private final CategoryService categoryService;
     private final AttachmentService attachmentService;
-    private final MyUserService userService;
 
 
     @Override
