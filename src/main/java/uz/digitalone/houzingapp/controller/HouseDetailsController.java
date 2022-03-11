@@ -10,6 +10,7 @@ import uz.digitalone.houzingapp.service.HouseDetailsService;
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/house_details")
 public class HouseDetailsController {
+
     private final HouseDetailsService houseDetailsService;
 
 
