@@ -103,5 +103,10 @@ public class LocationServiceImpl implements LocationService {
         }
         return null;
     }
+
+    @Override
+    public Location findOne(LocationDto locationDto) {
+        return locationRepository.findFirstByLatitudeAndLongitude(locationDto.getLatitude(), locationDto.getLongitude());
+    }
 }
 
