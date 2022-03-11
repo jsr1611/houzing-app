@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 import uz.digitalone.houzingapp.dto.request.HouseDto;
@@ -19,8 +20,8 @@ public class HouseController {
 
     @ApiOperation(value = "Ushbu API yangi uy e`lonini qo`shish uchun ishlatiladi")
     @PostMapping
-    public HttpEntity<?> create(@RequestBody HouseDto dto){
-        return houseService.create(dto);
+    public HttpEntity<?> create(@RequestBody HouseDto dto, Errors errors){
+        return houseService.create(dto, errors);
     }
 
     @ApiPageable

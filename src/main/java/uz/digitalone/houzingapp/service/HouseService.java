@@ -2,13 +2,14 @@ package uz.digitalone.houzingapp.service;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
+import org.springframework.validation.Errors;
 import springfox.documentation.annotations.ApiIgnore;
 import uz.digitalone.houzingapp.dto.request.HouseDto;
 import uz.digitalone.houzingapp.entity.House;
 
 public interface HouseService {
 
-    public HttpEntity<?> create(HouseDto dto);
+    public HttpEntity<?> create(HouseDto dto, Errors errors);
 
     public HttpEntity<?> findAll(@ApiIgnore Pageable pageable);
 
