@@ -24,7 +24,7 @@ public class LocationController {
 
     @RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
     public HttpEntity<?> findById(@PathVariable("id") Long id) {
-        return locationService.findById(id);
+        return locationService.findOneById(id);
     }
 
     @RequestMapping(value = "/edit/{id}", method = RequestMethod.PUT)

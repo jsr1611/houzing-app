@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uz.digitalone.houzingapp.dto.request.HouseDetailsDto;
 import uz.digitalone.houzingapp.dto.response.Response;
+import uz.digitalone.houzingapp.entity.House;
 import uz.digitalone.houzingapp.entity.HouseDetails;
 import uz.digitalone.houzingapp.repository.HouseDetailsRepository;
 import uz.digitalone.houzingapp.service.HouseDetailsService;
@@ -35,38 +36,45 @@ public class HouseDetailsServiceImpl implements HouseDetailsService {
 
     @Override
     public HttpEntity<?> findAll() {
-        Response response = new Response();
+        Response response = null;
         List<HouseDetails> houseDetailsList = houseDetailsRepository.findAll();
-        response.setSuccess(true);
+
         if (houseDetailsList.size() == 0) {
-            response.setMessage("No HouseDetails were found");
+            response = new Response(true, "No HouseDetails were found");
         } else {
-            response.setDataList(new ArrayList<>(houseDetailsList));
+            response = new Response(true, "House Details List", new ArrayList<>(houseDetailsList));
         }
-        return ResponseEntity.ok(houseDetailsList);
+        return ResponseEntity.status(response.getStatus()).body(response);
     }
 
     @Override
-    public HttpEntity<?> findById(Long id) {
-        Response response = new Response();
-        Optional<HouseDetails> optionalHouseDetails = houseDetailsRepository.findById(id);
-        if (optionalHouseDetails.isPresent()) {
-            HouseDetails houseDetails = optionalHouseDetails.get();
-            response.setSuccess(true);
-            response.setData(houseDetails);
+    public HttpEntity<?> findOneById(Long id) {
+        Response response = null;
+        HouseDetails houseDetails = findById(id);
+        if (houseDetails != null) {
+            response = new Response(true, "House details", houseDetails);
         } else {
-            response.setSuccess(false);
-            response.setMessage("HouseDetails was not found with id {" + id + "}");
+            response = new Response(false, "HouseDetails was not found with id {" + id + "}");
         }
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 
     @Override
     public HttpEntity<?> editById(Long id, HouseDetailsDto dto) {
-        Response response = new Response();
-        Optional<HouseDetails> optionalHouseDetails = houseDetailsRepository.findById(id);
-        if (optionalHouseDetails.isPresent()) {
-            HouseDetails houseDetails = optionalHouseDetails.get();
+        Response response = null;
+        HouseDetails houseDetails = updateById(id, dto);
+        if(houseDetails != null){
+            response = new Response(true, "Updated HouseDetails", houseDetails);
+        } else {
+            response = new Response(false, "HouseDetails was not found with id{" + id + "}");
+        }
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @Override
+    public HouseDetails updateById(Long id, HouseDetailsDto dto) {
+        HouseDetails houseDetails = findById(id);
+        if(houseDetails != null) {
             if (dto.getRoom() != null && !dto.getRoom().equals(houseDetails.getRoom())) {
                 houseDetails.setRoom(dto.getRoom());
             }
@@ -77,29 +85,22 @@ public class HouseDetailsServiceImpl implements HouseDetailsService {
             if (dto.getArea() != null && !dto.getArea().equals(houseDetails.getArea())) {
                 houseDetails.setArea(dto.getArea());
             }
-            HouseDetails saved = houseDetailsRepository.save(houseDetails);
-            response.setSuccess(true);
-            response.setData(saved);
-
-        } else {
-            response.setSuccess(false);
-            response.setMessage("HouseDetails was not found with id{" + id + "}");
+             return houseDetailsRepository.save(houseDetails);
         }
-        return ResponseEntity.status(response.getStatus()).body(response);
+        else
+            return null;
     }
 
     @Override
     public HttpEntity<?> deleteById(Long id) {
-        Response response = new Response();
+        Response response = null;
         Optional<HouseDetails> optionalHouseDetails = houseDetailsRepository.findById(id);
         if (optionalHouseDetails.isPresent()) {
             HouseDetails houseDetails = optionalHouseDetails.get();
-            response.setSuccess(true);
-            response.setMessage("Successfully deleted");
+            response =new Response(true, "Successfully deleted");
             response.setData(houseDetails);
         } else {
-            response.setSuccess(false);
-            response.setMessage("HouseDetails was not found with id {" + id + "}");
+            response =new Response(false, "HouseDetails was not found with id {" + id + "}");
         }
         return ResponseEntity.status(response.getStatus()).body(response);
     }
@@ -122,5 +123,10 @@ public class HouseDetailsServiceImpl implements HouseDetailsService {
             return houseDetails;
         }
         return null;
+    }
+
+    public HouseDetails findById(Long id){
+        Optional<HouseDetails> byId = houseDetailsRepository.findById(id);
+        return byId.orElse(null);
     }
 }
