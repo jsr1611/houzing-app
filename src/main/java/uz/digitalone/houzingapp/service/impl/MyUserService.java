@@ -13,6 +13,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.Errors;
+import org.springframework.validation.ObjectError;
 import uz.digitalone.houzingapp.dto.request.LoginDto;
 import uz.digitalone.houzingapp.dto.request.RegUserDto;
 import uz.digitalone.houzingapp.dto.response.Response;
@@ -22,10 +24,7 @@ import uz.digitalone.houzingapp.repository.RoleRepository;
 import uz.digitalone.houzingapp.repository.UserRepository;
 import uz.digitalone.houzingapp.security.JwtProvider;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -122,5 +121,23 @@ public class MyUserService implements UserDetailsService {
 
         // TODO: 2/25/22 check if user login details match, if not handle it.
         return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    /**
+     * Return error code and default message set for the validation annotation
+     * @param errors errors
+     * @return map of error code as key, default message as value, e.g. :['Email': 'invalid email address']
+     */
+    public Map<String, String> getErrors(Errors errors) {
+        Map<String, String> errorList = new HashMap<>();
+        for (ObjectError error : errors.getAllErrors()) {
+
+            String code = error.getCode();
+            if(error.getCodes()!= null && error.getCodes().length > 0){
+                code = error.getCodes()[0];
+            }
+            errorList.put(code, error.getDefaultMessage());
+        }
+        return errorList;
     }
 }

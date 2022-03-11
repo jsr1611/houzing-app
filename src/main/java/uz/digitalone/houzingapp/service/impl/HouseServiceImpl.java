@@ -25,7 +25,6 @@ public class HouseServiceImpl implements HouseService {
     private final LocationService locationService;
     private final CategoryService categoryService;
     private final AttachmentService attachmentService;
-    private final MyUserService userService;
 
 
     @Override
@@ -67,7 +66,7 @@ public class HouseServiceImpl implements HouseService {
         Category category = categoryService.findById(dto.getCategoryId());
         if(category != null)
             house.setCategory(category);
-        if(house.getHouseDetails() == null && house.getStatus() == null)
+        if(house.getHouseDetails() == null)
             return ResponseEntity.status(400).body(new Response(false, "Error with house Details or status info", detailsDto));
         house = houseRepository.save(house);
         Response response = new Response(true, "Successfully created.", house);

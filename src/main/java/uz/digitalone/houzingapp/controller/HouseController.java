@@ -1,14 +1,20 @@
 package uz.digitalone.houzingapp.controller;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 import uz.digitalone.houzingapp.dto.request.HouseDto;
 import uz.digitalone.houzingapp.service.HouseService;
+import uz.digitalone.houzingapp.service.impl.MyUserService;
 import uz.digitalone.houzingapp.utils.ApiPageable;
+
+import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
@@ -16,13 +22,18 @@ import uz.digitalone.houzingapp.utils.ApiPageable;
 public class HouseController {
 
     private final HouseService houseService;
+    private final MyUserService userService;
 
     @ApiOperation(value = "Ushbu API yangi uy e`lonini qo`shish uchun ishlatiladi")
     @PostMapping
-    public HttpEntity<?> create(@RequestBody HouseDto dto){
+    public HttpEntity<?> create(@Valid @RequestBody HouseDto dto, Errors errors){
+        if (errors.hasErrors()) {
+            return ResponseEntity.status(400).body(userService.getErrors(errors));
+        }
         return houseService.create(dto);
     }
 
+    @ApiOperation("Ushbu API filterlar bo`yicha va sahifalarga ajratilgan holda barcha uy e`lonlarini chaqirib olishga mo`ljallangan.")
     @ApiPageable
     @GetMapping
     public HttpEntity<?> getAll(
@@ -45,11 +56,16 @@ public class HouseController {
         );
     }
 
+    @ApiOperation("Ushbu API mavjud uy e`lonini ID bo`yicha qidirib, yangilash/o'zgartirish uchun mo`ljallangan. ")
     @PutMapping("/{id}")
-    public HttpEntity<?> edit(@PathVariable Long id, @RequestBody HouseDto dto){
+    public HttpEntity<?> edit(@PathVariable Long id, @RequestBody HouseDto dto, Errors errors){
+        if (errors.hasErrors()) {
+            return ResponseEntity.status(400).body(userService.getErrors(errors));
+        }
         return houseService.edit(id, dto);
     }
 
+    @ApiOperation("Ushbu API mavjud uy e`lonini ID bo`yicha qidirib ma`lumotlar omboridan o'chirib tashlashga mo`ljallangan.")
     @DeleteMapping("/{id}")
     public HttpEntity<?> delete(@PathVariable Long id){
         return houseService.delete(id);
