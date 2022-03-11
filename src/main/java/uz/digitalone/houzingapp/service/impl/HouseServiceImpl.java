@@ -7,7 +7,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.Errors;
 import uz.digitalone.houzingapp.dto.request.*;
 import uz.digitalone.houzingapp.dto.response.Response;
 import uz.digitalone.houzingapp.entity.*;
@@ -29,7 +28,7 @@ public class HouseServiceImpl implements HouseService {
 
 
     @Override
-    public HttpEntity<?> create(HouseDto dto, Errors errors) {
+    public HttpEntity<?> create(HouseDto dto) {
         House house = new House();
         User user = MyUserService.currentUser;
         house.setUser(user);

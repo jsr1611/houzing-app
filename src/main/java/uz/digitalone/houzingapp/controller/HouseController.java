@@ -4,11 +4,13 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 import uz.digitalone.houzingapp.dto.request.HouseDto;
 import uz.digitalone.houzingapp.service.HouseService;
+import uz.digitalone.houzingapp.service.impl.MyUserService;
 import uz.digitalone.houzingapp.utils.ApiPageable;
 
 @RestController
@@ -17,11 +19,15 @@ import uz.digitalone.houzingapp.utils.ApiPageable;
 public class HouseController {
 
     private final HouseService houseService;
+    private final MyUserService userService;
 
     @ApiOperation(value = "Ushbu API yangi uy e`lonini qo`shish uchun ishlatiladi")
     @PostMapping
     public HttpEntity<?> create(@RequestBody HouseDto dto, Errors errors){
-        return houseService.create(dto, errors);
+        if (errors.hasErrors()) {
+            return ResponseEntity.status(400).body(userService.getErrors(errors));
+        }
+        return houseService.create(dto);
     }
 
     @ApiPageable
@@ -47,7 +53,10 @@ public class HouseController {
     }
 
     @PutMapping("/{id}")
-    public HttpEntity<?> edit(@PathVariable Long id, @RequestBody HouseDto dto){
+    public HttpEntity<?> edit(@PathVariable Long id, @RequestBody HouseDto dto, Errors errors){
+        if (errors.hasErrors()) {
+            return ResponseEntity.status(400).body(userService.getErrors(errors));
+        }
         return houseService.edit(id, dto);
     }
 

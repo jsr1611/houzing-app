@@ -26,6 +26,10 @@ public class HouseDto {
     private Double price;
     private Double salePrice;
     private LocationDto locationDto;
+
+    @NotNull
+    @NotBlank
+    @Size(min = 5, max = 50)
     private String address;
     private String city;
     private String region;
