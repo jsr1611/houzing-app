@@ -26,7 +26,7 @@ public class HouseDetailsController {
 
     @GetMapping("/{id}")
     public HttpEntity<?> findById(@PathVariable("id") Long id) {
-        return houseDetailsService.findById(id);
+        return houseDetailsService.findOneById(id);
     }
 
     @PutMapping("/{id}")

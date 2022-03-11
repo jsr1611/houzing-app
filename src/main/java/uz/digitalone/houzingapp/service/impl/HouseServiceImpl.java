@@ -78,20 +78,19 @@ public class HouseServiceImpl implements HouseService {
             String houseName, String firstName, String lastName, Integer room,
             Double minPrice, Double maxPrice, String address, String city, String region,
             String country, String zipCode, Pageable pageable) {
-        Response response = new Response();
+        Response response = null;
         Page<House> incomingAll = houseRepository.findAll(
                 getSpecification(houseName, firstName, lastName, room, minPrice, maxPrice, address,
                         city, region, country, zipCode),
                 pageable);
         List<House> incomingList = incomingAll.getContent();
-        response.setSuccess(true);
+
         if(incomingList.size() == 0){
-            response.setMessage("No data was found");
+            response = new Response(true, "No data was found");
             incomingList = new ArrayList<>();
         }
         else {
-            response.setMessage("House list");
-
+            response =new Response(true, "House list");
         }
 
         response.setDataList(new ArrayList<>(incomingList));
@@ -167,11 +166,47 @@ public class HouseServiceImpl implements HouseService {
 
     @Override
     public HttpEntity<?> edit(Long id, HouseDto dto) {
-        return null;
+        Response response = null;
+        House house = findById(id);
+        if(house != null){
+            house.setName(dto.getName());
+            house.setDescription(dto.getDescription());
+            house.setAddress(dto.getAddress());
+            house.setCity(dto.getCity());
+            house.setRegion(dto.getRegion());
+            house.setZipCode(dto.getZipCode());
+            house.setCountry(dto.getCountry());
+            house.setPrice(dto.getPrice());
+            house.setSalePrice(dto.getSalePrice());
+
+            HouseDetails houseDetails = houseDetailsService.updateById(house.getHouseDetails().getId(), dto.getHouseDetailsDto());
+            house.setHouseDetails(houseDetails);
+            Location location = locationService.updateById(house.getLocation().getId(), dto.getLocationDto());
+            house.setLocation(location);
+            Set<Attachment> attachments = attachmentService.update(house.getAttachments(), dto.getAttachmentDto());
+            house.setAttachments(attachments);
+            Category category = categoryService.findById(dto.getCategoryId());
+            house.setCategory(category);
+            house = houseRepository.save(house);
+            response = new Response(true, "Successfully updated.", house);
+        }
+        else {
+            response = new Response(false, "House with id {"+id+"} does not exist");
+        }
+        return ResponseEntity.status(response.getStatus()).body(response);
     }
 
     @Override
     public HttpEntity<?> delete(Long id) {
-        return null;
+        Response response = null;
+        House byId = findById(id);
+        if(byId != null){
+            houseRepository.delete(byId);
+            response = new Response(true, "Successfully deleted.");
+        }
+        else {
+            response = new Response(false, "House with id {"+id+"} does not exist.");
+        }
+        return ResponseEntity.status(response.getStatus()).body(response);
     }
 }

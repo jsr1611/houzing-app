@@ -23,7 +23,7 @@ public interface HouseDetailsService {
      * @param id
      * @return
      */
-    HttpEntity<?> findById(Long id);
+    HttpEntity<?> findOneById(Long id);
 
 
     /**
@@ -42,4 +42,8 @@ public interface HouseDetailsService {
     HttpEntity<?> deleteById(Long id);
 
     HouseDetails create(HouseDetailsDto detailsDto);
+
+    public HouseDetails findById(Long id);
+
+    public HouseDetails updateById(Long id, HouseDetailsDto detailsDto);
 }
