@@ -1,5 +1,6 @@
 package uz.digitalone.houzingapp.controller;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +33,7 @@ public class HouseController {
         return houseService.create(dto);
     }
 
+    @ApiOperation("Ushbu API filterlar bo`yicha va sahifalarga ajratilgan holda barcha uy e`lonlarini chaqirib olishga mo`ljallangan.")
     @ApiPageable
     @GetMapping
     public HttpEntity<?> getAll(
@@ -54,6 +56,7 @@ public class HouseController {
         );
     }
 
+    @ApiOperation("Ushbu API mavjud uy e`lonini ID bo`yicha qidirib, yangilash/o'zgartirish uchun mo`ljallangan. ")
     @PutMapping("/{id}")
     public HttpEntity<?> edit(@PathVariable Long id, @RequestBody HouseDto dto, Errors errors){
         if (errors.hasErrors()) {
@@ -62,6 +65,7 @@ public class HouseController {
         return houseService.edit(id, dto);
     }
 
+    @ApiOperation("Ushbu API mavjud uy e`lonini ID bo`yicha qidirib ma`lumotlar omboridan o'chirib tashlashga mo`ljallangan.")
     @DeleteMapping("/{id}")
     public HttpEntity<?> delete(@PathVariable Long id){
         return houseService.delete(id);
