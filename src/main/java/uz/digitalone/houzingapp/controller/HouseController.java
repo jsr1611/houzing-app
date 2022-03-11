@@ -13,6 +13,8 @@ import uz.digitalone.houzingapp.service.HouseService;
 import uz.digitalone.houzingapp.service.impl.MyUserService;
 import uz.digitalone.houzingapp.utils.ApiPageable;
 
+import javax.validation.Valid;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/houses")
@@ -23,7 +25,7 @@ public class HouseController {
 
     @ApiOperation(value = "Ushbu API yangi uy e`lonini qo`shish uchun ishlatiladi")
     @PostMapping
-    public HttpEntity<?> create(@RequestBody HouseDto dto, Errors errors){
+    public HttpEntity<?> create(@Valid @RequestBody HouseDto dto, Errors errors){
         if (errors.hasErrors()) {
             return ResponseEntity.status(400).body(userService.getErrors(errors));
         }
