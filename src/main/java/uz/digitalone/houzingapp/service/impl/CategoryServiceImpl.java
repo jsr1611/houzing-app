@@ -43,13 +43,11 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public HttpEntity<?> getOne(Long id) {
         Category category = findById(id);
-        Response response = new Response();
+        Response response = null;
         if(category == null){
-            response.setSuccess(false);
-            response.setMessage("Category was not found with id {" + id + "}");
+            response = new Response(false, "Category was not found with id {" + id + "}");
         }else {
-            response.setSuccess(true);
-            response.setData(category);
+            response = new Response(true, "Category", category);
         }
         return ResponseEntity.status(response.getStatus()).body(response);
     }
@@ -70,11 +68,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public HttpEntity<?> updateById(CategoryDto categoryDto, Long id) {
-        Category category = new Category();
-        Response response = new Response();
+        Category category = findById(id);
+        Response response = null;
         if (category == null){
-            response.setSuccess(false);
-            response.setMessage("Category Not Found With Id [" + id + " ]");
+            response = new Response(false,"Category Not Found With Id [" + id + " ]");
         }
         else {
             category.setName((categoryDto.getName()));
@@ -83,40 +80,38 @@ public class CategoryServiceImpl implements CategoryService {
                 category.setParent(parent);
             }
             category = categoryRepository.save(category);
-            response.setData(category);
+            response = new Response(true, "Updated Category", category);
         }
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 
     @Override
     public HttpEntity<?> deleteCategory(Long id) {
-        Response response = new Response();
-        Category category = new Category();
+        Response response = null;
+        Category category = findById(id);
 
         if (category == null) {
-            response.setSuccess(false);
-            response.setMessage("Category Not Found with id: [" + id + "]");
+            response = new Response(false, "Category Not Found with id: [" + id + "]");
         }
         else {
             categoryRepository.delete(category);
-            response.setSuccess(true);
-            response.setMessage("Category {" + category.getName()+"} was successfully deleted");
+            response = new Response(true, "Category {" + category.getName()+"} was successfully deleted");
         }
-        return null;
+        return ResponseEntity.status(response.getStatus()).body(response);
     }
 
     @Override
     public HttpEntity<?> findAllPageable(Pageable pageable) {
-        Response response = new Response();
+        Response response = null;
         Page<Category> categoryAll = categoryRepository.findAll(pageable);
         List<Category> categoryAllContent = categoryAll.getContent();
 
-        response.setSuccess(true);
+
         if(categoryAllContent.size() == 0){
-            response.setMessage("No categories were found");
+            response = new Response(true, "No categories were found");
         }
         else {
-            response.setMessage("Category list");
+            response = new Response(true, "Category list");
         }
         response.setDataList(new ArrayList<>(categoryAllContent));
         response.getMap().put("size", categoryAll.getSize());
