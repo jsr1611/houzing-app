@@ -145,6 +145,23 @@ public class HouseServiceImpl implements HouseService {
                     }
                 }
             }
+
+            if(room != null){
+                predicateList.add(criteriaBuilder.equal(root.get("houseDetails").get("room"), room));
+            }
+            if(city != null){
+                predicateList.add(criteriaBuilder.like(root.get("city"), city+"%"));
+            }
+            if(region != null){
+                predicateList.add(criteriaBuilder.like(root.get("region"), region+"%"));
+            }
+            if(country != null){
+                predicateList.add(criteriaBuilder.like(root.get("country"), country+"%"));
+            }
+            if(zipCode != null){
+                predicateList.add(criteriaBuilder.like(root.get("zipCode"), zipCode+"%"));
+            }
+
             return criteriaBuilder.and(predicateList.toArray(new Predicate[0]));
         };
     }
