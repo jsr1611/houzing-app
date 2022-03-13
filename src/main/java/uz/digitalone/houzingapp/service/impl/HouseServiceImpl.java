@@ -121,8 +121,14 @@ public class HouseServiceImpl implements HouseService {
                 predicateList.add(criteriaBuilder.like(root.get("name"),"%"+ houseName + "%"));
             }
             if(minPrice != null && maxPrice != null){
-                predicateList.add(criteriaBuilder.greaterThanOrEqualTo(root.get("salePrice"), minPrice));
-                predicateList.add(criteriaBuilder.lessThanOrEqualTo(root.get("salePrice"), maxPrice));
+                predicateList.add(criteriaBuilder.greaterThanOrEqualTo(root.get("price"), minPrice));
+                predicateList.add(criteriaBuilder.lessThanOrEqualTo(root.get("price"), maxPrice));
+            }
+            else if(minPrice != null){
+                predicateList.add(criteriaBuilder.greaterThanOrEqualTo(root.get("price"), minPrice));
+            }
+            else {
+                predicateList.add(criteriaBuilder.lessThanOrEqualTo(root.get("price"), maxPrice));
             }
 
             if(firstName != null && lastName != null) {
@@ -145,6 +151,26 @@ public class HouseServiceImpl implements HouseService {
                     }
                 }
             }
+
+            if(room != null){
+                predicateList.add(criteriaBuilder.equal(root.get("houseDetails").get("room"), room));
+            }
+            if(address != null){
+                predicateList.add(criteriaBuilder.like(root.get("address"), "%"+address+"%"));
+            }
+            if(city != null){
+                predicateList.add(criteriaBuilder.like(root.get("city"), city+"%"));
+            }
+            if(region != null){
+                predicateList.add(criteriaBuilder.like(root.get("region"), region+"%"));
+            }
+            if(country != null){
+                predicateList.add(criteriaBuilder.like(root.get("country"), country+"%"));
+            }
+            if(zipCode != null){
+                predicateList.add(criteriaBuilder.like(root.get("zipCode"), zipCode+"%"));
+            }
+
             return criteriaBuilder.and(predicateList.toArray(new Predicate[0]));
         };
     }
