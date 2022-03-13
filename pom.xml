@@ -15,6 +15,7 @@
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>1.8</java.version>
+		<map.struct.version>1.4.2.Final</map.struct.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -90,6 +91,13 @@
 			<scope>test</scope>
 		</dependency>
 
+<!-- map struct -->
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
+			<version>${map.struct.version}</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -97,6 +105,7 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>${project.parent.version}</version>
 				<configuration>
 					<excludes>
 						<exclude>

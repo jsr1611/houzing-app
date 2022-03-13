@@ -14,8 +14,10 @@ import uz.digitalone.houzingapp.service.CategoryService;
 
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -56,11 +58,16 @@ public class CategoryServiceImpl implements CategoryService {
     public HttpEntity<?> getAll() {
         Response response = null;
         List<Category> categories = categoryRepository.findAll();
+        List<String> result = categories
+                .stream()
+                .sorted(Comparator.comparing(Category::getName))
+                .map(category -> category.getName().toUpperCase())
+                .collect(Collectors.toList());
         if (categories.size() == 0){
             response = new Response(true, "Categories Not Found");
         }
         else {
-            response = new Response(true, "Category List", new ArrayList<>(categories));
+            response = new Response(true, "Category List", new ArrayList<>(result));
         }
         return ResponseEntity.status(response.getStatus()).body(response);
     }
