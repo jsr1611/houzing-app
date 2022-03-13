@@ -149,6 +149,9 @@ public class HouseServiceImpl implements HouseService {
             if(room != null){
                 predicateList.add(criteriaBuilder.equal(root.get("houseDetails").get("room"), room));
             }
+            if(address != null){
+                predicateList.add(criteriaBuilder.like(root.get("address"), "%"+address+"%"));
+            }
             if(city != null){
                 predicateList.add(criteriaBuilder.like(root.get("city"), city+"%"));
             }
