@@ -121,8 +121,14 @@ public class HouseServiceImpl implements HouseService {
                 predicateList.add(criteriaBuilder.like(root.get("name"),"%"+ houseName + "%"));
             }
             if(minPrice != null && maxPrice != null){
-                predicateList.add(criteriaBuilder.greaterThanOrEqualTo(root.get("salePrice"), minPrice));
-                predicateList.add(criteriaBuilder.lessThanOrEqualTo(root.get("salePrice"), maxPrice));
+                predicateList.add(criteriaBuilder.greaterThanOrEqualTo(root.get("price"), minPrice));
+                predicateList.add(criteriaBuilder.lessThanOrEqualTo(root.get("price"), maxPrice));
+            }
+            else if(minPrice != null){
+                predicateList.add(criteriaBuilder.greaterThanOrEqualTo(root.get("price"), minPrice));
+            }
+            else {
+                predicateList.add(criteriaBuilder.lessThanOrEqualTo(root.get("price"), maxPrice));
             }
 
             if(firstName != null && lastName != null) {
