@@ -127,7 +127,7 @@ public class HouseServiceImpl implements HouseService {
             else if(minPrice != null){
                 predicateList.add(criteriaBuilder.greaterThanOrEqualTo(root.get("price"), minPrice));
             }
-            else {
+            else if(maxPrice != null) {
                 predicateList.add(criteriaBuilder.lessThanOrEqualTo(root.get("price"), maxPrice));
             }
 
