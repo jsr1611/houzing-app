@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import uz.digitalone.houzingapp.dto.request.*;
 import uz.digitalone.houzingapp.dto.response.Response;
 import uz.digitalone.houzingapp.entity.*;
+import uz.digitalone.houzingapp.mapper.HouseMapper;
 import uz.digitalone.houzingapp.repository.HouseRepository;
 import uz.digitalone.houzingapp.service.*;
 
@@ -25,6 +26,7 @@ public class HouseServiceImpl implements HouseService {
     private final LocationService locationService;
     private final CategoryService categoryService;
     private final AttachmentService attachmentService;
+    private final HouseMapper houseMapper;
 
 
     @Override
@@ -59,7 +61,7 @@ public class HouseServiceImpl implements HouseService {
         house.setCountry(dto.getCountry());
         house.setZipCode(dto.getZipCode());
         AttachmentDto attachmentDto = dto.getAttachmentDto();
-        if(attachmentDto != null && attachmentDto.getImgPathList().size() > 0){
+        if(attachmentDto != null && attachmentDto.getImgPathList() != null && attachmentDto.getImgPathList().size() > 0){
             Set<Attachment> attachmentList = attachmentService.createList(attachmentDto);
             house.setAttachments(attachmentList);
         }
@@ -68,8 +70,10 @@ public class HouseServiceImpl implements HouseService {
             house.setCategory(category);
         if(house.getHouseDetails() == null)
             return ResponseEntity.status(400).body(new Response(false, "Error with house Details or status info", detailsDto));
+        house.setStatus(true);
         house = houseRepository.save(house);
-        Response response = new Response(true, "Successfully created.", house);
+        uz.digitalone.houzingapp.dto.response.HouseDto result = houseMapper.fromEntity(house);
+        Response response = new Response(true, "Successfully created.", result);
         return ResponseEntity.ok(response);
     }
 
@@ -78,22 +82,22 @@ public class HouseServiceImpl implements HouseService {
             String houseName, String firstName, String lastName, Integer room,
             Double minPrice, Double maxPrice, String address, String city, String region,
             String country, String zipCode, Pageable pageable) {
-        Response response = null;
+        Response response;
         Page<House> incomingAll = houseRepository.findAll(
                 getSpecification(houseName, firstName, lastName, room, minPrice, maxPrice, address,
                         city, region, country, zipCode),
                 pageable);
         List<House> incomingList = incomingAll.getContent();
-
+        List<uz.digitalone.houzingapp.dto.response.HouseDto> result;
         if(incomingList.size() == 0){
             response = new Response(true, "No data was found");
-            incomingList = new ArrayList<>();
+            result = new ArrayList<>();
         }
         else {
             response =new Response(true, "House list");
+            result = houseMapper.fromEntities(incomingList);
         }
-
-        response.setDataList(new ArrayList<>(incomingList));
+        response.setDataList(new ArrayList<>(result));
         response.getMap().put("size", incomingAll.getSize());
         response.getMap().put("total_elements", incomingAll.getTotalElements());
         response.getMap().put("total_pages", incomingAll.getTotalPages());
@@ -177,7 +181,14 @@ public class HouseServiceImpl implements HouseService {
 
     @Override
     public HttpEntity<?> findOneById(Long id) {
-        return null;
+        Response response;
+        House house = findById(id);
+        if(house != null){
+            response = new Response(true, "House", houseMapper.fromEntity(house));
+        }else {
+            response = new Response(false, "House with id {"+id+"} not found");
+        }
+        return ResponseEntity.status(response.getStatus()).body(response);
     }
 
     @Override
@@ -192,7 +203,7 @@ public class HouseServiceImpl implements HouseService {
 
     @Override
     public HttpEntity<?> edit(Long id, HouseDto dto) {
-        Response response = null;
+        Response response;
         House house = findById(id);
         if(house != null){
             house.setName(dto.getName());
@@ -224,7 +235,7 @@ public class HouseServiceImpl implements HouseService {
 
     @Override
     public HttpEntity<?> delete(Long id) {
-        Response response = null;
+        Response response;
         House byId = findById(id);
         if(byId != null){
             houseRepository.delete(byId);

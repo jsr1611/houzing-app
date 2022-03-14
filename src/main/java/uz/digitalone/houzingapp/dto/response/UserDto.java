@@ -3,6 +3,7 @@ package uz.digitalone.houzingapp.dto.response;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import uz.digitalone.houzingapp.dto.request.RoleCreateDto;
 import uz.digitalone.houzingapp.entity.Role;
 import java.util.Set;
 
@@ -14,7 +15,7 @@ public class UserDto {
     private String firstname;
     private String lastname;
     private String email;
-    private Set<Role> roles;
+    private Set<RoleCreateDto> roles;
     private Boolean accountNonExpired;
     private Boolean accountNonLocked;
     private Boolean credentialsNonExpired;
