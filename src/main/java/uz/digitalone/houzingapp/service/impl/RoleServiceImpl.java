@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import uz.digitalone.houzingapp.dto.request.RoleCreateDto;
 import uz.digitalone.houzingapp.dto.response.Response;
 import uz.digitalone.houzingapp.entity.Role;
+import uz.digitalone.houzingapp.mapper.RoleMapper;
 import uz.digitalone.houzingapp.repository.RoleRepository;
 import uz.digitalone.houzingapp.service.RoleService;
 
@@ -27,6 +28,7 @@ import java.util.Optional;
 public class RoleServiceImpl implements RoleService {
 
     private final RoleRepository roleRepository;
+    private final RoleMapper roleMapper;
 
 
     @Override
@@ -39,12 +41,18 @@ public class RoleServiceImpl implements RoleService {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Get Role by id
+     * @param id roleId
+     * @return Role DTO object
+     */
     @Override
     public HttpEntity<?> getOneById(Long id) {
         Response response = null;
         Role role = findById(id);
         if(role != null){
-            response = new Response(true, "Role", role);
+            RoleCreateDto dto = roleMapper.fromEntity(role);
+            response = new Response(true, "Role", dto);
         }else {
             response = new Response(false, "Role not found with id " + id);
         }

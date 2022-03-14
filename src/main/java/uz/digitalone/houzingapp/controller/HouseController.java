@@ -66,10 +66,15 @@ public class HouseController {
     }
 
     @ApiOperation("Ushbu API mavjud uy e`lonini ID bo`yicha qidirib ma`lumotlar omboridan o'chirib tashlashga mo`ljallangan.")
-    @DeleteMapping("/{id}")
-    public HttpEntity<?> delete(@PathVariable Long id){
-        return houseService.delete(id);
+    @DeleteMapping("/{house_id}")
+    public HttpEntity<?> delete(@PathVariable Long house_id){
+        return houseService.delete(house_id);
 
+    }
+
+    @GetMapping("/{house_id}")
+    public HttpEntity<?> getOneById(@PathVariable Long house_id){
+        return houseService.findOneById(house_id);
     }
 
 }
