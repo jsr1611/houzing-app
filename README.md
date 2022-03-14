@@ -9,7 +9,7 @@ This is a backend project for a real estate e-commerce website business.
 - User verification by Email
 - User login 
 - JWT token based authorization
-- CRUD operations for various tasks that have pagination features
+- CRUD operations for various tasks that have pagination features and filtration
 
 
 ### Requirements
@@ -24,7 +24,7 @@ This is a backend project for a real estate e-commerce website business.
 - PostgreSQL database (Heroku Postres)
 - Lombok
 - VCS (Git & GitHub) 
-- CI/CD with Github and Heroku
+- CI/CD with GitHub and Heroku
 - Swagger 2 for API documentation
 
 
