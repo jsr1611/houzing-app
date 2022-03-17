@@ -19,4 +19,6 @@ public interface RoleService {
     HttpEntity<?> updateRole(Long roleId, RoleCreateDto dto);
 
     HttpEntity<?> removeRoleById(Long roleId);
+
+    HttpEntity<?> findByIdMapper(Long id);
 }

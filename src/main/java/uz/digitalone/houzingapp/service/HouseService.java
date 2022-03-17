@@ -19,4 +19,6 @@ public interface HouseService {
     public HttpEntity<?> edit(Long id, HouseDto dto);
 
     public HttpEntity<?> delete(Long id);
+
+    HttpEntity<?> findByList(Long user_id);
 }

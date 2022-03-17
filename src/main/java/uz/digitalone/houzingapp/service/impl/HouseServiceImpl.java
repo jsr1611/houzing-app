@@ -10,6 +10,7 @@ import uz.digitalone.houzingapp.dto.request.*;
 import uz.digitalone.houzingapp.dto.response.Response;
 import uz.digitalone.houzingapp.entity.*;
 import uz.digitalone.houzingapp.repository.HouseRepository;
+import uz.digitalone.houzingapp.repository.UserRepository;
 import uz.digitalone.houzingapp.service.*;
 
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ public class HouseServiceImpl implements HouseService {
     private final LocationService locationService;
     private final CategoryService categoryService;
     private final AttachmentService attachmentService;
+    private final UserRepository userRepository;
 
 
     @Override
@@ -112,5 +114,22 @@ public class HouseServiceImpl implements HouseService {
     @Override
     public HttpEntity<?> delete(Long id) {
         return null;
+    }
+
+    @Override
+    public HttpEntity<?> findByList(Long user_id) {
+        User user = userRepository.findById(user_id).orElseThrow(()
+                -> new RuntimeException("User id not found"));
+
+        List<House> houseList = houseRepository.findByUser(user).orElseThrow(()
+                -> new RuntimeException("House not found"));
+
+        Response response ;
+        if (houseList.size() > 0) {
+            response = new Response(true, "Houses for user Id", houseList);
+        }else
+            response = new Response(true, "User's houses not found");
+
+        return ResponseEntity.status(response.isSuccess() ? 200:401).body(response);
     }
 }

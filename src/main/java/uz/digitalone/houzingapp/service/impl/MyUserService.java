@@ -38,7 +38,6 @@ public class MyUserService implements UserDetailsService {
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
 
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("User not found."));
@@ -113,7 +112,8 @@ public class MyUserService implements UserDetailsService {
     }
 
     public HttpEntity<?> login(LoginDto dto) {
-        Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
+        Authentication authenticate =
+                authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
         User principal = (User) authenticate.getPrincipal();
         String generatedToken = jwtProvider.generateToken(principal.getEmail(), principal.getRoles());
         Response response = new Response(true, "Token", generatedToken);

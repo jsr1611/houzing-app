@@ -40,4 +40,10 @@ public class HouseController {
 
     }
 
+    @ApiOperation(value = "Ushbu API user id ga tegishli house lar Listni qayataradi")
+    @GetMapping("/{user_id}")
+    public HttpEntity<?> userIdForListHouse(@PathVariable Long user_id){
+        return houseService.findByList(user_id);
+    }
+
 }

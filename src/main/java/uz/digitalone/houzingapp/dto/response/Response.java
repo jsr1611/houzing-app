@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +18,7 @@ public class Response {
     private boolean success;
     private String message;
     private Object data;
-    private List<Object> dataList;
+    private List dataList;
     private Map<Object, Object> map = new HashMap<>();
     private HttpStatus status;
 
@@ -33,7 +34,7 @@ public class Response {
         this.success = success;
         this.message = message;
         if(data instanceof List){
-            this.dataList = (List) data;
+            this.dataList = Collections.singletonList(data);
         }else {
             this.data = data;
         }
