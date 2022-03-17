@@ -2,10 +2,14 @@ package uz.digitalone.houzingapp.service;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Service;
 import springfox.documentation.annotations.ApiIgnore;
 import uz.digitalone.houzingapp.dto.request.HouseDto;
 import uz.digitalone.houzingapp.entity.House;
 
+@Service
 public interface HouseService {
 
     public HttpEntity<?> create(HouseDto dto);
@@ -21,4 +25,6 @@ public interface HouseService {
     public HttpEntity<?> delete(Long id);
 
     HttpEntity<?> findByList(Long user_id);
+
+    HttpEntity<?> findByAuth(Authentication authentication);
 }

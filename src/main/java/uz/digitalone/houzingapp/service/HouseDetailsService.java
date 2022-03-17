@@ -1,9 +1,11 @@
 package uz.digitalone.houzingapp.service;
 
 import org.springframework.http.HttpEntity;
+import org.springframework.stereotype.Service;
 import uz.digitalone.houzingapp.dto.request.HouseDetailsDto;
 import uz.digitalone.houzingapp.entity.HouseDetails;
 
+@Service
 public interface HouseDetailsService {
     /**
      * HouseDetails save

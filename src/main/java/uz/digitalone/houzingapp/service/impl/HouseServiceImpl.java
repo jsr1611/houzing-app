@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import uz.digitalone.houzingapp.dto.request.*;
 import uz.digitalone.houzingapp.dto.response.Response;
@@ -13,10 +15,8 @@ import uz.digitalone.houzingapp.repository.HouseRepository;
 import uz.digitalone.houzingapp.repository.UserRepository;
 import uz.digitalone.houzingapp.service.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @Service
@@ -128,8 +128,39 @@ public class HouseServiceImpl implements HouseService {
         if (houseList.size() > 0) {
             response = new Response(true, "Houses for user Id", houseList);
         }else
-            response = new Response(true, "User's houses not found");
+            response = new Response(false, "User's houses not found");
 
         return ResponseEntity.status(response.isSuccess() ? 200:401).body(response);
+    }
+
+    @Override
+    public HttpEntity<?> findByAuth(Authentication authentication) {
+        if (authentication != null) {
+            User user;
+            Response response = new Response();
+            if (authentication.getPrincipal() instanceof User) {
+                user = (User) authentication.getPrincipal();
+                Optional<List<House>> byUser = houseRepository.findByUser(user);
+                Set<House> houseSet = new HashSet<>();
+                if (byUser.isPresent()) {
+                    for (House house : byUser.get()) {
+                        if (house != null)
+                            houseSet.add(house);
+                    }
+                }
+                assert false;
+                if (houseSet.size() > 0) {
+                    response.setSuccess(true);
+                    response.setMessage("Houses for user Id");
+                    response.setDataList(Collections.singletonList(houseSet));
+                } else {
+                    response.setSuccess(false);
+                    response.setMessage("User's houses not found");
+                }
+            }
+            assert false;
+            return ResponseEntity.status(response.isSuccess() ? 200:401).body(response);
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token Expired!");
     }
 }

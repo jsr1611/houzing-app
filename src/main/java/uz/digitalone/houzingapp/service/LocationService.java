@@ -1,9 +1,11 @@
 package uz.digitalone.houzingapp.service;
 
 import org.springframework.http.HttpEntity;
+import org.springframework.stereotype.Service;
 import uz.digitalone.houzingapp.dto.request.LocationDto;
 import uz.digitalone.houzingapp.entity.Location;
 
+@Service
 public interface LocationService {
 
     /**

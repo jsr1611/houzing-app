@@ -4,11 +4,18 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 import uz.digitalone.houzingapp.dto.request.HouseDto;
+import uz.digitalone.houzingapp.entity.User;
 import uz.digitalone.houzingapp.service.HouseService;
 import uz.digitalone.houzingapp.utils.ApiPageable;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,6 +51,11 @@ public class HouseController {
     @GetMapping("/{user_id}")
     public HttpEntity<?> userIdForListHouse(@PathVariable Long user_id){
         return houseService.findByList(user_id);
+    }
+
+    @GetMapping("/login/home")
+    public HttpEntity<?> getLoggedUserInfo(@ApiIgnore Authentication authentication) {
+        return houseService.findByAuth(authentication);
     }
 
 }

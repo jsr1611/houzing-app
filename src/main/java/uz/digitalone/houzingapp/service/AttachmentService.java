@@ -9,12 +9,13 @@ package uz.digitalone.houzingapp.service;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
+import org.springframework.stereotype.Service;
 import uz.digitalone.houzingapp.dto.request.AttachmentDto;
 import uz.digitalone.houzingapp.entity.Attachment;
 
-import java.util.List;
 import java.util.Set;
 
+@Service
 public interface AttachmentService {
     HttpEntity<?> save(AttachmentDto dto);
 
