@@ -23,5 +23,5 @@ public interface HouseService {
 
     public HttpEntity<?> delete(Long id);
 
-    HttpEntity<?> findByList(Long user_id);
+    HttpEntity<?> findMyHouses(Pageable pageable);
 }

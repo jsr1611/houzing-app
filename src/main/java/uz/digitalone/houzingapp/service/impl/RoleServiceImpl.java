@@ -13,7 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import uz.digitalone.houzingapp.dto.request.RoleCreateDto;
+import uz.digitalone.houzingapp.dto.request.RoleDto;
 import uz.digitalone.houzingapp.dto.response.Response;
 import uz.digitalone.houzingapp.entity.Role;
 import uz.digitalone.houzingapp.mapper.RoleMapper;
@@ -32,12 +32,12 @@ public class RoleServiceImpl implements RoleService {
 
 
     @Override
-    public HttpEntity<?> saveRole(RoleCreateDto dto) {
+    public HttpEntity<?> saveRole(RoleDto dto) {
         Role role = new Role(
                 dto.getName()
         );
         role =  roleRepository.save(role);
-        Response response = new Response(true, "Successfully created.", role);
+        Response response = new Response(true, "Successfully created.", roleMapper.fromEntity(role));
         return ResponseEntity.ok(response);
     }
 
@@ -51,8 +51,7 @@ public class RoleServiceImpl implements RoleService {
         Response response = null;
         Role role = findById(id);
         if(role != null){
-            RoleCreateDto dto = roleMapper.fromEntity(role);
-            response = new Response(true, "Role", dto);
+            response = new Response(true, "Role", roleMapper.fromEntity(role));
         }else {
             response = new Response(false, "Role not found with id " + id);
         }
@@ -64,7 +63,10 @@ public class RoleServiceImpl implements RoleService {
     public HttpEntity<?> findAll(Pageable pageable) {
         Page<Role> roles = roleRepository.findAll(pageable);
         List<Role> roleList = roles.getContent();
-        Response response = new Response(true, "Role List", roleList);
+        List<RoleDto> result = null;
+        if(roleList != null && roleList.size() > 0)
+            result = roleMapper.fromEntities(roleList);
+        Response response = new Response(true, "Role List", result);
         return ResponseEntity.ok(response);
     }
 
@@ -77,7 +79,7 @@ public class RoleServiceImpl implements RoleService {
 
 
     @Override
-    public HttpEntity<?> updateRole(Long roleId, RoleCreateDto dto) {
+    public HttpEntity<?> updateRole(Long roleId, RoleDto dto) {
         Optional<Role> roleOptional = roleRepository.findById(roleId);
         Response response = null;
         if (roleOptional.isPresent()) {
@@ -86,7 +88,7 @@ public class RoleServiceImpl implements RoleService {
                 role.setName(dto.getName());
             }
             role = roleRepository.save(role);
-            response = new Response(true, "Successfully updated.", role);
+            response = new Response(true, "Successfully updated.", roleMapper.fromEntity(role));
         }
         else {
             response = new Response(false, "Role not found with id" + roleId);
@@ -107,12 +109,5 @@ public class RoleServiceImpl implements RoleService {
         }
 
         return ResponseEntity.status(response.getStatus()).body(response);
-    }
-
-    @Override
-    public HttpEntity<?> findByIdMapper(Long id) {
-        Role role = roleRepository.findById(id).orElseThrow(() -> new RuntimeException("Id not found"));
-        RoleCreateDto dto = roleMapper.fromEntity(role);
-        return ResponseEntity.status(200).body( new Response(true, "Role by id" + id , dto));
     }
 }
