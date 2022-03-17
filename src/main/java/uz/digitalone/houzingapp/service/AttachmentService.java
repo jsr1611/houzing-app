@@ -26,7 +26,9 @@ public interface AttachmentService {
 
     Attachment findById(Long id);
 
-    HttpEntity<?> edit(Long id, AttachmentDto dto);
+    HttpEntity<?> edit(Long id, String imgPath);
 
     HttpEntity<?> delete(Long id);
+
+    Set<Attachment> update(Set<Attachment> attachments, AttachmentDto attachmentDto);
 }

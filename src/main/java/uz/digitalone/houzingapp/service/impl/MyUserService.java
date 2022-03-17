@@ -13,6 +13,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.Errors;
+import org.springframework.validation.ObjectError;
 import uz.digitalone.houzingapp.dto.request.LoginDto;
 import uz.digitalone.houzingapp.dto.request.RegUserDto;
 import uz.digitalone.houzingapp.dto.response.Response;
@@ -22,10 +24,7 @@ import uz.digitalone.houzingapp.repository.RoleRepository;
 import uz.digitalone.houzingapp.repository.UserRepository;
 import uz.digitalone.houzingapp.security.JwtProvider;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +36,7 @@ public class MyUserService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
+    public static User currentUser;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -115,10 +115,29 @@ public class MyUserService implements UserDetailsService {
         Authentication authenticate =
                 authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
         User principal = (User) authenticate.getPrincipal();
+        currentUser = principal;
         String generatedToken = jwtProvider.generateToken(principal.getEmail(), principal.getRoles());
         Response response = new Response(true, "Token", generatedToken);
 
         // TODO: 2/25/22 check if user login details match, if not handle it.
         return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    /**
+     * Return error code and default message set for the validation annotation
+     * @param errors errors
+     * @return map of error code as key, default message as value, e.g. :['Email': 'invalid email address']
+     */
+    public Map<String, String> getErrors(Errors errors) {
+        Map<String, String> errorList = new HashMap<>();
+        for (ObjectError error : errors.getAllErrors()) {
+
+            String code = error.getCode();
+            if(error.getCodes()!= null && error.getCodes().length > 0){
+                code = error.getCodes()[0];
+            }
+            errorList.put(code, error.getDefaultMessage());
+        }
+        return errorList;
     }
 }

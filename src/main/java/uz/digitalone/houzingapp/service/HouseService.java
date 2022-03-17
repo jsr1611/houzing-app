@@ -10,7 +10,10 @@ public interface HouseService {
 
     public HttpEntity<?> create(HouseDto dto);
 
-    public HttpEntity<?> findAll(@ApiIgnore Pageable pageable);
+    public HttpEntity<?> findAll(
+            String houseName, String firstName, String lastName, Integer room,
+            Double minPrice, Double maxPrice, String address, String city,
+            String region, String country, String zipCode, @ApiIgnore Pageable pageable);
 
     public HttpEntity<?> findOneById(Long id);
 

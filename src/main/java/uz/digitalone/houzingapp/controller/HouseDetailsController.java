@@ -10,6 +10,7 @@ import uz.digitalone.houzingapp.service.HouseDetailsService;
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/house_details")
 public class HouseDetailsController {
+
     private final HouseDetailsService houseDetailsService;
 
 
@@ -25,7 +26,7 @@ public class HouseDetailsController {
 
     @GetMapping("/{id}")
     public HttpEntity<?> findById(@PathVariable("id") Long id) {
-        return houseDetailsService.findById(id);
+        return houseDetailsService.findOneById(id);
     }
 
     @PutMapping("/{id}")

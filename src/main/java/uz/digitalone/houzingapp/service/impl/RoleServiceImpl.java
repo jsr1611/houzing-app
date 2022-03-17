@@ -41,12 +41,18 @@ public class RoleServiceImpl implements RoleService {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Get Role by id
+     * @param id roleId
+     * @return Role DTO object
+     */
     @Override
     public HttpEntity<?> getOneById(Long id) {
         Response response = null;
         Role role = findById(id);
         if(role != null){
-            response = new Response(true, "Role", role);
+            RoleCreateDto dto = roleMapper.fromEntity(role);
+            response = new Response(true, "Role", dto);
         }else {
             response = new Response(false, "Role not found with id " + id);
         }

@@ -40,53 +40,54 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public HttpEntity<?> edit(LocationDto dto, Long id) {
-        Location location = optionalLocation(id);
-        Response response = new Response();
+        Response response = null;
+        Location location = updateById(id, dto);
         if (location == null){
-            response.setSuccess(false);
-            response.setMessage("Location not found with id " + id);
+            response = new Response(false,"Location not found with id " + id);
         }
         else {
+            response = new Response(true, "Location was successfully saved", location);
+        }
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @Override
+    public Location updateById(Long id, LocationDto dto) {
+        Location location = findById(id);
+        if(location != null) {
             if (!location.getLatitude().equals(dto.getLatitude()))
                 location.setLatitude(dto.getLatitude());
 
             if (!location.getLongitude().equals(dto.getLongitude()))
                 location.setLongitude(dto.getLongitude());
-
-            Location save = locationRepository.save(location);
-            response.setMessage("Location was successfully saved");
-            response.setSuccess(true);
-            response.setData(save);
+        return locationRepository.save(location);
         }
-        return ResponseEntity.status(response.getStatus()).body(response);
+        else
+            return null;
     }
 
     @Override
     public HttpEntity<?> delete(Long id) {
         Location location = optionalLocation(id);
-        Response response = new Response();
+        Response response = null;
         if (location == null) {
-            response.setMessage("Location not found with id " + id);
-            response.setSuccess(false);
+            response = new Response(false, "Location not found with id " + id);
         }
         else {
             locationRepository.delete(location);
-            response.setMessage("Location deleted successfully.");
-            response.setSuccess(true);
+            response = new Response(true, "Location deleted successfully.");
         }
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 
     @Override
-    public HttpEntity<?> findById(Long id) {
-        Response response = new Response();
+    public HttpEntity<?> findOneById(Long id) {
+        Response response = null;
         Location location = optionalLocation(id);
         if (location == null){
-            response.setMessage("Location found with id " + id);
-            response.setSuccess(false);
+            response = new Response(false, "Location found with id " + id);
         } else {
-            response.setMessage("Location information ");
-            response.setSuccess(true);
+            response = new Response(true, "Location information", location);
         }
         return ResponseEntity.status(response.getStatus()).body(response);
     }
@@ -102,6 +103,15 @@ public class LocationServiceImpl implements LocationService {
             return locationRepository.save(new Location(dto.getLongitude(), dto.getLatitude()));
         }
         return null;
+    }
+
+    @Override
+    public Location findOne(LocationDto locationDto) {
+        return locationRepository.findFirstByLatitudeAndLongitude(locationDto.getLatitude(), locationDto.getLongitude());
+    }
+    public Location findById(Long id){
+        Optional<Location> optionalLocation = locationRepository.findById(id);
+        return optionalLocation.orElse(null);
     }
 }
 

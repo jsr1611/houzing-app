@@ -12,7 +12,6 @@ import java.util.Map;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 public class Response {
 
     private boolean success;

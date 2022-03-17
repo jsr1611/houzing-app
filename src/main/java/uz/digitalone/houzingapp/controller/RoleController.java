@@ -22,6 +22,13 @@ import uz.digitalone.houzingapp.service.RoleService;
 public class RoleController {
     private final RoleService roleService;
 
+    @ApiOperation(value = "Make GET request to get Role By Id")
+    @GetMapping("/{roleId}")
+    public HttpEntity<?> getById(@PathVariable Long roleId){
+        return roleService.getOneById(roleId);
+    }
+    private final RoleService roleService;
+
     @ApiOperation(value = "Make GET operation request to get By Role Id")
     @GetMapping("/{id}")
     public HttpEntity<?> findById(@PathVariable Long id){

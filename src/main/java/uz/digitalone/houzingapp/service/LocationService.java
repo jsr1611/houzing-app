@@ -28,7 +28,7 @@ public interface LocationService {
      * Get Location Find By Id
      * @return location || Id not found
      */
-    HttpEntity<?> findById(Long id);
+    HttpEntity<?> findOneById(Long id);
 
     /**
      * Get All Location
@@ -38,4 +38,10 @@ public interface LocationService {
     HttpEntity<?> findAll();
 
     Location create(LocationDto locationDto);
+
+    Location findOne(LocationDto locationDto);
+
+    Location updateById(Long id, LocationDto locationDto);
+
+    Location findById(Long id);
 }
