@@ -20,6 +20,7 @@ import uz.digitalone.houzingapp.dto.request.RegUserDto;
 import uz.digitalone.houzingapp.dto.response.Response;
 import uz.digitalone.houzingapp.entity.Role;
 import uz.digitalone.houzingapp.entity.User;
+import uz.digitalone.houzingapp.mapper.UserMapper;
 import uz.digitalone.houzingapp.repository.RoleRepository;
 import uz.digitalone.houzingapp.repository.UserRepository;
 import uz.digitalone.houzingapp.security.JwtProvider;
@@ -37,6 +38,7 @@ public class MyUserService implements UserDetailsService {
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
     public static User currentUser;
+    private final UserMapper userMapper;
 
 
     @Override
@@ -46,12 +48,11 @@ public class MyUserService implements UserDetailsService {
     }
 
 
-    public void sendVerificationEmail(){
+    public void sendVerificationEmail(String sender, String receiver){
         Integer code = generateCode();
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("jimmy.sweetk@gmail.com");
-        String toEmail = "gm.khamza@gmail.com";
-        message.setTo(toEmail);
+        message.setFrom(sender);
+        message.setTo(receiver);
         message.setSubject("Confirmation Code");
         message.setText(code.toString());
         javaMailSender.send(message);
@@ -85,7 +86,8 @@ public class MyUserService implements UserDetailsService {
         }
         user.setRoles(roles);
         User savedUser = userRepository.save(user);
-        Response response = new Response(true, "Successfully registered",savedUser.getEmail());
+        sendVerificationEmail("no-reply@uz-digitalone.com", user.getEmail());
+        Response response = new Response(true, "Successfully registered. Email verification code has been sent to your email address.", userMapper.fromEntity(user));
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 
