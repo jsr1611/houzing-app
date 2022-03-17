@@ -4,25 +4,21 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uz.digitalone.houzingapp.dto.request.LoginDto;
 import uz.digitalone.houzingapp.dto.request.RegUserDto;
-import uz.digitalone.houzingapp.dto.request.RoleCreateDto;
-import uz.digitalone.houzingapp.dto.response.Response;
+import uz.digitalone.houzingapp.dto.request.RoleDto;
 import uz.digitalone.houzingapp.service.RoleService;
 import uz.digitalone.houzingapp.service.impl.MyUserService;
 
 import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/public/")
+@RequestMapping("/api/public")
 public class PublicController {
 
     private final MyUserService userService;
@@ -46,7 +42,7 @@ public class PublicController {
 
 
     @PostMapping("/roles")
-    public HttpEntity<?> createRole(@Valid @RequestBody RoleCreateDto dto, Errors errors){
+    public HttpEntity<?> createRole(@Valid @RequestBody RoleDto dto, Errors errors){
         if (errors.hasErrors()) {
             return ResponseEntity.status(400).body(userService.getErrors(errors));
         }

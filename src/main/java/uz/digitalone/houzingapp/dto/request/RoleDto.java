@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RoleCreateDto {
+public class RoleDto {
 
     @NotNull
     @NotBlank

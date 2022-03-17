@@ -27,5 +27,4 @@ public class RoleController {
     public HttpEntity<?> getById(@PathVariable Long roleId){
         return roleService.getOneById(roleId);
     }
-
 }
