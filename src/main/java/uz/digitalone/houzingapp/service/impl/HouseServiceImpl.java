@@ -91,13 +91,12 @@ public class HouseServiceImpl implements HouseService {
         List<uz.digitalone.houzingapp.dto.response.HouseDto> result;
         if(incomingList.size() == 0){
             response = new Response(true, "No data was found");
-            result = new ArrayList<>();
         }
         else {
-            response =new Response(true, "House list");
             result = houseMapper.fromEntities(incomingList);
+            response = new Response(true, "House list", result);
+
         }
-        response.setDataList(new ArrayList<>(result));
         response.getMap().put("size", incomingAll.getSize());
         response.getMap().put("total_elements", incomingAll.getTotalElements());
         response.getMap().put("total_pages", incomingAll.getTotalPages());
@@ -245,5 +244,28 @@ public class HouseServiceImpl implements HouseService {
             response = new Response(false, "House with id {"+id+"} does not exist.");
         }
         return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @Override
+    public HttpEntity<?> findMyHouses(Pageable pageable) {
+        User user = MyUserService.currentUser;
+        Response response = null;
+        List<uz.digitalone.houzingapp.dto.response.HouseDto> result = null;
+        if (user != null){
+            Page<House> houseListPage = houseRepository.findAllByUser(user, pageable);
+            List<House> houseList = houseListPage.getContent();
+            if(houseList.size() > 0){
+                result = houseMapper.fromEntities(houseList);
+                response = new Response(true, "Houses List", result);
+                response.getMap().put("size", houseListPage.getSize());
+                response.getMap().put("total_elements", houseListPage.getTotalElements());
+                response.getMap().put("total_pages", houseListPage.getTotalPages());
+            }
+            else
+                response = new Response(true, "No houses found.");
+        }else {
+            response = new Response(false, "Unauthorized access. Please, login first and they try again.");
+        }
+        return ResponseEntity.status(response.isSuccess() ? 200:401).body(response);
     }
 }

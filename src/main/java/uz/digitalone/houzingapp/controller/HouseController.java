@@ -1,6 +1,5 @@
 package uz.digitalone.houzingapp.controller;
 
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -75,6 +74,13 @@ public class HouseController {
     @GetMapping("/{house_id}")
     public HttpEntity<?> getOneById(@PathVariable Long house_id){
         return houseService.findOneById(house_id);
+    }
+
+    @ApiOperation(value = "Ushbu API sistemaga login qilgan userga tegishli house larni qayataradi")
+    @ApiPageable
+    @GetMapping("/me")
+    public HttpEntity<?> getMyHouseList(@ApiIgnore Pageable pageable){
+        return houseService.findMyHouses(pageable);
     }
 
 }
