@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.aspectj.lang.annotation.RequiredTypes;
 import org.hibernate.annotations.Type;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestParam;
 import uz.digitalone.houzingapp.entity.Attachment;
 

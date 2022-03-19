@@ -243,7 +243,7 @@ public class HouseServiceImpl implements HouseService {
     public HttpEntity<?> edit(Long id, HouseDto dto) {
         Response response;
         House house = findById(id);
-        if(house != null){
+        if(house != null && dto != null){
             if(dto.getName() != null && !dto.getName().equals(house.getName()))
                 house.setName(dto.getName());
 

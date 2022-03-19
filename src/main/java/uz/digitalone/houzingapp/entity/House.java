@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.DynamicUpdate;
 import uz.digitalone.houzingapp.entity.template.AbcEntity;
 
 import javax.persistence.*;
@@ -16,6 +17,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "houses")
+@DynamicUpdate
 public class House extends AbcEntity {
     private String name;
 

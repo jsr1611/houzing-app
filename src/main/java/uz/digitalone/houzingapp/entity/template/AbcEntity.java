@@ -9,10 +9,7 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
 
@@ -26,6 +23,9 @@ public abstract class AbcEntity {
     private Long id;
 
     @CreationTimestamp
+    @Column(name = "created_at",
+            nullable = false,
+            updatable = false)
     private Timestamp createdAt;
 
     @LastModifiedDate
