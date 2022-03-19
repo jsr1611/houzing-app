@@ -106,10 +106,13 @@ public class AttachmentServiceImpl implements AttachmentService {
     public Set<Attachment> update(Set<Attachment> attachments, AttachmentDto attachmentDto) {
         Set<Attachment> updateAttachments = null;
         // TODO: 3/12/22 Logic should be updated, because this is inefficient.
-        if(attachments != null && attachments.size()>0)
-            attachmentRepository.deleteAll(attachments);
-        if(attachmentDto.getImgPathList()!=null && attachmentDto.getImgPathList().size()>0)
-            updateAttachments = createList(attachmentDto);
+        try {
+            if(attachments != null && attachments.size()>0)
+                attachmentRepository.deleteAll(attachments);
+            if(attachmentDto != null && attachmentDto.getImgPathList() != null && attachmentDto.getImgPathList().size()>0)
+                updateAttachments = createList(attachmentDto);
+        }catch (Exception ignored){
+        }
         return updateAttachments;
     }
 }

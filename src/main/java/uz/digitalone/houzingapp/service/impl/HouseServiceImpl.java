@@ -274,10 +274,13 @@ public class HouseServiceImpl implements HouseService {
             Location location = locationService.updateById(house.getLocation().getId(), dto.getLocationDto());
             house.setLocation(location);
             Set<Attachment> attachments = attachmentService.update(house.getAttachments(), dto.getAttachmentDto());
-            house.setAttachments(attachments);
-            Category category = categoryService.findById(dto.getCategoryId());
-            if(!house.getCategory().equals(category))
-                house.setCategory(category);
+            if(attachments != null)
+                house.setAttachments(attachments);
+            if(dto.getCategoryId() != null){
+                Category category = categoryService.findById(dto.getCategoryId());
+                if(!house.getCategory().equals(category))
+                    house.setCategory(category);
+            }
             house = houseRepository.save(house);
             response = new Response(true, "Successfully updated.", houseMapper.fromEntity(house));
         }

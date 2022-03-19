@@ -74,7 +74,7 @@ public class HouseDetailsServiceImpl implements HouseDetailsService {
     @Override
     public HouseDetails updateById(Long id, HouseDetailsDto dto) {
         HouseDetails houseDetails = findById(id);
-        if(houseDetails != null) {
+        if(houseDetails != null && dto != null) {
             if (dto.getRoom() != null && !dto.getRoom().equals(houseDetails.getRoom())) {
                 houseDetails.setRoom(dto.getRoom());
             }

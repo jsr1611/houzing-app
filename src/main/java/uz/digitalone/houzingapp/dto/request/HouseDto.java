@@ -3,7 +3,10 @@ package uz.digitalone.houzingapp.dto.request;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.aspectj.lang.annotation.RequiredTypes;
+import org.hibernate.annotations.Type;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.RequestParam;
 import uz.digitalone.houzingapp.entity.Attachment;
 
 import javax.validation.Valid;
@@ -17,9 +20,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class HouseDto {
+
     @NotNull
     @NotBlank
-    @Size(min = 3, max = 255)
     private String name;
     private String description;
     @Valid
@@ -32,7 +35,6 @@ public class HouseDto {
 
     @NotNull
     @NotBlank
-    @Size(min = 5, max = 100)
     private String address;
     private String city;
     private String region;
