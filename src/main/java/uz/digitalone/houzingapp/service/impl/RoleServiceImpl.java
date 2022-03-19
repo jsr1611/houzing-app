@@ -80,10 +80,9 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public HttpEntity<?> updateRole(Long roleId, RoleDto dto) {
-        Optional<Role> roleOptional = roleRepository.findById(roleId);
+        Role role = findById(roleId);
         Response response = null;
-        if (roleOptional.isPresent()) {
-            Role role = roleOptional.get();
+        if (role != null) {
             if (!role.getName().equals(dto.getName())) {
                 role.setName(dto.getName());
             }

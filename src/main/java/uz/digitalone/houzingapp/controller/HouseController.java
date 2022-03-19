@@ -14,6 +14,7 @@ import uz.digitalone.houzingapp.service.impl.MyUserService;
 import uz.digitalone.houzingapp.utils.ApiPageable;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 
 @RestController
 @RequiredArgsConstructor
@@ -79,8 +80,11 @@ public class HouseController {
     @ApiOperation(value = "Ushbu API sistemaga login qilgan userga tegishli house larni qayataradi")
     @ApiPageable
     @GetMapping("/me")
-    public HttpEntity<?> getMyHouseList(@ApiIgnore Pageable pageable){
-        return houseService.findMyHouses(pageable);
+    public HttpEntity<?> getMyHouseList(@RequestParam(value = "house_name", required = false) String houseName,
+                                        @RequestParam(value = "status", required = false) Boolean status,
+                                        @RequestParam(value = "created_at", required = false) LocalDateTime createdAt,
+                                        @ApiIgnore Pageable pageable){
+        return houseService.findMyHouses(houseName, status, createdAt, pageable);
     }
 
 }

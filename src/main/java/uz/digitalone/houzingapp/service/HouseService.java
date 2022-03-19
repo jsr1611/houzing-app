@@ -6,6 +6,8 @@ import springfox.documentation.annotations.ApiIgnore;
 import uz.digitalone.houzingapp.dto.request.HouseDto;
 import uz.digitalone.houzingapp.entity.House;
 
+import java.time.LocalDateTime;
+
 public interface HouseService {
 
     public HttpEntity<?> create(HouseDto dto);
@@ -23,5 +25,5 @@ public interface HouseService {
 
     public HttpEntity<?> delete(Long id);
 
-    HttpEntity<?> findMyHouses(Pageable pageable);
+    HttpEntity<?> findMyHouses(String houseName, Boolean status, LocalDateTime createdAt, Pageable pageable);
 }

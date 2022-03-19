@@ -3,6 +3,7 @@ package uz.digitalone.houzingapp.dto.request;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import uz.digitalone.houzingapp.entity.Attachment;
 
 import javax.validation.Valid;
@@ -40,4 +41,5 @@ public class HouseDto {
     @Valid
     private AttachmentDto attachmentDto;
     private Long categoryId;
+    private Boolean status;
 }
