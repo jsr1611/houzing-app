@@ -289,6 +289,7 @@ public class HouseServiceImpl implements HouseService {
             if(dto.getAttachments() != null){
                 Set<Attachment> attachments = attachmentService.update(house.getAttachments(), dto.getAttachments());
                 if(attachments != null)
+                    house.getAttachments().clear();
                     house.setAttachments(attachments);
             }
             if(dto.getCategoryId() != null){
