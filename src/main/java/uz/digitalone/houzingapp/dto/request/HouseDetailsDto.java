@@ -17,6 +17,6 @@ public class HouseDetailsDto {
     @Range(min = 1, max = 999)
     private Integer room;
     private Integer bath;
-    private boolean hasGarage;
+    private Integer garage;
     private Double area;
 }

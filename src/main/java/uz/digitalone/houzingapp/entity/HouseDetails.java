@@ -22,8 +22,8 @@ public class HouseDetails extends AbcEntity {
     @Column(nullable = false)
     private Integer bath;
 
-    @Column(nullable = false)
-    private boolean hasGarage;
+    @Column(nullable = true)
+    private Integer garage;
 
     @Column(nullable = false)
     private Double area;

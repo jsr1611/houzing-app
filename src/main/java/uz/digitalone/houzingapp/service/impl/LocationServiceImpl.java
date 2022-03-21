@@ -54,7 +54,7 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public Location updateById(Long id, LocationDto dto) {
         Location location = findById(id);
-        if(location != null) {
+        if(location != null && dto != null) {
             if (!location.getLatitude().equals(dto.getLatitude()))
                 location.setLatitude(dto.getLatitude());
 

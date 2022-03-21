@@ -1,6 +1,7 @@
 package uz.digitalone.houzingapp.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -10,12 +11,15 @@ import org.springframework.stereotype.Service;
 import uz.digitalone.houzingapp.dto.request.*;
 import uz.digitalone.houzingapp.dto.response.Response;
 import uz.digitalone.houzingapp.entity.*;
+import uz.digitalone.houzingapp.mapper.AttachmentMapper;
 import uz.digitalone.houzingapp.mapper.HouseMapper;
 import uz.digitalone.houzingapp.repository.HouseRepository;
 import uz.digitalone.houzingapp.service.*;
 
 import javax.persistence.criteria.Predicate;
+import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -27,6 +31,7 @@ public class HouseServiceImpl implements HouseService {
     private final CategoryService categoryService;
     private final AttachmentService attachmentService;
     private final HouseMapper houseMapper;
+    private final AttachmentMapper attachmentMapper;
 
 
     @Override
@@ -37,7 +42,7 @@ public class HouseServiceImpl implements HouseService {
         house.setName(dto.getName());
         house.setDescription(dto.getDescription());
 
-        HouseDetailsDto detailsDto = dto.getHouseDetailsDto();
+        HouseDetailsDto detailsDto = dto.getHouseDetails();
         if(detailsDto != null){
             HouseDetails details = houseDetailsService.create(detailsDto);
             if(details != null && details.getRoom()>0)
@@ -45,23 +50,26 @@ public class HouseServiceImpl implements HouseService {
         }
         house.setPrice(dto.getPrice());
         house.setSalePrice(dto.getSalePrice());
-        LocationDto locationDto = dto.getLocationDto();
+        LocationDto locationDto = dto.getLocations();
         if(locationDto != null && locationDto.getLongitude() != 0 && locationDto.getLatitude() != 0){
-            Location location = locationService.findOne(dto.getLocationDto());
+            Location location = locationService.findOne(dto.getLocations());
             if(location != null)
                 house.setLocation(location);
-            else
+            else {
                 location = locationService.create(locationDto);
-                if(location != null)
+                if (location != null)
                     house.setLocation(location);
+            }
         }
         house.setAddress(dto.getAddress());
         house.setCity(dto.getCity());
         house.setRegion(dto.getRegion());
         house.setCountry(dto.getCountry());
         house.setZipCode(dto.getZipCode());
-        AttachmentDto attachmentDto = dto.getAttachmentDto();
-        if(attachmentDto != null && attachmentDto.getImgPathList() != null && attachmentDto.getImgPathList().size() > 0){
+
+
+        Set<AttachmentDto> attachmentDto = dto.getAttachments();
+        if(attachmentDto != null && attachmentDto.size() > 0){
             Set<Attachment> attachmentList = attachmentService.createList(attachmentDto);
             house.setAttachments(attachmentList);
         }
@@ -95,7 +103,6 @@ public class HouseServiceImpl implements HouseService {
         else {
             result = houseMapper.fromEntities(incomingList);
             response = new Response(true, "House list", result);
-
         }
         response.getMap().put("size", incomingAll.getSize());
         response.getMap().put("total_elements", incomingAll.getTotalElements());
@@ -154,6 +161,17 @@ public class HouseServiceImpl implements HouseService {
                     }
                 }
             }
+            else {
+                String name = "";
+                if(firstName != null){
+                    name = firstName.toLowerCase();
+                    predicateList.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("user").get("firstname")), "%"+name+"%"));
+                }
+                if(lastName != null){
+                    name = lastName.toLowerCase();
+                    predicateList.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("user").get("lastname")), "%"+name+"%"));
+                }
+            }
 
             if(room != null){
                 predicateList.add(criteriaBuilder.equal(root.get("houseDetails").get("room"), room));
@@ -172,6 +190,33 @@ public class HouseServiceImpl implements HouseService {
             }
             if(zipCode != null){
                 predicateList.add(criteriaBuilder.like(root.get("zipCode"), zipCode+"%"));
+            }
+
+            return criteriaBuilder.and(predicateList.toArray(new Predicate[0]));
+        };
+    }
+
+    private Specification<House> getSpecificationForMe(
+            final String houseName,
+            final Boolean status,
+            final LocalDateTime createdAt,
+            final User user
+            ) {
+
+        return (root, criteriaQuery, criteriaBuilder) -> {
+
+            List<Predicate> predicateList = new ArrayList<>();
+
+            predicateList.add(criteriaBuilder.equal(root.get("user"), user));
+
+            if(houseName != null){
+                predicateList.add(criteriaBuilder.like(root.get("name"),"%"+ houseName + "%"));
+            }
+            if(status != null){
+                predicateList.add(criteriaBuilder.equal(root.get("status"), status));
+            }
+            if(createdAt != null){
+                predicateList.add(criteriaBuilder.equal(root.get("createdAt"), createdAt));
             }
 
             return criteriaBuilder.and(predicateList.toArray(new Predicate[0]));
@@ -204,27 +249,55 @@ public class HouseServiceImpl implements HouseService {
     public HttpEntity<?> edit(Long id, HouseDto dto) {
         Response response;
         House house = findById(id);
-        if(house != null){
-            house.setName(dto.getName());
-            house.setDescription(dto.getDescription());
-            house.setAddress(dto.getAddress());
-            house.setCity(dto.getCity());
-            house.setRegion(dto.getRegion());
-            house.setZipCode(dto.getZipCode());
-            house.setCountry(dto.getCountry());
-            house.setPrice(dto.getPrice());
-            house.setSalePrice(dto.getSalePrice());
 
-            HouseDetails houseDetails = houseDetailsService.updateById(house.getHouseDetails().getId(), dto.getHouseDetailsDto());
-            house.setHouseDetails(houseDetails);
-            Location location = locationService.updateById(house.getLocation().getId(), dto.getLocationDto());
-            house.setLocation(location);
-            Set<Attachment> attachments = attachmentService.update(house.getAttachments(), dto.getAttachmentDto());
-            house.setAttachments(attachments);
-            Category category = categoryService.findById(dto.getCategoryId());
-            house.setCategory(category);
+
+        if(house != null && dto != null){
+            if(dto.getName() != null && !dto.getName().equals(house.getName()))
+                house.setName(dto.getName());
+
+            if(dto.getDescription() != null && !dto.getDescription().equals(house.getDescription()))
+                house.setDescription(dto.getDescription());
+
+            if(dto.getAddress() != null && !dto.getAddress().equals(house.getAddress()))
+                house.setAddress(dto.getAddress());
+
+            if(dto.getCity() != null && !dto.getCity().equals(house.getCity()))
+                house.setCity(dto.getCity());
+
+            if(dto.getRegion() != null && !dto.getRegion().equals(house.getRegion()))
+                house.setRegion(dto.getRegion());
+            if(dto.getCountry() != null && !dto.getCountry().equals(house.getCountry()))
+                house.setCountry(dto.getCountry());
+            if(dto.getZipCode() != null && !dto.getZipCode().equals(house.getZipCode()))
+                house.setZipCode(dto.getZipCode());
+            if(dto.getPrice() != null && dto.getPrice() != house.getPrice())
+                house.setPrice(dto.getPrice());
+            if(dto.getSalePrice() != null && dto.getSalePrice() != house.getSalePrice())
+                house.setSalePrice(dto.getSalePrice());
+            if(dto.getStatus() != null && !dto.getStatus().equals(house.getStatus()))
+                house.setStatus(dto.getStatus());
+            if(dto.getHouseDetails() != null){
+                HouseDetails houseDetails = houseDetailsService.updateById(house.getHouseDetails().getId(), dto.getHouseDetails());
+                if(houseDetails != null)
+                    house.setHouseDetails(houseDetails);
+            }
+            if(dto.getLocations() != null){
+                Location location = locationService.updateById(house.getLocation().getId(), dto.getLocations());
+                if(location != null)
+                    house.setLocation(location);
+            }
+            if(dto.getAttachments() != null){
+                Set<Attachment> attachments = attachmentService.update(house.getAttachments(), dto.getAttachments());
+                if(attachments != null)
+                    house.setAttachments(attachments);
+            }
+            if(dto.getCategoryId() != null){
+                Category category = categoryService.findById(dto.getCategoryId());
+                if(!house.getCategory().equals(category))
+                    house.setCategory(category);
+            }
             house = houseRepository.save(house);
-            response = new Response(true, "Successfully updated.", house);
+            response = new Response(true, "Successfully updated.", houseMapper.fromEntity(house));
         }
         else {
             response = new Response(false, "House with id {"+id+"} does not exist");
@@ -247,12 +320,15 @@ public class HouseServiceImpl implements HouseService {
     }
 
     @Override
-    public HttpEntity<?> findMyHouses(Pageable pageable) {
+    public HttpEntity<?> findMyHouses(String houseName, Boolean status, LocalDateTime createdAt, Pageable pageable) {
         User user = MyUserService.currentUser;
         Response response = null;
         List<uz.digitalone.houzingapp.dto.response.HouseDto> result = null;
         if (user != null){
-            Page<House> houseListPage = houseRepository.findAllByUser(user, pageable);
+
+            Page<House> houseListPage = houseRepository.findAll(
+                    getSpecificationForMe(houseName, status, createdAt, user),
+                    pageable);
             List<House> houseList = houseListPage.getContent();
             if(houseList.size() > 0){
                 result = houseMapper.fromEntities(houseList);
@@ -264,7 +340,7 @@ public class HouseServiceImpl implements HouseService {
             else
                 response = new Response(true, "No houses found.");
         }else {
-            response = new Response(false, "Unauthorized access. Please, login first and they try again.");
+            response = new Response(false, "Unauthorized access. Please, login first and then try again.");
         }
         return ResponseEntity.status(response.isSuccess() ? 200:401).body(response);
     }
