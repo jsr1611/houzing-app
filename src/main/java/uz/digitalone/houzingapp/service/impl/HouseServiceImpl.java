@@ -67,9 +67,7 @@ public class HouseServiceImpl implements HouseService {
         house.setCountry(dto.getCountry());
         house.setZipCode(dto.getZipCode());
 
-//        Set<Attachment> attachments = attachmentMapper.fromDTOSet(dto.getAttachments());
-//        if(attachments != null && attachments.size() > 0)
-//            house.setAttachments(attachments);
+
         Set<AttachmentDto> attachmentDto = dto.getAttachments();
         if(attachmentDto != null && attachmentDto.size() > 0){
             Set<Attachment> attachmentList = attachmentService.createList(attachmentDto);
@@ -304,17 +302,6 @@ public class HouseServiceImpl implements HouseService {
         else {
             response = new Response(false, "House with id {"+id+"} does not exist");
         }
-        /*
-        if(house != null) {
-//            house = houseMapper.fromDTO(dto);
-            BeanUtils.copyProperties(dto, house);
-
-            house = houseRepository.save(house);
-            response = new Response(true, "Successfully updated.", houseMapper.fromEntity(house));
-        }else {
-            response = new Response(false, "House with id {"+id+"} does not exist");
-        }
-         */
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 
