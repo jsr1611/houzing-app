@@ -20,7 +20,7 @@ public interface AttachmentService {
 
     Attachment create(String imgPath);
 
-    Set<Attachment> createList(AttachmentDto dto);
+    Set<Attachment> createList(Set<AttachmentDto> dto);
 
     HttpEntity<?> findAll(Pageable pageable);
 
@@ -30,5 +30,5 @@ public interface AttachmentService {
 
     HttpEntity<?> delete(Long id);
 
-    Set<Attachment> update(Set<Attachment> attachments, AttachmentDto attachmentDto);
+    Set<Attachment> update(Set<Attachment> attachments, Set<AttachmentDto> attachmentsDto);
 }

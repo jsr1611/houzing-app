@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.DynamicUpdate;
 import uz.digitalone.houzingapp.entity.template.AbcEntity;
 
 import javax.persistence.*;
@@ -16,6 +17,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "houses")
+@DynamicUpdate
 public class House extends AbcEntity {
     private String name;
 
@@ -25,7 +27,7 @@ public class House extends AbcEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "house_details_id")
     private HouseDetails houseDetails;
 
@@ -33,7 +35,7 @@ public class House extends AbcEntity {
 
     private Double salePrice;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "location_id")
     private Location location;
 
@@ -47,7 +49,7 @@ public class House extends AbcEntity {
 
     private String zipCode;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.REMOVE)
     @ToString.Exclude
     private Set<Attachment> attachments = new HashSet<>();
 

@@ -17,5 +17,5 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AttachmentDto {
-    private Set<String> imgPathList;
+    private String imgPath;
 }

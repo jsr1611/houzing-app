@@ -111,15 +111,20 @@ public class CategoryServiceImpl implements CategoryService {
         Response response = null;
         Page<Category> categoryAll = categoryRepository.findAll(pageable);
         List<Category> categoryAllContent = categoryAll.getContent();
+        List<String> result = categoryAllContent
+                .stream()
+                .sorted(Comparator.comparing(Category::getName))
+                .map(category -> category.getName().toUpperCase())
+                .collect(Collectors.toList());
 
 
         if(categoryAllContent.size() == 0){
             response = new Response(true, "No categories were found");
         }
         else {
-            response = new Response(true, "Category list");
+            response = new Response(true, "Category list", result);
         }
-        response.setDataList(new ArrayList<>(categoryAllContent));
+//        response.setDataList(new ArrayList<>(categoryAllContent));
         response.getMap().put("size", categoryAll.getSize());
         response.getMap().put("total_elements", categoryAll.getTotalElements());
         response.getMap().put("total_pages", categoryAll.getTotalPages());

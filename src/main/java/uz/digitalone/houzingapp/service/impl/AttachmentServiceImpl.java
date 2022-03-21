@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import uz.digitalone.houzingapp.dto.request.AttachmentDto;
 import uz.digitalone.houzingapp.dto.response.Response;
 import uz.digitalone.houzingapp.entity.Attachment;
-import uz.digitalone.houzingapp.entity.Category;
 import uz.digitalone.houzingapp.repository.AttachmentRepository;
 import uz.digitalone.houzingapp.service.AttachmentService;
 
@@ -39,11 +38,11 @@ public class AttachmentServiceImpl implements AttachmentService {
     }
 
     @Override
-    public Set<Attachment> createList(AttachmentDto dto) {
+    public Set<Attachment> createList(Set<AttachmentDto> dto) {
         Set<Attachment> attachmentList = new HashSet<>();
         if(dto != null){
-            for (String imgPath : dto.getImgPathList()) {
-              Attachment attachment =  create(imgPath);
+            for (AttachmentDto attachmentDto : dto) {
+                Attachment attachment = create(attachmentDto.getImgPath());
               attachmentList.add(attachment);
             }
         }
@@ -103,13 +102,49 @@ public class AttachmentServiceImpl implements AttachmentService {
     }
 
     @Override
-    public Set<Attachment> update(Set<Attachment> attachments, AttachmentDto attachmentDto) {
-        Set<Attachment> updateAttachments = null;
+    public Set<Attachment> update(Set<Attachment> attachments, Set<AttachmentDto> attachmentDtoSet) {
+        Set<Attachment> updatedAttachments = new HashSet<>();
+        boolean attachmentExists = false;
         // TODO: 3/12/22 Logic should be updated, because this is inefficient.
-        if(attachments != null && attachments.size()>0)
-            attachmentRepository.deleteAll(attachments);
-        if(attachmentDto.getImgPathList()!=null && attachmentDto.getImgPathList().size()>0)
-            updateAttachments = createList(attachmentDto);
-        return updateAttachments;
+//        try {
+            if(attachments != null && attachments.size()>0) {
+            // deleted attachments
+                for (Attachment attachment : attachments) {
+                    for (AttachmentDto attachmentDto : attachmentDtoSet) {
+                        if(attachment.getImgPath().equals(attachmentDto.getImgPath())){
+                            attachmentExists = true;
+                            updatedAttachments.add(attachment);
+                            break;
+                        }
+                    }
+                    if(!attachmentExists){
+                        try {
+                            attachmentRepository.delete(attachment);            // Error here
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                    else {
+                        attachmentExists = false;
+                    }
+                }
+
+                // new attachments
+                for (AttachmentDto attachmentDto : attachmentDtoSet) {
+                    attachmentExists = false;
+                    for (Attachment attachment : attachments) {
+                        if(attachmentDto.getImgPath().equals(attachment.getImgPath())){
+                            attachmentExists = true;
+                            break;
+                        }
+                    }
+                    if(!attachmentExists){
+                        Attachment attachment = new Attachment(attachmentDto.getImgPath());
+                        Attachment updatedAttachment = attachmentRepository.save(attachment);
+                        updatedAttachments.add(updatedAttachment);
+                    }
+                }
+            }
+        return updatedAttachments;
     }
 }
