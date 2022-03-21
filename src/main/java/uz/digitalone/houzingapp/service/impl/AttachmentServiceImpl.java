@@ -34,7 +34,7 @@ public class AttachmentServiceImpl implements AttachmentService {
 
     @Override
     public Attachment create(String imgPath) {
-        return  attachmentRepository.save(new Attachment(imgPath));
+        return  attachmentRepository.save(new Attachment(imgPath, false));
     }
 
     @Override
@@ -102,49 +102,49 @@ public class AttachmentServiceImpl implements AttachmentService {
     }
 
     @Override
-    public Set<Attachment> update(Set<Attachment> attachments, Set<AttachmentDto> attachmentDtoSet) {
+    public Set<Attachment> update(Set<Attachment> oldList, Set<AttachmentDto> newList) {
         Set<Attachment> updatedAttachments = new HashSet<>();
         boolean attachmentExists = false;
         // TODO: 3/12/22 Logic should be updated, because this is inefficient.
 //        try {
-            if(attachments != null && attachments.size()>0) {
-            // deleted attachments
-                for (Attachment attachment : attachments) {
-                    for (AttachmentDto attachmentDto : attachmentDtoSet) {
-                        if(attachment.getImgPath().equals(attachmentDto.getImgPath())){
+            if(oldList != null && oldList.size()>0) {
+                // deleted attachments
+                for (Attachment attachment : oldList) {
+                    for (AttachmentDto attachmentDto : newList) {
+                        if (attachment.getImgPath().equals(attachmentDto.getImgPath())) {
                             attachmentExists = true;
                             updatedAttachments.add(attachment);
                             break;
                         }
                     }
-                    if(!attachmentExists){
+                    if (!attachmentExists) {
                         try {
                             attachmentRepository.delete(attachment);            // Error here
-                        }catch (Exception e){
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
-                    }
-                    else {
+                    } else {
                         attachmentExists = false;
                     }
                 }
+            }
 
                 // new attachments
-                for (AttachmentDto attachmentDto : attachmentDtoSet) {
+                for (AttachmentDto attachmentDto : newList) {
                     attachmentExists = false;
-                    for (Attachment attachment : attachments) {
+                    for (Attachment attachment : oldList) {
                         if(attachmentDto.getImgPath().equals(attachment.getImgPath())){
                             attachmentExists = true;
                             break;
                         }
                     }
                     if(!attachmentExists){
-                        Attachment attachment = new Attachment(attachmentDto.getImgPath());
+                        Attachment attachment = new Attachment(attachmentDto.getImgPath(), false);
                         Attachment updatedAttachment = attachmentRepository.save(attachment);
                         updatedAttachments.add(updatedAttachment);
                     }
                 }
-            }
+
         return updatedAttachments;
     }
 }
