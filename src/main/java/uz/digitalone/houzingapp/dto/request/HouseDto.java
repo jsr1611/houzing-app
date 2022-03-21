@@ -16,6 +16,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -27,12 +28,12 @@ public class HouseDto {
     private String name;
     private String description;
     @Valid
-    private HouseDetailsDto houseDetailsDto;
+    private HouseDetailsDto houseDetails;
     @NotNull
     private Double price;
     private Double salePrice;
     @Valid
-    private LocationDto locationDto;
+    private LocationDto locations;
 
     @NotNull
     @NotBlank
@@ -42,7 +43,7 @@ public class HouseDto {
     private String country;
     private String zipCode;
     @Valid
-    private AttachmentDto attachmentDto;
+    private Set<AttachmentDto> attachments;
     private Long categoryId;
     private Boolean status;
 }

@@ -75,14 +75,15 @@ public class HouseDetailsServiceImpl implements HouseDetailsService {
     public HouseDetails updateById(Long id, HouseDetailsDto dto) {
         HouseDetails houseDetails = findById(id);
         if(houseDetails != null && dto != null) {
-            if (dto.getRoom() != null && !dto.getRoom().equals(houseDetails.getRoom())) {
+            if (dto.getRoom() != null && dto.getRoom() != houseDetails.getRoom()) {
                 houseDetails.setRoom(dto.getRoom());
             }
-            if (dto.getBath() != null && !dto.getBath().equals(houseDetails.getBath())) {
+            if (dto.getBath() != null && dto.getBath() != houseDetails.getBath()) {
                 houseDetails.setBath(dto.getBath());
             }
-            houseDetails.setHasGarage(dto.isHasGarage());
-            if (dto.getArea() != null && !dto.getArea().equals(houseDetails.getArea())) {
+            if(dto.getGarage() != null && dto.getGarage() != houseDetails.getGarage())
+                houseDetails.setGarage(dto.getGarage());
+            if (dto.getArea() != null && dto.getArea() != houseDetails.getArea()) {
                 houseDetails.setArea(dto.getArea());
             }
              return houseDetailsRepository.save(houseDetails);
@@ -115,7 +116,8 @@ public class HouseDetailsServiceImpl implements HouseDetailsService {
             if (dto.getBath() != null) {
                 houseDetails.setBath(dto.getBath());
             }
-            houseDetails.setHasGarage(dto.isHasGarage());
+            if(dto.getGarage() != null)
+                houseDetails.setGarage(dto.getGarage());
             if (dto.getArea() != null) {
                 houseDetails.setArea(dto.getArea());
             }

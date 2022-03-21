@@ -27,7 +27,7 @@ public class House extends AbcEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "house_details_id")
     private HouseDetails houseDetails;
 
@@ -35,7 +35,7 @@ public class House extends AbcEntity {
 
     private Double salePrice;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "location_id")
     private Location location;
 
@@ -49,7 +49,7 @@ public class House extends AbcEntity {
 
     private String zipCode;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.REMOVE)
     @ToString.Exclude
     private Set<Attachment> attachments = new HashSet<>();
 
