@@ -60,6 +60,8 @@ public class House extends AbcEntity {
 
     private Boolean status;
 
+    private Boolean favorite;
+
     public House(String name, String description,
                  User user,
                  HouseDetails houseDetails,
