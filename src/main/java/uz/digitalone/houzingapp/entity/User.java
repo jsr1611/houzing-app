@@ -46,7 +46,7 @@ public class User implements UserDetails {
     private Boolean accountNonExpired = true;
     private Boolean accountNonLocked = true;
     private Boolean credentialsNonExpired = true;
-    private Boolean enabled = true;
+    private Boolean enabled = false;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

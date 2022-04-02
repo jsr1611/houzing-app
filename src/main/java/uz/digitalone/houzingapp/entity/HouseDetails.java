@@ -1,10 +1,12 @@
 package uz.digitalone.houzingapp.entity;
 
+import javassist.bytecode.annotation.IntegerMemberValue;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import uz.digitalone.houzingapp.entity.template.AbcEntity;
 
+import javax.mail.search.IntegerComparisonTerm;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -27,4 +29,10 @@ public class HouseDetails extends AbcEntity {
 
     @Column(nullable = false)
     private Double area;
+
+    @Column(nullable = false)
+    private Integer beds;
+
+    @Column(nullable = false)
+    private Integer yearBuilt;
 }
