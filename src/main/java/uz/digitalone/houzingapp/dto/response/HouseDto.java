@@ -29,4 +29,5 @@ public class HouseDto {
     private Set<AttachmentDto> attachments;
     private CategoryDto category;
     private Boolean status;
+    private Boolean favorite;
 }

@@ -46,4 +46,5 @@ public class HouseDto {
     private Set<AttachmentDto> attachments;
     private Long categoryId;
     private Boolean status;
+    private Boolean favorite;
 }

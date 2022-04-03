@@ -15,9 +15,4 @@ public class UserDto {
     private String firstname;
     private String lastname;
     private String email;
-    private Set<RoleDto> roles;
-    private Boolean accountNonExpired;
-    private Boolean accountNonLocked;
-    private Boolean credentialsNonExpired;
-    private Boolean enabled;
 }

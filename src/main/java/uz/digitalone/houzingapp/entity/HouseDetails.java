@@ -30,9 +30,9 @@ public class HouseDetails extends AbcEntity {
     @Column(nullable = false)
     private Double area;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Integer beds;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Integer yearBuilt;
 }

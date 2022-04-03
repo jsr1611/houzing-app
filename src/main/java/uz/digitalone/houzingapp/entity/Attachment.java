@@ -4,7 +4,6 @@ import lombok.*;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
-import org.springframework.data.jpa.repository.Query;
 import uz.digitalone.houzingapp.entity.template.AbcEntity;
 
 import javax.persistence.Column;

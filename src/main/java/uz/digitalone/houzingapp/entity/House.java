@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.Hibernate;
-import org.hibernate.annotations.DynamicUpdate;
 import uz.digitalone.houzingapp.entity.template.AbcEntity;
 
 import javax.persistence.*;
@@ -18,7 +17,6 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "houses")
-@DynamicUpdate
 public class House extends AbcEntity {
     private String name;
 
@@ -60,6 +58,7 @@ public class House extends AbcEntity {
 
     private Boolean status;
 
+    @Column(nullable = true)
     private Boolean favorite;
 
     public House(String name, String description,
@@ -70,7 +69,8 @@ public class House extends AbcEntity {
                  String address, String city,
                  String region, String country, String zipCode,
                  Set<Attachment> attachmentList,
-                 Category category) {
+                 Category category,
+                 Boolean favorite) {
         this.name = name;
         this.description = description;
         this.user = user;
@@ -85,6 +85,7 @@ public class House extends AbcEntity {
         this.zipCode = zipCode;
         this.attachments = attachmentList;
         this.category = category;
+        this.favorite = favorite;
     }
 
     @Override

@@ -276,6 +276,9 @@ public class HouseServiceImpl implements HouseService {
                 house.setSalePrice(dto.getSalePrice());
             if(dto.getStatus() != null && !dto.getStatus().equals(house.getStatus()))
                 house.setStatus(dto.getStatus());
+            if(dto.getFavorite() != null && !dto.getFavorite().equals(house.getFavorite())){
+                house.setFavorite(dto.getFavorite());
+            }
             if(dto.getHouseDetails() != null){
                 HouseDetails houseDetails = houseDetailsService.updateById(house.getHouseDetails().getId(), dto.getHouseDetails());
                 if(houseDetails != null)
