@@ -348,4 +348,21 @@ public class HouseServiceImpl implements HouseService {
         }
         return ResponseEntity.status(response.isSuccess() ? 200:401).body(response);
     }
+
+    public boolean checkIsNotNull(HouseDto dto) {
+        return dto.getName().isEmpty()
+                || dto.getAddress().isEmpty()
+                || dto.getAddress()==null
+                || dto.getPrice()==null
+                || dto.getPrice()==0
+                || dto.getZipCode().isEmpty()
+                || dto.getPrice()==0.0
+                || dto.getSalePrice()==0.0
+                || dto.getRegion().isEmpty()
+                || dto.getLocations()==null
+                || dto.getCountry().isEmpty()
+                || dto.getCity().isEmpty()
+                || dto.getAttachments()==null
+                || dto.getHouseDetails()==null;
+    }
 }
