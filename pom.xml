@@ -91,19 +91,12 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- map struct -->
+<!-- map struct -->
 		<dependency>
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct</artifactId>
 			<version>${map.struct.version}</version>
 		</dependency>
-		
-		<!-- MAIL -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-mail</artifactId>
-		</dependency>
-		<!-- MAIL -->
 
 	</dependencies>
 

@@ -27,6 +27,9 @@ import java.util.Properties;
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    private String senderEmail = "jimmy.sweetk@gmail.com";
+    private String senderEmailPassword = "abc123";
+
     private static final String[] WHITE_LIST = {
             "/api/public/**",
             // -- Swagger UI v2
@@ -96,18 +99,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     public JavaMailSender javaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost("smtp.gmail.com");
+        mailSender.setHost("smtp.mailgun.org");
         mailSender.setPort(587);
-
-        mailSender.setUsername(""); // Bu yerga qaysi emaildan yubormoqchiligingizni kiritasiz!!!
-        mailSender.setPassword(""); // Shu emailning kodini kiritasiz!!!
-
+        mailSender.setUsername(senderEmail);
+        mailSender.setPassword(senderEmailPassword);
         Properties props = mailSender.getJavaMailProperties();
-        props.put("mail.transport.protocol", "smtp");
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.debug", "true");
-
+        mailSender.setJavaMailProperties(props);
         return mailSender;
     }
 }
