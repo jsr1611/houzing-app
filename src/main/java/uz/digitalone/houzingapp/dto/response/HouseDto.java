@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import uz.digitalone.houzingapp.dto.request.AttachmentDto;
-import uz.digitalone.houzingapp.dto.response.CategoryDto;
 import uz.digitalone.houzingapp.dto.request.HouseDetailsDto;
 import uz.digitalone.houzingapp.dto.request.LocationDto;
 import java.util.Set;
@@ -30,4 +29,5 @@ public class HouseDto {
     private CategoryDto category;
     private Boolean status;
     private Boolean favorite;
+    private String isSolid;
 }

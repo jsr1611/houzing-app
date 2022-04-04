@@ -40,8 +40,7 @@ public class MyUserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("User not found."));
-        return user;
+        return userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("User not found."));
     }
 
 
@@ -105,10 +104,7 @@ public class MyUserService implements UserDetailsService {
      */
     private User findByEmail(String email) {
         Optional<User> userOptional = userRepository.findByEmail(email);
-        if(userOptional.isPresent()){
-            return userOptional.get();
-        }
-        return null;
+        return userOptional.orElse(null);
     }
 
     public HttpEntity<?> login(LoginDto dto) {

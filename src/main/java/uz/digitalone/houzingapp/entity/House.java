@@ -6,8 +6,10 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.Hibernate;
 import uz.digitalone.houzingapp.entity.template.AbcEntity;
+import uz.digitalone.houzingapp.enums.Status;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -61,16 +63,20 @@ public class House extends AbcEntity {
     @Column(nullable = true)
     private Boolean favorite;
 
-    public House(String name, String description,
-                 User user,
-                 HouseDetails houseDetails,
-                 Double price, Double salePrice,
-                 Location location,
-                 String address, String city,
-                 String region, String country, String zipCode,
-                 Set<Attachment> attachmentList,
-                 Category category,
-                 Boolean favorite) {
+    @Enumerated(EnumType.STRING)
+    private Status isSolid;
+
+    public House(Long id, Timestamp createdAt,
+                 Timestamp updateAt, Long createdBy,
+                 Long updateBy, String name,
+                 String description, User user,
+                 HouseDetails houseDetails, Double price,
+                 Double salePrice, Location location,
+                 String address, String city, String region,
+                 String country, String zipCode,
+                 Set<Attachment> attachments, Category category,
+                 Boolean status, Boolean favorite, Status isSolid) {
+        super(id, createdAt, updateAt, createdBy, updateBy);
         this.name = name;
         this.description = description;
         this.user = user;
@@ -83,9 +89,11 @@ public class House extends AbcEntity {
         this.region = region;
         this.country = country;
         this.zipCode = zipCode;
-        this.attachments = attachmentList;
+        this.attachments = attachments;
         this.category = category;
+        this.status = status;
         this.favorite = favorite;
+        this.isSolid = isSolid;
     }
 
     @Override
