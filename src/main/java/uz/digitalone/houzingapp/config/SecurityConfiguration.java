@@ -27,8 +27,6 @@ import java.util.Properties;
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private String senderEmail = "jimmy.sweetk@gmail.com";
-    private String senderEmailPassword = "abc123";
 
     private static final String[] WHITE_LIST = {
             "/api/public/**",
@@ -99,11 +97,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     public JavaMailSender javaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost("smtp.mailgun.org");
+        mailSender.setHost("smtp.gmail.com");
         mailSender.setPort(587);
-        mailSender.setUsername(senderEmail);
-        mailSender.setPassword(senderEmailPassword);
+        mailSender.setUsername("komiloff.d2505@gmail.com");
+        mailSender.setPassword("25052001Dm.");
         Properties props = mailSender.getJavaMailProperties();
+        props.put("mail.smtp.starttls.enable", "true");
         mailSender.setJavaMailProperties(props);
         return mailSender;
     }
