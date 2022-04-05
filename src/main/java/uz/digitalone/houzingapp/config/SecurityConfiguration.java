@@ -99,8 +99,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost("smtp.gmail.com");
         mailSender.setPort(587);
-        mailSender.setUsername("komiloff.d2505@gmail.com");
-        mailSender.setPassword("25052001Dm.");
+        mailSender.setUsername(""); // Bu yerga qaysi emaildan xabar jonatmoqchi ekanligingizni kiritasiz!!!
+        mailSender.setPassword(""); // Shu emailning kodi kiritiladi
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.smtp.starttls.enable", "true");
         mailSender.setJavaMailProperties(props);

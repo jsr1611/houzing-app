@@ -15,7 +15,7 @@ public class MailService {
     @Async
     void send(NotificationEmail notificationEmail) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("komiloff.d2505@gmail.com");
+        message.setFrom(""); // Bu yerga qaysi emaildan xabar jonatmoqchi ekanligingizni kiritasiz!!!
         message.setTo(notificationEmail.getReceiver());
         message.setSubject(notificationEmail.getSubject());
         message.setText(notificationEmail.getBody());
