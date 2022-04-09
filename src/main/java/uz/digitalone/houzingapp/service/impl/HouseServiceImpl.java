@@ -1,7 +1,6 @@
 package uz.digitalone.houzingapp.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -19,7 +18,6 @@ import uz.digitalone.houzingapp.service.*;
 import javax.persistence.criteria.Predicate;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service

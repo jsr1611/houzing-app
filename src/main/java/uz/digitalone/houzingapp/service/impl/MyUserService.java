@@ -1,13 +1,19 @@
 package uz.digitalone.houzingapp.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,19 +21,30 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
-import uz.digitalone.houzingapp.dto.request.LoginDto;
+import uz.digitalone.houzingapp.dto.NotificationEmail;
+import uz.digitalone.houzingapp.dto.request.RefreshTokenRequest;
+import uz.digitalone.houzingapp.dto.request.LoginRequest;
 import uz.digitalone.houzingapp.dto.request.RegUserDto;
+import uz.digitalone.houzingapp.dto.response.AuthenticationResponse;
 import uz.digitalone.houzingapp.dto.response.Response;
 import uz.digitalone.houzingapp.entity.Role;
 import uz.digitalone.houzingapp.entity.User;
+import uz.digitalone.houzingapp.entity.auth.VerificationToken;
 import uz.digitalone.houzingapp.repository.RoleRepository;
 import uz.digitalone.houzingapp.repository.UserRepository;
+import uz.digitalone.houzingapp.repository.VerificationTokenRepository;
 import uz.digitalone.houzingapp.security.JwtProvider;
+import uz.digitalone.houzingapp.service.MailSerivce;
+import uz.digitalone.houzingapp.service.RefreshTokenService;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
+
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MyUserService implements UserDetailsService {
 
     private final JavaMailSender javaMailSender;
@@ -35,13 +52,43 @@ public class MyUserService implements UserDetailsService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final VerificationTokenRepository verificationTokenRepository;
+    private final RefreshTokenService refreshTokenService;
+    private final MailSerivce mailService;
     private final JwtProvider jwtProvider;
-    public static User currentUser;
+    public static User currentUser = new User();
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("User not found."));
-        return user;
+        User user = userRepository.findByEmail(username).orElseThrow(()
+                -> new IllegalArgumentException("Email not found"));
+        return new org.springframework.security.core.userdetails.User(
+                user.getUsername(),
+                user.getPassword(),
+                user.getEnabled(),
+                true,
+                true,
+                true,
+                grantedAuthority("USER")
+        );
+    }
+
+    private Collection<? extends GrantedAuthority> grantedAuthority(String user) {
+        return Collections.singletonList(new SimpleGrantedAuthority(user));
+    }
+
+    public void verification(String token) {
+        Optional<VerificationToken> refreshToken = verificationTokenRepository.findByToken(token);
+        if (refreshToken.isPresent()){
+            VerificationToken refreshToken1 = refreshToken.get();
+            if (refreshToken1.getExpirationData().isBefore(Instant.now())){
+                log.error("Token expiration Data {}", refreshToken1.getExpirationData());
+                throw new RuntimeException("Token expiration");
+            }
+            User user = refreshToken1.getUser();
+            user.setEnabled(true);
+            userRepository.save(user);
+        }
     }
 
 
@@ -68,24 +115,34 @@ public class MyUserService implements UserDetailsService {
         if(dto != null && dto.getEmail() != null){
             emailExists = emailExists(dto.getEmail());
         }
-        if(emailExists!= null && emailExists)
-            return ResponseEntity.status(422).body(new Response(false, "Email is invalid or already taken", dto.getEmail()));
-
-        User user = new User();
+        if(emailExists != null && emailExists) {
+            return ResponseEntity.status(422).body(new Response(false,
+                    "Email is invalid or already taken", dto.getEmail()));
+        }
+        User user = currentUser;
+        assert dto != null;
         user.setFirstname(dto.getFirstname());
         user.setLastname(dto.getLastname());
         user.setEmail(dto.getEmail());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
 
         Set<Role> roles = new HashSet<>();
-        for(Long roleId : dto.getRoleIdSet()){
-            Optional<Role> byId = roleRepository.findById(roleId);
-            byId.ifPresent(roles::add);
+        if (dto.getRoleIdSet() != null) {
+            for (Long roleId : dto.getRoleIdSet()) {
+                Optional<Role> byId = roleRepository.findById(roleId);
+                byId.ifPresent(roles::add);
+            }
+            user.setRoles(roles);
         }
-        user.setRoles(roles);
-        User savedUser = userRepository.save(user);
-        Response response = new Response(true, "Successfully registered",savedUser.getEmail());
-        return ResponseEntity.status(response.getStatus()).body(response);
+
+        user.setEnabled(false);
+        userRepository.save(user);
+        String token = generateTokenForVerification(user);
+
+         mailService.send(new NotificationEmail("Accountingizni activatsia qiling",
+                user.getEmail(), "<h1> Ushbu link orqali </h1>" +
+                "http://loaclhost:9090/api/v1/auth/verification/" + token));
+         return ResponseEntity.status(HttpStatus.CREATED).body(token);
     }
 
     /**
@@ -104,23 +161,39 @@ public class MyUserService implements UserDetailsService {
      * @return user object
      */
     private User findByEmail(String email) {
-        Optional<User> userOptional = userRepository.findByEmail(email);
-        if(userOptional.isPresent()){
-            return userOptional.get();
-        }
-        return null;
+        Optional<User> byEmail = userRepository.findByEmail(email);
+        return byEmail.orElse(null);
     }
 
-    public HttpEntity<?> login(LoginDto dto) {
-        Authentication authenticate =
-                authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
-        User principal = (User) authenticate.getPrincipal();
-        currentUser = principal;
-        String generatedToken = jwtProvider.generateToken(principal.getEmail(), principal.getRoles());
-        Response response = new Response(true, "Token", generatedToken);
+    private String generateTokenForVerification(User user) {
+        String token = UUID.randomUUID().toString();
+        VerificationToken verificationToken = new VerificationToken();
+        verificationToken.setToken(token);
+        verificationToken.setUser(user);
+        verificationToken.setExpirationData(Instant.now().plus(1, ChronoUnit.HOURS));
+        verificationTokenRepository.save(verificationToken);
+        return token;
+    }
 
+    @Value("${jwt.expiration.time}")
+    Long EXPIRATION_TIME;
+
+    public HttpEntity<AuthenticationResponse> login(LoginRequest dto) {
+        Authentication authenticate =
+                authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
+
+        SecurityContextHolder.getContext().setAuthentication(authenticate);
+        String generateToken = jwtProvider.generateToken((org.springframework.security.core.userdetails.User) authenticate.getPrincipal());
         // TODO: 2/25/22 check if user login details match, if not handle it.
-        return ResponseEntity.status(response.getStatus()).body(response);
+
+        AuthenticationResponse response = AuthenticationResponse.builder()
+                .authenticationToken(generateToken)
+                .refreshToken(refreshTokenService.generateRefreshToken().getRefreshToken())
+                .username(dto.getEmail())
+                .expirationData(Instant.now().plusMillis(EXPIRATION_TIME))
+                .build();
+        return ResponseEntity.ok(response);
     }
 
     /**
@@ -139,5 +212,23 @@ public class MyUserService implements UserDetailsService {
             errorList.put(code, error.getDefaultMessage());
         }
         return errorList;
+    }
+
+    public HttpEntity<AuthenticationResponse> refreshToken(RefreshTokenRequest dto) {
+        refreshTokenService.validationToken(dto.getRefreshToken());
+        String authenticationToken = jwtProvider.generateTokenWithUsername(dto.getUsername());
+        AuthenticationResponse response = AuthenticationResponse.builder()
+                .authenticationToken(authenticationToken)
+                .refreshToken(dto.getRefreshToken())
+                .username(dto.getUsername())
+                .expirationData(Instant.now().plusMillis(EXPIRATION_TIME))
+                .build();
+        return ResponseEntity.ok(response);
+
+    }
+
+    public ResponseEntity<String> logout(RefreshTokenRequest request) {
+        refreshTokenService.refreshTokenDelete(request);
+        return ResponseEntity.status(200).body("Successfully logged auth");
     }
 }

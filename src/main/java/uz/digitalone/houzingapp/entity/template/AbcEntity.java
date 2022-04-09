@@ -20,7 +20,7 @@ import java.util.Objects;
 public abstract class AbcEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    protected Long id;
 
     @CreationTimestamp
     @Column(name = "created_at",
