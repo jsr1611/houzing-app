@@ -3,6 +3,7 @@ package uz.digitalone.houzingapp.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import uz.digitalone.houzingapp.entity.template.AbcEntity;
 
 import javax.persistence.*;
 import java.time.Instant;
@@ -12,10 +13,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @Entity
 @Table(name = "verification_token")
-public class VerificationToken {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class VerificationToken extends AbcEntity {
 
     private String token;
 
