@@ -34,7 +34,7 @@ public class House extends AbcEntity {
 
     private Double salePrice;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     @JoinColumn(name = "location_id")
     private Location location;
 
