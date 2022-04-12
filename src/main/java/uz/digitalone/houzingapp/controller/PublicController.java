@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import uz.digitalone.houzingapp.dto.request.LoginDto;
 import uz.digitalone.houzingapp.dto.request.RegUserDto;
 import uz.digitalone.houzingapp.dto.request.RoleDto;
@@ -30,6 +27,12 @@ public class PublicController {
             return ResponseEntity.status(400).body(userService.getErrors(errors));
         }
         return userService.register(dto);
+    }
+
+    @GetMapping("/accountVerification/{verification_token}")
+    public HttpEntity<?> accountVerification(@PathVariable("verification_token") String token) {
+        userService.verifyAccount(token);
+        return ResponseEntity.ok("Account Active!!!");
     }
 
     @PostMapping("/auth/login")
