@@ -9,8 +9,8 @@ import uz.digitalone.houzingapp.entity.Role;
 /*
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2022-04-04T09:35:53+0500",
-    comments = "version: 1.4.2.Final, compiler: javac, environment: Java 11.0.12 (Amazon.com Inc.)"
+    date = "2022-04-12T11:21:06+0500",
+    comments = "version: 1.4.2.Final, compiler: javac, environment: Java 11.0.14.1 (Amazon.com Inc.)"
 )
 */
 @Component

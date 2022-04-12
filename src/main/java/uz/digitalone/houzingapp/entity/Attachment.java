@@ -22,7 +22,7 @@ import java.util.Objects;
 @Where(clause = "deleted = false")
 public class Attachment extends AbcEntity {
 
-    @Column(name = "img_path")
+    @Column(name = "img_path", length = 1000)
     private String imgPath;
 
     @Column(name =  "deleted")

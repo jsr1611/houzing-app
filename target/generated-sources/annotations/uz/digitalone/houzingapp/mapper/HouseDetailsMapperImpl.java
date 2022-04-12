@@ -9,8 +9,8 @@ import uz.digitalone.houzingapp.entity.HouseDetails;
 /*
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2022-04-04T09:35:53+0500",
-    comments = "version: 1.4.2.Final, compiler: javac, environment: Java 11.0.12 (Amazon.com Inc.)"
+    date = "2022-04-12T11:21:06+0500",
+    comments = "version: 1.4.2.Final, compiler: javac, environment: Java 11.0.14.1 (Amazon.com Inc.)"
 )
 */
 @Component
@@ -28,6 +28,8 @@ public class HouseDetailsMapperImpl implements HouseDetailsMapper {
         houseDetailsDto.setBath( houseDetails.getBath() );
         houseDetailsDto.setGarage( houseDetails.getGarage() );
         houseDetailsDto.setArea( houseDetails.getArea() );
+        houseDetailsDto.setBeds( houseDetails.getBeds() );
+        houseDetailsDto.setYearBuilt( houseDetails.getYearBuilt() );
 
         return houseDetailsDto;
     }
@@ -58,6 +60,8 @@ public class HouseDetailsMapperImpl implements HouseDetailsMapper {
         houseDetails.setBath( detailsDto.getBath() );
         houseDetails.setGarage( detailsDto.getGarage() );
         houseDetails.setArea( detailsDto.getArea() );
+        houseDetails.setBeds( detailsDto.getBeds() );
+        houseDetails.setYearBuilt( detailsDto.getYearBuilt() );
 
         return houseDetails;
     }

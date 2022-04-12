@@ -5,10 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Data
 @AllArgsConstructor
@@ -17,7 +14,7 @@ public class Response {
     private boolean success;
     private String message;
     private Object data;
-    private List dataList;
+    private List<Object> dataList = new ArrayList<>();
     private Map<Object, Object> map = new HashMap<>();
     private HttpStatus status;
 

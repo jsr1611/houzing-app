@@ -1,21 +1,17 @@
 package uz.digitalone.houzingapp.mapper;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import org.springframework.stereotype.Component;
 import uz.digitalone.houzingapp.dto.request.RegUserDto;
-import uz.digitalone.houzingapp.dto.request.RoleDto;
 import uz.digitalone.houzingapp.dto.response.UserDto;
-import uz.digitalone.houzingapp.entity.Role;
 import uz.digitalone.houzingapp.entity.User;
 
 /*
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2022-04-04T09:35:53+0500",
-    comments = "version: 1.4.2.Final, compiler: javac, environment: Java 11.0.12 (Amazon.com Inc.)"
+    date = "2022-04-12T11:21:06+0500",
+    comments = "version: 1.4.2.Final, compiler: javac, environment: Java 11.0.14.1 (Amazon.com Inc.)"
 )
 */
 @Component
@@ -33,11 +29,6 @@ public class UserMapperImpl implements UserMapper {
         userDto.setFirstname( user.getFirstname() );
         userDto.setLastname( user.getLastname() );
         userDto.setEmail( user.getEmail() );
-        userDto.setRoles( roleSetToRoleDtoSet( user.getRoles() ) );
-        userDto.setAccountNonExpired( user.getAccountNonExpired() );
-        userDto.setAccountNonLocked( user.getAccountNonLocked() );
-        userDto.setCredentialsNonExpired( user.getCredentialsNonExpired() );
-        userDto.setEnabled( user.getEnabled() );
 
         return userDto;
     }
@@ -84,30 +75,5 @@ public class UserMapperImpl implements UserMapper {
         }
 
         return list;
-    }
-
-    protected RoleDto roleToRoleDto(Role role) {
-        if ( role == null ) {
-            return null;
-        }
-
-        RoleDto roleDto = new RoleDto();
-
-        roleDto.setName( role.getName() );
-
-        return roleDto;
-    }
-
-    protected Set<RoleDto> roleSetToRoleDtoSet(Set<Role> set) {
-        if ( set == null ) {
-            return null;
-        }
-
-        Set<RoleDto> set1 = new HashSet<RoleDto>( Math.max( (int) ( set.size() / .75f ) + 1, 16 ) );
-        for ( Role role : set ) {
-            set1.add( roleToRoleDto( role ) );
-        }
-
-        return set1;
     }
 }

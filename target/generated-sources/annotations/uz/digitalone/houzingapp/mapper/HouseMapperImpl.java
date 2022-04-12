@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import uz.digitalone.houzingapp.dto.request.AttachmentDto;
 import uz.digitalone.houzingapp.dto.request.HouseDetailsDto;
 import uz.digitalone.houzingapp.dto.request.LocationDto;
-import uz.digitalone.houzingapp.dto.request.RoleDto;
 import uz.digitalone.houzingapp.dto.response.CategoryDto;
 import uz.digitalone.houzingapp.dto.response.HouseDto;
 import uz.digitalone.houzingapp.dto.response.UserDto;
@@ -17,14 +16,13 @@ import uz.digitalone.houzingapp.entity.Category;
 import uz.digitalone.houzingapp.entity.House;
 import uz.digitalone.houzingapp.entity.HouseDetails;
 import uz.digitalone.houzingapp.entity.Location;
-import uz.digitalone.houzingapp.entity.Role;
 import uz.digitalone.houzingapp.entity.User;
 
 /*
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2022-04-04T09:35:53+0500",
-    comments = "version: 1.4.2.Final, compiler: javac, environment: Java 11.0.12 (Amazon.com Inc.)"
+    date = "2022-04-12T11:21:06+0500",
+    comments = "version: 1.4.2.Final, compiler: javac, environment: Java 11.0.14.1 (Amazon.com Inc.)"
 )
 */
 @Component
@@ -54,6 +52,7 @@ public class HouseMapperImpl implements HouseMapper {
         houseDto.setAttachments( attachmentSetToAttachmentDtoSet( house.getAttachments() ) );
         houseDto.setCategory( categoryToCategoryDto( house.getCategory() ) );
         houseDto.setStatus( house.getStatus() );
+        houseDto.setFavorite( house.getFavorite() );
 
         return houseDto;
     }
@@ -92,6 +91,7 @@ public class HouseMapperImpl implements HouseMapper {
         house.setZipCode( dto.getZipCode() );
         house.setAttachments( attachmentDtoSetToAttachmentSet( dto.getAttachments() ) );
         house.setStatus( dto.getStatus() );
+        house.setFavorite( dto.getFavorite() );
 
         return house;
     }
@@ -110,31 +110,6 @@ public class HouseMapperImpl implements HouseMapper {
         return list;
     }
 
-    protected RoleDto roleToRoleDto(Role role) {
-        if ( role == null ) {
-            return null;
-        }
-
-        RoleDto roleDto = new RoleDto();
-
-        roleDto.setName( role.getName() );
-
-        return roleDto;
-    }
-
-    protected Set<RoleDto> roleSetToRoleDtoSet(Set<Role> set) {
-        if ( set == null ) {
-            return null;
-        }
-
-        Set<RoleDto> set1 = new HashSet<RoleDto>( Math.max( (int) ( set.size() / .75f ) + 1, 16 ) );
-        for ( Role role : set ) {
-            set1.add( roleToRoleDto( role ) );
-        }
-
-        return set1;
-    }
-
     protected UserDto userToUserDto(User user) {
         if ( user == null ) {
             return null;
@@ -146,11 +121,6 @@ public class HouseMapperImpl implements HouseMapper {
         userDto.setFirstname( user.getFirstname() );
         userDto.setLastname( user.getLastname() );
         userDto.setEmail( user.getEmail() );
-        userDto.setRoles( roleSetToRoleDtoSet( user.getRoles() ) );
-        userDto.setAccountNonExpired( user.getAccountNonExpired() );
-        userDto.setAccountNonLocked( user.getAccountNonLocked() );
-        userDto.setCredentialsNonExpired( user.getCredentialsNonExpired() );
-        userDto.setEnabled( user.getEnabled() );
 
         return userDto;
     }
@@ -166,6 +136,8 @@ public class HouseMapperImpl implements HouseMapper {
         houseDetailsDto.setBath( houseDetails.getBath() );
         houseDetailsDto.setGarage( houseDetails.getGarage() );
         houseDetailsDto.setArea( houseDetails.getArea() );
+        houseDetailsDto.setBeds( houseDetails.getBeds() );
+        houseDetailsDto.setYearBuilt( houseDetails.getYearBuilt() );
 
         return houseDetailsDto;
     }
@@ -231,6 +203,8 @@ public class HouseMapperImpl implements HouseMapper {
         houseDetails.setBath( houseDetailsDto.getBath() );
         houseDetails.setGarage( houseDetailsDto.getGarage() );
         houseDetails.setArea( houseDetailsDto.getArea() );
+        houseDetails.setBeds( houseDetailsDto.getBeds() );
+        houseDetails.setYearBuilt( houseDetailsDto.getYearBuilt() );
 
         return houseDetails;
     }

@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
@@ -56,7 +57,6 @@ public class MyUserService implements UserDetailsService {
     private final RefreshTokenService refreshTokenService;
     private final MailSerivce mailService;
     private final JwtProvider jwtProvider;
-    public static User currentUser = new User();
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -119,8 +119,9 @@ public class MyUserService implements UserDetailsService {
             return ResponseEntity.status(422).body(new Response(false,
                     "Email is invalid or already taken", dto.getEmail()));
         }
-        User user = currentUser;
+
         assert dto != null;
+        User user = getCurrentUser();
         user.setFirstname(dto.getFirstname());
         user.setLastname(dto.getLastname());
         user.setEmail(dto.getEmail());
@@ -143,6 +144,13 @@ public class MyUserService implements UserDetailsService {
                 user.getEmail(), "<h1> Ushbu link orqali </h1>" +
                 "http://loaclhost:9090/api/v1/auth/verification/" + token));
          return ResponseEntity.status(HttpStatus.CREATED).body(token);
+    }
+
+
+    public User getCurrentUser() {
+        Jwt principal = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userRepository.findByEmail(principal.getSubject()).orElseThrow(()
+                -> new UsernameNotFoundException("username Not found"));
     }
 
     /**
