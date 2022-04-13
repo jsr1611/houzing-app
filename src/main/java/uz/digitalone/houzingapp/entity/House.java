@@ -1,21 +1,22 @@
 package uz.digitalone.houzingapp.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.Hibernate;
 import uz.digitalone.houzingapp.entity.template.AbcEntity;
+import uz.digitalone.houzingapp.enums.Status;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @AllArgsConstructor
-@NoArgsConstructor
 @Table(name = "houses")
 public class House extends AbcEntity {
     private String name;
@@ -56,21 +57,23 @@ public class House extends AbcEntity {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    private Boolean status;
+    private Boolean isSold;
 
     @Column(nullable = true)
     private Boolean favorite;
 
-    public House(String name, String description,
-                 User user,
-                 HouseDetails houseDetails,
-                 Double price, Double salePrice,
-                 Location location,
-                 String address, String city,
-                 String region, String country, String zipCode,
-                 Set<Attachment> attachmentList,
-                 Category category,
-                 Boolean favorite) {
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+    public House(Long id, Timestamp createdAt,
+                 Timestamp updateAt, Long createdBy,
+                 Long updateBy, String name, String description,
+                 User user, HouseDetails houseDetails, Double price,
+                 Double salePrice, Location location, String address,
+                 String city, String region, String country, String zipCode,
+                 Set<Attachment> attachments, Category category, Boolean isSold,
+                 Boolean favorite, Status status) {
+        super(id, createdAt, updateAt, createdBy, updateBy);
         this.name = name;
         this.description = description;
         this.user = user;
@@ -83,9 +86,11 @@ public class House extends AbcEntity {
         this.region = region;
         this.country = country;
         this.zipCode = zipCode;
-        this.attachments = attachmentList;
+        this.attachments = attachments;
         this.category = category;
+        this.isSold = isSold;
         this.favorite = favorite;
+        this.status = status;
     }
 
     @Override

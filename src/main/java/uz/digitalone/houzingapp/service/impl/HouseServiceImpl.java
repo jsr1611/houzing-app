@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import uz.digitalone.houzingapp.dto.request.*;
 import uz.digitalone.houzingapp.dto.response.Response;
 import uz.digitalone.houzingapp.entity.*;
+import uz.digitalone.houzingapp.enums.Status;
 import uz.digitalone.houzingapp.mapper.AttachmentMapper;
 import uz.digitalone.houzingapp.mapper.HouseMapper;
 import uz.digitalone.houzingapp.repository.HouseRepository;
@@ -78,7 +79,8 @@ public class HouseServiceImpl implements HouseService {
             house.setCategory(category);
         if(house.getHouseDetails() == null)
             return ResponseEntity.status(400).body(new Response(false, "Error with house Details or status info", detailsDto));
-        house.setStatus(true);
+        house.setIsSold(true);
+        house.setStatus(Status.getStatus(dto.getStatus()));
         house = houseRepository.save(house);
         uz.digitalone.houzingapp.dto.response.HouseDto result = houseMapper.fromEntity(house);
         Response response = new Response(true, "Successfully created.", result);
@@ -274,10 +276,13 @@ public class HouseServiceImpl implements HouseService {
                 house.setPrice(dto.getPrice());
             if(dto.getSalePrice() != null && dto.getSalePrice() != house.getSalePrice())
                 house.setSalePrice(dto.getSalePrice());
-            if(dto.getStatus() != null && !dto.getStatus().equals(house.getStatus()))
-                house.setStatus(dto.getStatus());
+            if(dto.getIsSold() != null && !dto.getIsSold().equals(house.getIsSold()))
+                house.setIsSold(dto.getIsSold());
             if(dto.getFavorite() != null && !dto.getFavorite().equals(house.getFavorite())){
                 house.setFavorite(dto.getFavorite());
+            }
+            if (dto.getStatus() != null && !dto.getStatus().equals(house.getStatus())){
+                house.setStatus(Status.getStatus(dto.getStatus()));
             }
             if(dto.getHouseDetails() != null){
                 HouseDetails houseDetails = houseDetailsService.updateById(house.getHouseDetails().getId(), dto.getHouseDetails());
