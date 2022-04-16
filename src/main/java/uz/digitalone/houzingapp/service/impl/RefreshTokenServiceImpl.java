@@ -10,7 +10,6 @@ import uz.digitalone.houzingapp.entity.auth.RefreshToken;
 import uz.digitalone.houzingapp.repository.RefreshTokenRepository;
 import uz.digitalone.houzingapp.service.RefreshTokenService;
 
-import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.UUID;
 @RequiredArgsConstructor
@@ -24,7 +23,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     public RefreshToken generateRefreshToken() {
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setRefreshToken(UUID.randomUUID().toString());
-        refreshToken.setCreatedAt(Timestamp.from(Instant.now()));
+        refreshToken.setExpirationTime(Instant.now());
         refreshTokenRepository.save(refreshToken);
         return refreshToken;
     }

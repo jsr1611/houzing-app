@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import uz.digitalone.houzingapp.dto.request.AttachmentDto;
 import uz.digitalone.houzingapp.dto.response.Response;
 import uz.digitalone.houzingapp.entity.Attachment;
@@ -23,6 +24,7 @@ import java.util.*;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class AttachmentServiceImpl implements AttachmentService {
 
     private final AttachmentRepository attachmentRepository;

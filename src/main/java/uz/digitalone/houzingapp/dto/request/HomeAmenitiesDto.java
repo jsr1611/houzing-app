@@ -13,7 +13,6 @@ import lombok.experimental.SuperBuilder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class HomeAmenitiesDto {
 
-    private Long id;
     private boolean school = false;
     private boolean park = false;
     private boolean parking = false;

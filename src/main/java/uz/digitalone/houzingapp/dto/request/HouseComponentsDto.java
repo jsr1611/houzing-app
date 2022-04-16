@@ -13,7 +13,6 @@ import lombok.experimental.SuperBuilder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class HouseComponentsDto {
 
-    private Long id;
     private boolean tv = false;
     private boolean furniture = false;
     private boolean airCondition = false;

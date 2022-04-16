@@ -1,12 +1,11 @@
 package uz.digitalone.houzingapp.entity;
 
 import lombok.*;
-import org.hibernate.Hibernate;
 import uz.digitalone.houzingapp.entity.template.AbcEntity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
@@ -15,7 +14,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "houses")
-public class House extends AbcEntity {
+public class House extends AbcEntity implements Serializable {
     private String name;
 
     private String description;
@@ -46,8 +45,7 @@ public class House extends AbcEntity {
 
     private String zipCode;
 
-    @OneToMany
-    @ToString.Exclude
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<Attachment> attachments = new HashSet<>();
 
     @ManyToOne
@@ -59,11 +57,11 @@ public class House extends AbcEntity {
     @Column(nullable = true)
     private Boolean favorite;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "home_amenities_id", referencedColumnName = "id")
     private HomeAmenities homeAmenities;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "house_components_id", referencedColumnName = "id")
     private HouseComponents houseComponents;
 }

@@ -150,7 +150,13 @@
 			<artifactId>mapstruct</artifactId>
 			<version>${map.struct.version}</version>
 		</dependency>
-	<!--			    	MAPSTRUCT CONFIGURATION DEPENDENCIES    	  		 -->
+		<dependency>
+			<groupId>org.jetbrains</groupId>
+			<artifactId>annotations</artifactId>
+			<version>RELEASE</version>
+			<scope>compile</scope>
+		</dependency>
+		<!--			    	MAPSTRUCT CONFIGURATION DEPENDENCIES    	  		 -->
 
 
 

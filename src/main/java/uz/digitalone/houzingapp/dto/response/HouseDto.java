@@ -30,6 +30,6 @@ public class HouseDto {
     private CategoryDto category;
     private Boolean status;
     private Boolean favorite;
-    private HouseComponentsDto houseComponentsDto;
-    private HomeAmenitiesDto homeAmenitiesDto;
+    private HouseComponentsResponseDto houseComponentsDto;
+    private HomeAmenitiesResponseDto homeAmenitiesDto;
 }
