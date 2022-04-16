@@ -8,7 +8,7 @@
       <jdbc-url>jdbc:postgresql://ec2-3-216-221-31.compute-1.amazonaws.com:5432/der98mr91l54a5</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="houzing_db@localhost" uuid="423e09c2-3b73-4f82-8bfb-0810b3d131a8">
+    <data-source source="LOCAL" name="houzing_db@localhost [2]" uuid="40bc3828-616e-4ff2-9227-3f1d3009cb83">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>

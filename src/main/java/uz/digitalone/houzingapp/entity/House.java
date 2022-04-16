@@ -1,9 +1,6 @@
 package uz.digitalone.houzingapp.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.Hibernate;
 import uz.digitalone.houzingapp.entity.template.AbcEntity;
 
@@ -12,6 +9,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 @AllArgsConstructor
@@ -61,43 +59,11 @@ public class House extends AbcEntity {
     @Column(nullable = true)
     private Boolean favorite;
 
-    public House(String name, String description,
-                 User user,
-                 HouseDetails houseDetails,
-                 Double price, Double salePrice,
-                 Location location,
-                 String address, String city,
-                 String region, String country, String zipCode,
-                 Set<Attachment> attachmentList,
-                 Category category,
-                 Boolean favorite) {
-        this.name = name;
-        this.description = description;
-        this.user = user;
-        this.houseDetails = houseDetails;
-        this.price = price;
-        this.salePrice = salePrice;
-        this.location = location;
-        this.address = address;
-        this.city = city;
-        this.region = region;
-        this.country = country;
-        this.zipCode = zipCode;
-        this.attachments = attachmentList;
-        this.category = category;
-        this.favorite = favorite;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "home_amenities_id", referencedColumnName = "id")
+    private HomeAmenities homeAmenities;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        House house = (House) o;
-        return getId() != null && Objects.equals(getId(), house.getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "house_components_id", referencedColumnName = "id")
+    private HouseComponents houseComponents;
 }

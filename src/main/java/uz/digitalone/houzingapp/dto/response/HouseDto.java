@@ -1,17 +1,17 @@
 package uz.digitalone.houzingapp.dto.response;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import uz.digitalone.houzingapp.dto.request.AttachmentDto;
-import uz.digitalone.houzingapp.dto.response.CategoryDto;
-import uz.digitalone.houzingapp.dto.request.HouseDetailsDto;
-import uz.digitalone.houzingapp.dto.request.LocationDto;
+import uz.digitalone.houzingapp.dto.request.*;
+
 import java.util.Set;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class HouseDto {
     private Long id;
     private String name;
@@ -30,4 +30,6 @@ public class HouseDto {
     private CategoryDto category;
     private Boolean status;
     private Boolean favorite;
+    private HouseComponentsDto houseComponentsDto;
+    private HomeAmenitiesDto homeAmenitiesDto;
 }

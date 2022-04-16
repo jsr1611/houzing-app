@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -41,11 +43,13 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class MyUserService implements UserDetailsService {
 
+    private final JavaMailSender javaMailSender;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
@@ -97,8 +101,8 @@ public class MyUserService implements UserDetailsService {
         if(emailExists!= null && emailExists)
             return ResponseEntity.status(422).body(new Response(false, "Email is invalid or already taken", dto.getEmail()));
 
-        User user = new User();
         assert dto != null;
+        User user = new User();
         user.setFirstname(dto.getFirstname());
         user.setLastname(dto.getLastname());
         user.setEmail(dto.getEmail());
@@ -113,9 +117,6 @@ public class MyUserService implements UserDetailsService {
                 user.setRoles(roles);
             }
             user.setRoles(roles);
-//            User savedUser = userRepository.save(user);
-//            Response response = new Response(true, "Successfully registered",savedUser.getEmail());
-//            return ResponseEntity.status(response.getStatus()).body(response);
 
             user.setEnabled(false);
             userRepository.save(user);
@@ -127,21 +128,10 @@ public class MyUserService implements UserDetailsService {
             return ResponseEntity.status(HttpStatus.CREATED).body(token);
         }
 
-
     public User getCurrentUser() {
         Jwt principal = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return userRepository.findByEmail(principal.getSubject()).orElseThrow(()
                 -> new UsernameNotFoundException("username Not found"));
-    }
-
-    private String generateVerificationToken(User savedUser) {
-        String token = UUID.randomUUID().toString();
-        VerificationToken verificationToken = new VerificationToken();
-        verificationToken.setToken(token);
-        verificationToken.setUser(savedUser);
-        verificationToken.setExpirationData(Instant.now().plus(1, ChronoUnit.HOURS));
-        verificationTokenRepository.save(verificationToken);
-        return token;
     }
 
     public void verifyAccount(String token) {
