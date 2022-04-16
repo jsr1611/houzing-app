@@ -29,7 +29,7 @@ import uz.digitalone.houzingapp.dto.response.AuthenticationResponse;
 import uz.digitalone.houzingapp.dto.response.Response;
 import uz.digitalone.houzingapp.entity.Role;
 import uz.digitalone.houzingapp.entity.User;
-import uz.digitalone.houzingapp.entity.VerificationToken;
+import uz.digitalone.houzingapp.entity.auth.VerificationToken;
 import uz.digitalone.houzingapp.repository.RoleRepository;
 import uz.digitalone.houzingapp.repository.UserRepository;
 import uz.digitalone.houzingapp.repository.VerificationTokenRepository;
@@ -54,9 +54,6 @@ public class MyUserService implements UserDetailsService {
     private final RefreshTokenService refreshTokenService;
     private final MailSerivce mailService;
     private final JwtProvider jwtProvider;
-    private final VerificationTokenRepository verificationTokenRepository;
-    private final MailService mailService;
-    public static User currentUser;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -95,50 +92,40 @@ public class MyUserService implements UserDetailsService {
 
         Boolean emailExists = null;
         if(dto != null && dto.getEmail() != null){
-            emailExists = emailExists(dto.getEmail());
+            emailExists = checkEmailExists(dto.getEmail());
         }
         if(emailExists!= null && emailExists)
             return ResponseEntity.status(422).body(new Response(false, "Email is invalid or already taken", dto.getEmail()));
 
+        User user = new User();
         assert dto != null;
-        User user = getCurrentUser();
         user.setFirstname(dto.getFirstname());
         user.setLastname(dto.getLastname());
         user.setEmail(dto.getEmail());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
 
         Set<Role> roles = new HashSet<>();
-        for(Long roleId : dto.getRoleIdSet()){
-            Optional<Role> byId = roleRepository.findById(roleId);
-            byId.ifPresent(roles::add);
-        }
-        user.setRoles(roles);
-        User savedUser = userRepository.save(user);
-        String token = generateVerificationToken(savedUser);
-        mailService.send(new NotificationEmail(
-                "Iltimos accountigizni activatsiya qiling",
-                user.getEmail(),
-                "<h1>Ushbu link orqali </h1>" + "http://localhost:8081/api/public/accountVerification/" + token));
-
-        Response response = new Response(true, "Successfully registered",savedUser.getEmail());
-        return ResponseEntity.status(response.getStatus()).body(response);
-        if (dto.getRoleIdSet() != null) {
-            for (Long roleId : dto.getRoleIdSet()) {
-                Optional<Role> byId = roleRepository.findById(roleId);
-                byId.ifPresent(roles::add);
+            if (dto.getRoleIdSet() != null) {
+                for (Long roleId : dto.getRoleIdSet()) {
+                    Optional<Role> byId = roleRepository.findById(roleId);
+                    byId.ifPresent(roles::add);
+                }
+                user.setRoles(roles);
             }
             user.setRoles(roles);
+//            User savedUser = userRepository.save(user);
+//            Response response = new Response(true, "Successfully registered",savedUser.getEmail());
+//            return ResponseEntity.status(response.getStatus()).body(response);
+
+            user.setEnabled(false);
+            userRepository.save(user);
+            String token = generateTokenForVerification(user);
+
+            mailService.send(new NotificationEmail("Accountingizni activatsia qiling",
+                    user.getEmail(), "<h1> Ushbu link orqali </h1>" +
+                    "http://loaclhost:9090/api/v1/auth/verification/" + token));
+            return ResponseEntity.status(HttpStatus.CREATED).body(token);
         }
-
-        user.setEnabled(false);
-        userRepository.save(user);
-        String token = generateTokenForVerification(user);
-
-         mailService.send(new NotificationEmail("Accountingizni activatsia qiling",
-                user.getEmail(), "<h1> Ushbu link orqali </h1>" +
-                "http://loaclhost:9090/api/v1/auth/verification/" + token));
-         return ResponseEntity.status(HttpStatus.CREATED).body(token);
-    }
 
 
     public User getCurrentUser() {
@@ -152,7 +139,7 @@ public class MyUserService implements UserDetailsService {
         VerificationToken verificationToken = new VerificationToken();
         verificationToken.setToken(token);
         verificationToken.setUser(savedUser);
-        verificationToken.setExpiryDate(Instant.now().plus(1, ChronoUnit.HOURS));
+        verificationToken.setExpirationData(Instant.now().plus(1, ChronoUnit.HOURS));
         verificationTokenRepository.save(verificationToken);
         return token;
     }
@@ -161,7 +148,7 @@ public class MyUserService implements UserDetailsService {
         Optional<VerificationToken> optionalVerificationToken = verificationTokenRepository.findByToken(token);
         if(optionalVerificationToken.isPresent()){
             VerificationToken verificationToken = optionalVerificationToken.get();
-            if(verificationToken.getExpiryDate().isBefore(Instant.now())){
+            if(verificationToken.getExpirationData().isBefore(Instant.now())){
                 throw new RuntimeException("Verification token expired");
             }
             User user = verificationToken.getUser();
@@ -177,7 +164,7 @@ public class MyUserService implements UserDetailsService {
      * @param email user email
      * @return "true" if user exists, else return "false"
      */
-    private Boolean emailExists(String email) {
+    private Boolean checkEmailExists(String email) {
         User user = findByEmail(email);
         return user != null;
     }
@@ -190,8 +177,6 @@ public class MyUserService implements UserDetailsService {
     private User findByEmail(String email) {
         Optional<User> userOptional = userRepository.findByEmail(email);
         return userOptional.orElse(null);
-        Optional<User> byEmail = userRepository.findByEmail(email);
-        return byEmail.orElse(null);
     }
 
     private String generateTokenForVerification(User user) {

@@ -24,7 +24,7 @@ public class MailServiceImpl implements MailSerivce {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(senderEmail);
         message.setSubject(notificationEmail.getSubject());
-        message.setTo(notificationEmail.getReceipt());
+        message.setTo(notificationEmail.getReceiver());
         message.setText(notificationEmail.getBody());
 
         try {

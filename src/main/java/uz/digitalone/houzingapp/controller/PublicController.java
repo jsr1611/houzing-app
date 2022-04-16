@@ -1,17 +1,9 @@
 package uz.digitalone.houzingapp.controller;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.*;
-import uz.digitalone.houzingapp.dto.request.LoginDto;
 import org.springframework.web.bind.annotation.*;
 import uz.digitalone.houzingapp.dto.request.RefreshTokenRequest;
 import uz.digitalone.houzingapp.dto.request.LoginRequest;
@@ -45,7 +37,7 @@ public class PublicController {
     }
 
     @PostMapping("/auth/login")
-    public HttpEntity<?> login(@Valid @RequestBody LoginDto dto, Errors errors){
+    public HttpEntity<?> login(@Valid @RequestBody LoginRequest dto, Errors errors){
         if (errors.hasErrors()) {
             return ResponseEntity.status(400).body(userService.getErrors(errors));
         }

@@ -33,7 +33,6 @@ import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthen
 import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
 import uz.digitalone.houzingapp.service.impl.MyUserService;
 
-import javax.servlet.http.HttpServletResponse;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Properties;
@@ -43,8 +42,8 @@ import java.util.Properties;
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private String senderEmail = "jimmy.sweetk@gmail.com";
-    private String senderEmailPassword = "abc123";
+    public static String senderEmail = "jimmy.sweetk@gmail.com";
+    public String senderEmailPassword = "abc123";
 
     private static final String[] WHITE_LIST = {
             "/api/public/**",
@@ -68,12 +67,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     RSAPrivateKey privateKey;
 
     private final MyUserService myUserService;
-    private final JwtFilter jwtFilter;
+//    private final JwtFilter jwtFilter;
 
     @Autowired
-    public SecurityConfiguration(@Lazy MyUserService myUserService, @Lazy JwtFilter jwtFilter) {
+    public SecurityConfiguration(@Lazy MyUserService myUserService) {
         this.myUserService = myUserService;
-        this.jwtFilter = jwtFilter;
+//        this.jwtFilter = jwtFilter;
     }
 
     @Override
