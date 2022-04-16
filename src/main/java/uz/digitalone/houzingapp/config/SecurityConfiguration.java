@@ -43,8 +43,8 @@ import java.util.Properties;
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    public static String senderEmail = "anaqa221@gmail.com";
-    public String senderEmailPassword = "Muzap2001";
+    private String senderEmail = "jimmy.sweetk@gmail.com";
+    private String senderEmailPassword = "abc123";
 
     private static final String[] WHITE_LIST = {
             "/api/public/**",
@@ -68,10 +68,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     RSAPrivateKey privateKey;
 
     private final MyUserService myUserService;
+    private final JwtFilter jwtFilter;
 
     @Autowired
-    public SecurityConfiguration(@Lazy MyUserService myUserService) {
+    public SecurityConfiguration(@Lazy MyUserService myUserService, @Lazy JwtFilter jwtFilter) {
         this.myUserService = myUserService;
+        this.jwtFilter = jwtFilter;
     }
 
     @Override

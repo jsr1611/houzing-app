@@ -17,6 +17,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 @MappedSuperclass
+@EntityListeners(value = {AuditingEntityListener.class})
 public abstract class AbcEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

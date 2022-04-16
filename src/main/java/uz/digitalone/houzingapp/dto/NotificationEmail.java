@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class NotificationEmail {
 
     private String subject;
-    private String receipt;
+    private String receiver;
     private String body;
 
 }

@@ -26,7 +26,7 @@ public class House extends AbcEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "house_details_id")
     private HouseDetails houseDetails;
 
@@ -34,7 +34,7 @@ public class House extends AbcEntity {
 
     private Double salePrice;
 
-    @ManyToOne(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "location_id")
     private Location location;
 
@@ -48,7 +48,7 @@ public class House extends AbcEntity {
 
     private String zipCode;
 
-    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    @OneToMany
     @ToString.Exclude
     private Set<Attachment> attachments = new HashSet<>();
 
@@ -58,7 +58,7 @@ public class House extends AbcEntity {
 
     private Boolean status;
 
-    @Column(name = "favorite")
+    @Column(nullable = true)
     private Boolean favorite;
 
     public House(String name, String description,

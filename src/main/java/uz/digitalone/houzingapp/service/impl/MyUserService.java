@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,6 +20,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
+import uz.digitalone.houzingapp.Exception.VerifyTokenNotFound;
 import uz.digitalone.houzingapp.dto.NotificationEmail;
 import uz.digitalone.houzingapp.dto.request.RefreshTokenRequest;
 import uz.digitalone.houzingapp.dto.request.LoginRequest;
@@ -30,7 +29,7 @@ import uz.digitalone.houzingapp.dto.response.AuthenticationResponse;
 import uz.digitalone.houzingapp.dto.response.Response;
 import uz.digitalone.houzingapp.entity.Role;
 import uz.digitalone.houzingapp.entity.User;
-import uz.digitalone.houzingapp.entity.auth.VerificationToken;
+import uz.digitalone.houzingapp.entity.VerificationToken;
 import uz.digitalone.houzingapp.repository.RoleRepository;
 import uz.digitalone.houzingapp.repository.UserRepository;
 import uz.digitalone.houzingapp.repository.VerificationTokenRepository;
@@ -42,13 +41,11 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class MyUserService implements UserDetailsService {
 
-    private final JavaMailSender javaMailSender;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
@@ -57,6 +54,9 @@ public class MyUserService implements UserDetailsService {
     private final RefreshTokenService refreshTokenService;
     private final MailSerivce mailService;
     private final JwtProvider jwtProvider;
+    private final VerificationTokenRepository verificationTokenRepository;
+    private final MailService mailService;
+    public static User currentUser;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -91,34 +91,14 @@ public class MyUserService implements UserDetailsService {
         }
     }
 
-
-    public void sendVerificationEmail(){
-        Integer code = generateCode();
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("jimmy.sweetk@gmail.com");
-        String toEmail = "gm.khamza@gmail.com";
-        message.setTo(toEmail);
-        message.setSubject("Confirmation Code");
-        message.setText(code.toString());
-        javaMailSender.send(message);
-
-    }
-
-    private Integer generateCode() {
-        Random random = new Random();
-        return random.nextInt(999999);
-    }
-
     public HttpEntity<?> register(RegUserDto dto) {
 
         Boolean emailExists = null;
         if(dto != null && dto.getEmail() != null){
             emailExists = emailExists(dto.getEmail());
         }
-        if(emailExists != null && emailExists) {
-            return ResponseEntity.status(422).body(new Response(false,
-                    "Email is invalid or already taken", dto.getEmail()));
-        }
+        if(emailExists!= null && emailExists)
+            return ResponseEntity.status(422).body(new Response(false, "Email is invalid or already taken", dto.getEmail()));
 
         assert dto != null;
         User user = getCurrentUser();
@@ -128,6 +108,20 @@ public class MyUserService implements UserDetailsService {
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
 
         Set<Role> roles = new HashSet<>();
+        for(Long roleId : dto.getRoleIdSet()){
+            Optional<Role> byId = roleRepository.findById(roleId);
+            byId.ifPresent(roles::add);
+        }
+        user.setRoles(roles);
+        User savedUser = userRepository.save(user);
+        String token = generateVerificationToken(savedUser);
+        mailService.send(new NotificationEmail(
+                "Iltimos accountigizni activatsiya qiling",
+                user.getEmail(),
+                "<h1>Ushbu link orqali </h1>" + "http://localhost:8081/api/public/accountVerification/" + token));
+
+        Response response = new Response(true, "Successfully registered",savedUser.getEmail());
+        return ResponseEntity.status(response.getStatus()).body(response);
         if (dto.getRoleIdSet() != null) {
             for (Long roleId : dto.getRoleIdSet()) {
                 Optional<Role> byId = roleRepository.findById(roleId);
@@ -153,6 +147,31 @@ public class MyUserService implements UserDetailsService {
                 -> new UsernameNotFoundException("username Not found"));
     }
 
+    private String generateVerificationToken(User savedUser) {
+        String token = UUID.randomUUID().toString();
+        VerificationToken verificationToken = new VerificationToken();
+        verificationToken.setToken(token);
+        verificationToken.setUser(savedUser);
+        verificationToken.setExpiryDate(Instant.now().plus(1, ChronoUnit.HOURS));
+        verificationTokenRepository.save(verificationToken);
+        return token;
+    }
+
+    public void verifyAccount(String token) {
+        Optional<VerificationToken> optionalVerificationToken = verificationTokenRepository.findByToken(token);
+        if(optionalVerificationToken.isPresent()){
+            VerificationToken verificationToken = optionalVerificationToken.get();
+            if(verificationToken.getExpiryDate().isBefore(Instant.now())){
+                throw new RuntimeException("Verification token expired");
+            }
+            User user = verificationToken.getUser();
+            user.setEnabled(true);
+            userRepository.save(user);
+        }else {
+            throw new VerifyTokenNotFound("Verify token not found");
+        }
+    }
+
     /**
      * Check if user exists by email
      * @param email user email
@@ -169,6 +188,8 @@ public class MyUserService implements UserDetailsService {
      * @return user object
      */
     private User findByEmail(String email) {
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        return userOptional.orElse(null);
         Optional<User> byEmail = userRepository.findByEmail(email);
         return byEmail.orElse(null);
     }
