@@ -37,7 +37,7 @@ public class HouseController {
 
     @ApiOperation("Ushbu API filterlar bo`yicha va sahifalarga ajratilgan holda barcha uy e`lonlarini chaqirib olishga mo`ljallangan.")
     @ApiPageable
-    @GetMapping
+    @GetMapping("/list")
     public HttpEntity<?> getAll(
                         @RequestParam(value = "house_name", required = false) String houseName,
                         @RequestParam(value = "first_name", required = false) String firstName,
