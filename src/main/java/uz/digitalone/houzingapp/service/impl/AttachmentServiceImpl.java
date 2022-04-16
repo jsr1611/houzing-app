@@ -34,7 +34,7 @@ public class AttachmentServiceImpl implements AttachmentService {
 
     @Override
     public Attachment create(String imgPath) {
-        return  attachmentRepository.save(new Attachment(imgPath, false));
+        return attachmentRepository.save(new Attachment(imgPath, false));
     }
 
     @Override
@@ -75,7 +75,7 @@ public class AttachmentServiceImpl implements AttachmentService {
 
     @Override
     public HttpEntity<?> edit(Long id, String imgPath) {
-        Response response = null;
+        Response response;
         Attachment attachment = findById(id);
         if(attachment != null){
             attachment.setImgPath(imgPath);
@@ -132,6 +132,7 @@ public class AttachmentServiceImpl implements AttachmentService {
                 // new attachments
                 for (AttachmentDto attachmentDto : newList) {
                     attachmentExists = false;
+                    assert oldList != null;
                     for (Attachment attachment : oldList) {
                         if(attachmentDto.getImgPath().equals(attachment.getImgPath())){
                             attachmentExists = true;

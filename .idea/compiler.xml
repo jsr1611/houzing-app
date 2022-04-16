@@ -17,7 +17,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="houzing-app" target="1.8" />
+      <module name="houzing-app" target="8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
