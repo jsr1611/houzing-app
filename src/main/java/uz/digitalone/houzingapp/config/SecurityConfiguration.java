@@ -1,25 +1,40 @@
 package uz.digitalone.houzingapp.config;
 
+import com.nimbusds.jose.jwk.JWK;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+import com.nimbusds.jose.jwk.source.JWKSource;
+import com.nimbusds.jose.proc.SecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import uz.digitalone.houzingapp.security.JwtFilter;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
+import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
 import uz.digitalone.houzingapp.service.impl.MyUserService;
 
-import javax.servlet.http.HttpServletResponse;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 import java.util.Properties;
 
 @Configuration
@@ -27,6 +42,8 @@ import java.util.Properties;
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    public static String senderEmail = "jimmy.sweetk@gmail.com";
+    public String senderEmailPassword = "abc123";
 
     private static final String[] WHITE_LIST = {
             "/api/public/**",
@@ -43,13 +60,19 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             "/swagger-ui/**"
     };
 
+    @Value("${lorem.ipsum.dolor.jwt.public.key}")
+    RSAPublicKey publicKey;
+
+    @Value("${lorem.ipsum.dolor.jwt.private.key}")
+    RSAPrivateKey privateKey;
+
     private final MyUserService myUserService;
-    private final JwtFilter jwtFilter;
+//    private final JwtFilter jwtFilter;
 
     @Autowired
-    public SecurityConfiguration(@Lazy MyUserService myUserService, @Lazy JwtFilter jwtFilter) {
+    public SecurityConfiguration(@Lazy MyUserService myUserService) {
         this.myUserService = myUserService;
-        this.jwtFilter = jwtFilter;
+//        this.jwtFilter = jwtFilter;
     }
 
     @Override
@@ -58,10 +81,31 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
 
-    @Bean
+    @Bean(name = BeanIds.AUTHENTICATION_MANAGER)
     @Override
     protected AuthenticationManager authenticationManager() throws Exception {
         return super.authenticationManager();
+    }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+                .cors()
+                .and()
+                .csrf()
+                .disable()
+                .authorizeHttpRequests(authorize ->
+                        authorize.antMatchers(WHITE_LIST)
+                                .permitAll()
+                                .anyRequest().authenticated()
+                )
+                .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(exeptions ->
+                        exeptions
+                                .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
+                                .accessDeniedHandler(new BearerTokenAccessDeniedHandler())
+                );
     }
 
     @Bean
@@ -69,41 +113,34 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                .cors().and().authorizeRequests()
-                .and()
-                .csrf().disable()
-                .authorizeRequests()
-                .antMatchers(WHITE_LIST).permitAll()
-                .anyRequest()
-                .authenticated();
-        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        // Set unauthorized requests exception handler
-        http
-                .exceptionHandling()
-                .authenticationEntryPoint(
-                        (request, response, ex) -> {
-                            response.sendError(
-                                    HttpServletResponse.SC_UNAUTHORIZED,
-                                    ex.getMessage()
-                            );
-                        }
-                );
+    @Bean
+    public JwtDecoder decoder(OAuth2ResourceServerProperties properties){
+        return NimbusJwtDecoder
+                .withPublicKey(publicKey).build();
+    }
+
+    @Bean
+    public JwtEncoder jwtEncoder(){
+        JWK jwk = new RSAKey.Builder(this.publicKey).privateKey(this.privateKey).build();
+        JWKSource<SecurityContext> contextJWKSource = new ImmutableJWKSet<>(new JWKSet(jwk));
+        return new NimbusJwtEncoder(contextJWKSource);
     }
 
     @Bean
     public JavaMailSender javaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost("smtp.gmail.com");
+        mailSender.setHost("smtp.mailgun.org");
         mailSender.setPort(587);
-        mailSender.setUsername("uzbdevjs@gmail.com"); // Bu yerga qaysi emaildan xabar jonatmoqchi ekanligingizni kiritasiz!!!
-        mailSender.setPassword("parol2022$$"); // Shu emailning kodi kiritiladi
+
+        mailSender.setUsername(senderEmail);
+        mailSender.setPassword(senderEmailPassword);
+
         Properties props = mailSender.getJavaMailProperties();
-        props.put("mail.smtp.starttls.enable", "true");
-        mailSender.setJavaMailProperties(props);
+        props.put("mail.transport.protocol", "smtp");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls", "true");
+        props.put("mail.debug", "true");
+
         return mailSender;
     }
 }

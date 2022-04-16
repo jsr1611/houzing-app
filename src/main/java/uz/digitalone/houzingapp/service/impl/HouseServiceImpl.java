@@ -1,7 +1,6 @@
 package uz.digitalone.houzingapp.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -19,7 +18,6 @@ import uz.digitalone.houzingapp.service.*;
 import javax.persistence.criteria.Predicate;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -32,12 +30,13 @@ public class HouseServiceImpl implements HouseService {
     private final AttachmentService attachmentService;
     private final HouseMapper houseMapper;
     private final AttachmentMapper attachmentMapper;
+    private final MyUserService myUserService;
 
 
     @Override
     public HttpEntity<?> create(HouseDto dto) {
         House house = new House();
-        User user = MyUserService.currentUser;
+        User user = myUserService.getCurrentUser();
         house.setUser(user);
         house.setName(dto.getName());
         house.setDescription(dto.getDescription());
@@ -73,13 +72,17 @@ public class HouseServiceImpl implements HouseService {
             Set<Attachment> attachmentList = attachmentService.createList(attachmentDto);
             house.setAttachments(attachmentList);
         }
-        Category category = categoryService.findById(dto.getCategoryId());
+        Category category = null;
+        if (dto.getCategoryId() != null) {
+            category = categoryService.findById(dto.getCategoryId());
+        }
         if(category != null)
             house.setCategory(category);
         if(house.getHouseDetails() == null)
             return ResponseEntity.status(400).body(new Response(false, "Error with house Details or status info", detailsDto));
         house.setStatus(true);
-        house = houseRepository.save(house);
+        house.setFavorite(dto.getFavorite());
+        houseRepository.save(house);
         uz.digitalone.houzingapp.dto.response.HouseDto result = houseMapper.fromEntity(house);
         Response response = new Response(true, "Successfully created.", result);
         return ResponseEntity.ok(response);
@@ -325,7 +328,7 @@ public class HouseServiceImpl implements HouseService {
 
     @Override
     public HttpEntity<?> findMyHouses(String houseName, Boolean status, LocalDateTime createdAt, Pageable pageable) {
-        User user = MyUserService.currentUser;
+        User user = myUserService.getCurrentUser();
         Response response = null;
         List<uz.digitalone.houzingapp.dto.response.HouseDto> result = null;
         if (user != null){
