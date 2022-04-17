@@ -54,20 +54,22 @@ public class MyUserService implements UserDetailsService {
     private final RefreshTokenService refreshTokenService;
     private final MailSerivce mailService;
     private final JwtProvider jwtProvider;
+    public static User currentUser = new User();
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(username).orElseThrow(()
                 -> new IllegalArgumentException("Email not found"));
-        return new org.springframework.security.core.userdetails.User(
-                user.getUsername(),
-                user.getPassword(),
-                user.getEnabled(),
-                true,
-                true,
-                true,
-                grantedAuthority("USER")
-        );
+//        return new org.springframework.security.core.userdetails.User(
+//                user.getUsername(),
+//                user.getPassword(),
+//                user.getEnabled(),
+//                true,
+//                true,
+//                true,
+//                grantedAuthority("USER")
+//        );
+        return user;
     }
 
     private Collection<? extends GrantedAuthority> grantedAuthority(String user) {
@@ -97,7 +99,7 @@ public class MyUserService implements UserDetailsService {
         if(emailExists!= null && emailExists)
             return ResponseEntity.status(422).body(new Response(false, "Email is invalid or already taken", dto.getEmail()));
 
-        User user = new User();
+        User user = currentUser;
         assert dto != null;
         user.setFirstname(dto.getFirstname());
         user.setLastname(dto.getLastname());
@@ -132,16 +134,6 @@ public class MyUserService implements UserDetailsService {
         Jwt principal = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return userRepository.findByEmail(principal.getSubject()).orElseThrow(()
                 -> new UsernameNotFoundException("username Not found"));
-    }
-
-    private String generateVerificationToken(User savedUser) {
-        String token = UUID.randomUUID().toString();
-        VerificationToken verificationToken = new VerificationToken();
-        verificationToken.setToken(token);
-        verificationToken.setUser(savedUser);
-        verificationToken.setExpirationData(Instant.now().plus(1, ChronoUnit.HOURS));
-        verificationTokenRepository.save(verificationToken);
-        return token;
     }
 
     public void verifyAccount(String token) {
@@ -198,7 +190,7 @@ public class MyUserService implements UserDetailsService {
                         new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authenticate);
-        String generateToken = jwtProvider.generateToken((org.springframework.security.core.userdetails.User) authenticate.getPrincipal());
+        String generateToken = jwtProvider.generateToken((User) authenticate.getPrincipal());
         // TODO: 2/25/22 check if user login details match, if not handle it.
 
         AuthenticationResponse response = AuthenticationResponse.builder()
@@ -243,6 +235,6 @@ public class MyUserService implements UserDetailsService {
 
     public ResponseEntity<String> logout(RefreshTokenRequest request) {
         refreshTokenService.refreshTokenDelete(request);
-        return ResponseEntity.status(200).body("Successfully logged auth");
+        return ResponseEntity.status(200).body("Successfully logged out");
     }
 }
