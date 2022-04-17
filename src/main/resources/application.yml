@@ -1,10 +1,13 @@
 spring:
   datasource:
-    username: apvnhdvclqlzpi
-    url: jdbc:postgresql://ec2-3-216-221-31.compute-1.amazonaws.com:5432/der98mr91l54a5
-    password: 7215228eb24d01ccd36f305ee5ab3bcaa5697f14badb9e4f2d22639ff0e1ca4c
+    username: postgres
+    url: jdbc:postgresql://localhost:5432/houzing_db
+    password: 0075336
     driverClassName: org.postgresql.Driver
-
+    http:
+      multipart:
+        max-file-size: 200MB
+        max-request-size: 200MB
   jpa:
     hibernate:
       ddl-auto: update
@@ -23,3 +26,15 @@ lorem:
           key: classpath:app.key
         public:
           key: classpath:app.pub
+
+#refreshtoken :  1//04jIJ4db1JDlDCgYIARAAGAQSNwF-L9IrgXRD0me9m71_IykJ5OTXc1x0JXK5-NyAfXXyeGQXGJap3JRAuF7zl6wQx_-jK2WeJCw
+#access token :  ya29.A0ARrdaM_dyH-DQ-Yo-tT380QUqpBVUGM949utXc_KtWf7ACrRP7opLzEb4rqBX4iWiypZSpYZ4lSj6m_Eprf5Kr2ubsPOxFrHmRXFz1uAn9Ju8fLUrmmBFZ15dAetnaJpEian0xYWkdxbOM7ZNlM5z_-Cq64R
+#client ID:  644815879451-llaqrjnatis7dv6omm3teip9vrh7qai7.apps.googleusercontent.com
+#Client secret : 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
+
+
+google:
+  service_account_email: houzing-app-account@houzingapp.iam.gserviceaccount.com
+  application_name: HouzingApp
+  folder_id: 191lNW_xnwlW_0ZrNVNahQkuDgcj0n40p
+  service_account_key: houzingapp-82b7d16e4d10.json

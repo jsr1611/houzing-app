@@ -14,7 +14,6 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "attachment")
@@ -27,6 +26,11 @@ public class Attachment extends AbcEntity {
 
     @Column(name =  "deleted")
     private  boolean deleted;
+
+    public Attachment(String imgPath, boolean deleted) {
+        this.imgPath = imgPath;
+        this.deleted = deleted;
+    }
 
     @Override
     public boolean equals(Object o) {

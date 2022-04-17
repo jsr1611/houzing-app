@@ -19,6 +19,7 @@ public class HouseDetailsController {
         return houseDetailsService.save(dto);
     }
 
+
     @GetMapping
     public HttpEntity<?> findAll() {
         return houseDetailsService.findAll();

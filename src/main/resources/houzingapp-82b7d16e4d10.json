@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "houzingapp",
+  "private_key_id": "82b7d16e4d10553acc7eb3dad25fcd74e05b67c9",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCRxIHrp/Q9E87I\ntq3+fL1Qk6UHAqn2I8fNJY2PeJ2NRTZGhtmfi2RHQh23M9VJJdcICmGF/PZJqrpF\nq+tTUQqyProjWZeXfyOjvuiCOPWu7iMgfIFh77FnXp8EjWEN9r9SkcJJPAXakAmf\nXzSM0pPuSe+kyGzW0klxLdBqL35xYghuZTpQSiWXzQmTKLq+RXQpyTPl2enRs7Nc\nz+oqiMoPuagUeME/lJy8eLbIGwS/1e8C+oO1JsWwK0nr9EJBcAG4tDwAca5Qcx7Q\nYek3tgk4Cke8JJ2s3ANA2XqajS9eS/k24d7cKyqZts4/riEJ6qEKgU6Iaba5lNPs\nhSIVpfu3AgMBAAECggEAEBlJ2AL2oIA9iEFUuhSAvBNyWHHc34hYGroZBk1l6SJJ\nukROaKZ2bsBIk+EvnyKEuyiaWLf1Y3FtnSA9nzgGHGV9HUZZzauG/iCpgShVSfqW\n+pGFoJFeYHI80b3jiC1GOBJNCNWON/NMfMOBBESFff3Ab8yK6LbU0aEjsXaJWnA0\nnD0mfRASZOZlrV8Rq5/BZyPvF6ciO0R5eTd94khxGQqrMTm0XvRKEEuEuqh4VWuh\nDBxpOT/bwgMig/c7eT5uSQlhi2twFHG8r9dQeuzOuHbVJ5Lc93dHnW40Po9DUYZj\nKJRty5/x6dWg307R9Mj3HFPEDUwY9BRaiDalW0qAMQKBgQDFWvI4jBxCMFvNh/eu\nluqOtCnlhGF+imq5Rrq1BlkuN4AeF9dCG/OZTtxvlbAPoONygqDHTwop/IE7y/ZW\ntS4+5d5oG+nC68cam+bt038t0hYbHVJp7VwM8DXtEfNyf9v9RMlBZyQ5gL6oIp0R\n0AK5jIN6l14jZE9CQE4bSEbRGwKBgQC9FTnlUnvcS8GAYnSizPj1fDlvgCmfC1hf\nHFgoRmlaSfq3MShEMPmcoCHLeGfhdaxMRHRtd6/rW2w2McGHpjiU7wAt18Nte/N+\nB8YqNh5S1FIOit9XGvR/8hGh4QpJL00WFZ8A6Zy1wZ/X2C3OFzY29KiTUgV7s06H\n9io8/VZFlQKBgA75uLmbwCUxoDW3ZI8F+qR7fVZiNjew7ypB+Lb11VyRb5JZAseM\ncW6nskhxVlvJPJka2nJlSAMpmvDbqESqGOlC7h5+R723wHL/c4WGb/cdIvpJvlA1\nZ6+/pofnvc5pb1sHljH1TqViZJVDkyGf5CUKSYvK4qTS3sTLNmIRmPYTAoGALrmH\nFA89AmRKDfLGhdCHGQq4msAeCOphzScQ9erob+JmLUzdeXRsynKbx08axJEyoaos\n5zwzYcK2y/GhtGa0BsHE1o9CANUnh5ZeNuImvisvl95jcH/9uXxVNR6KTyl8MB/p\nqe0Qx61wVYNbVllQEWaGHdmf90CJAHopV+b2ob0CgYBO41hXCA1ZnuY4Ea52uAK1\n5jmPkInahSsM7k1yDurAChfTv3kl6d2z4ACqarfn2bZKOQ49m64c6sr+6IgvkEFh\nSgwcMaxg8Pgi91Nn/0hvY7AZk4GBwWdNMab/ZgtoMJqPE3PwtEYHyfJh03BWyXXe\nnYdeDmvZCMRu+ORTjpqJpw==\n-----END PRIVATE KEY-----\n",
+  "client_email": "houzing-app-account@houzingapp.iam.gserviceaccount.com",
+  "client_id": "105932684969492579222",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/houzing-app-account%40houzingapp.iam.gserviceaccount.com"
+}

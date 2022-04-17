@@ -7,6 +7,7 @@ package uz.digitalone.houzingapp.service.impl;
  */
 
 
+import com.google.api.services.drive.model.File;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +27,7 @@ import java.util.*;
 public class AttachmentServiceImpl implements AttachmentService {
 
     private final AttachmentRepository attachmentRepository;
+    private final GoogleDriveServiceImpl googleDriveService;
 
     @Override
     public HttpEntity<?> save(AttachmentDto dto) {
@@ -34,7 +36,9 @@ public class AttachmentServiceImpl implements AttachmentService {
 
     @Override
     public Attachment create(String imgPath) {
-        return attachmentRepository.save(new Attachment(imgPath, false));
+        googleDriveService.uploadFile(imgPath);
+        return  new Attachment(imgPath, false);
+        // return attachmentRepository.save(new Attachment(imgPath, false));
     }
 
     @Override
