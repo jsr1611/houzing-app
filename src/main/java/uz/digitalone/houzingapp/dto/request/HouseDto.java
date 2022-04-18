@@ -42,8 +42,9 @@ public class HouseDto {
     @Valid
     private Set<AttachmentDto> attachments;
     private Long categoryId;
-    private Boolean status;
+    private Boolean isSold;
     private Boolean favorite;
+    private String status;
 
     private HomeAmenitiesDto homeAmenitiesDto;
     private HouseComponentsDto componentsDto;

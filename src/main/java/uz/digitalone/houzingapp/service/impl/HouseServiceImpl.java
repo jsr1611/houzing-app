@@ -8,9 +8,13 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import uz.digitalone.houzingapp.dto.request.*;
+import uz.digitalone.houzingapp.dto.request.AttachmentDto;
+import uz.digitalone.houzingapp.dto.request.HouseDetailsDto;
+import uz.digitalone.houzingapp.dto.request.HouseDto;
+import uz.digitalone.houzingapp.dto.request.LocationDto;
 import uz.digitalone.houzingapp.dto.response.Response;
 import uz.digitalone.houzingapp.entity.*;
+import uz.digitalone.houzingapp.enums.Status;
 import uz.digitalone.houzingapp.mapper.HomeAmenitiesMapper;
 import uz.digitalone.houzingapp.mapper.HouseComponentMapper;
 import uz.digitalone.houzingapp.mapper.HouseMapper;
@@ -95,9 +99,9 @@ public class HouseServiceImpl implements HouseService {
             house.setCategory(category);
         if(house.getHouseDetails() == null)
             return ResponseEntity.status(400).body(new Response(false, "Error with house Details or status info", detailsDto));
-        house.setStatus(true);
-        house.setFavorite(dto.getFavorite());
-        houseRepository.save(house);
+        house.setIsSold(true);
+        house.setStatus(Status.getStatus(dto.getStatus()));
+        house = houseRepository.save(house);
         uz.digitalone.houzingapp.dto.response.HouseDto result = houseMapper.fromEntity(house);
         result.setHomeAmenitiesDto(homeAmenitiesMapper.toDto(homeAmenities));
         result.setHouseComponentsDto(houseComponentMapper.toDto(houseComponents));
@@ -294,10 +298,13 @@ public class HouseServiceImpl implements HouseService {
                 house.setPrice(dto.getPrice());
             if(dto.getSalePrice() != null && dto.getSalePrice() != house.getSalePrice())
                 house.setSalePrice(dto.getSalePrice());
-            if(dto.getStatus() != null && !dto.getStatus().equals(house.getStatus()))
-                house.setStatus(dto.getStatus());
+            if(dto.getIsSold() != null && !dto.getIsSold().equals(house.getIsSold()))
+                house.setIsSold(dto.getIsSold());
             if(dto.getFavorite() != null && !dto.getFavorite().equals(house.getFavorite())){
                 house.setFavorite(dto.getFavorite());
+            }
+            if (dto.getStatus() != null && !dto.getStatus().equals(house.getStatus())){
+                house.setStatus(Status.getStatus(dto.getStatus()));
             }
             if(dto.getHouseDetails() != null){
                 HouseDetails houseDetails = houseDetailsService.updateById(house.getHouseDetails().getId(), dto.getHouseDetails());
