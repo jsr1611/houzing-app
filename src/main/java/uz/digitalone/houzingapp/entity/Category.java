@@ -23,7 +23,7 @@ public class Category extends AbcEntity {
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "parent_id", nullable = true)
+    @JoinColumn(name = "parent_id")
     private Category parent;
 
 }
