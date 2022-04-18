@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -60,6 +61,9 @@ public class MyUserService implements UserDetailsService {
     private final MailSerivce mailService;
     private final JwtProvider jwtProvider;
     public static User currentUser = new User();
+
+    @Value("${server.port}")
+    private Integer port;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -125,10 +129,12 @@ public class MyUserService implements UserDetailsService {
             user.setEnabled(false);
             userRepository.save(user);
             String token = generateTokenForVerification(user);
+            String link = "<a href=\"http://loaclhost:" +port+"/api/v1/auth/verification/" + token + "\", target=\"_blank\">Faollashtirish uchun havola</a>";
+            SimpleMailMessage msg = new SimpleMailMessage();
 
-            mailService.send(new NotificationEmail("Accountingizni activatsia qiling",
-                    user.getEmail(), "<h1> Ushbu link orqali </h1>" +
-                    "http://loaclhost:9090/api/v1/auth/verification/" + token));
+
+            mailService.send(new NotificationEmail("Akkountingizni faollashtiring",
+                    user.getEmail(), "<h1>Ushbu havola orqali akkountingizni faollashtiring: " + link + "</h1>"));
             return ResponseEntity.status(HttpStatus.CREATED).body(token);
         }
 

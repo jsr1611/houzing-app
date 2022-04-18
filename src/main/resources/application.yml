@@ -1,8 +1,8 @@
 spring:
   datasource:
-    username: postgres
-    url: jdbc:postgresql://localhost:5432/houzing_db
-    password: postgres
+    username: apvnhdvclqlzpi
+    url: jdbc:postgresql://ec2-3-216-221-31.compute-1.amazonaws.com:5432/der98mr91l54a5
+    password: 7215228eb24d01ccd36f305ee5ab3bcaa5697f14badb9e4f2d22639ff0e1ca4c
     driverClassName: org.postgresql.Driver
   jpa:
     hibernate:
@@ -10,7 +10,7 @@ spring:
     show-sql: true
     #database-platform: org.hibernate.dialect.PostgreSQLDialect
 server:
-  port: 8082
+  port: 8081
 jwt:
   expiration:
     time: 18_000_000_000
