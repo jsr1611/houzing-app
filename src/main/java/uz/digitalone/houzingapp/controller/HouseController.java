@@ -5,11 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
-import uz.digitalone.houzingapp.config.aop.CurrentUser;
 import uz.digitalone.houzingapp.dto.request.HouseDto;
 import uz.digitalone.houzingapp.service.HouseService;
 import uz.digitalone.houzingapp.service.impl.MyUserService;
@@ -37,7 +35,7 @@ public class HouseController {
 
     @ApiOperation("Ushbu API filterlar bo`yicha va sahifalarga ajratilgan holda barcha uy e`lonlarini chaqirib olishga mo`ljallangan.")
     @ApiPageable
-    @GetMapping
+    @GetMapping("/list")
     public HttpEntity<?> getAll(
                         @RequestParam(value = "house_name", required = false) String houseName,
                         @RequestParam(value = "first_name", required = false) String firstName,
