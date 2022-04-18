@@ -68,12 +68,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     RSAPrivateKey privateKey;
 
     private final MyUserService myUserService;
-//    private final JwtFilter jwtFilter;
 
     @Autowired
     public SecurityConfiguration(@Lazy MyUserService myUserService) {
         this.myUserService = myUserService;
-//        this.jwtFilter = jwtFilter;
     }
 
     @Override

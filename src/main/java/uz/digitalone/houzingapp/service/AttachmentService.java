@@ -12,7 +12,6 @@ import org.springframework.http.HttpEntity;
 import uz.digitalone.houzingapp.dto.request.AttachmentDto;
 import uz.digitalone.houzingapp.entity.Attachment;
 
-import java.util.List;
 import java.util.Set;
 
 public interface AttachmentService {

@@ -10,20 +10,20 @@ import java.time.LocalDateTime;
 
 public interface HouseService {
 
-    public HttpEntity<?> create(HouseDto dto);
+   HttpEntity<?> create(HouseDto dto);
 
-    public HttpEntity<?> findAll(
-            String houseName, String firstName, String lastName, Integer room,
-            Double minPrice, Double maxPrice, String address, String city,
-            String region, String country, String zipCode, @ApiIgnore Pageable pageable);
+   HttpEntity<?> findAll(
+    String houseName, String firstName, String lastName, Integer room,
+    Double minPrice, Double maxPrice, String address, String city,
+    String region, String country, String zipCode, @ApiIgnore Pageable pageable);
 
-    public HttpEntity<?> findOneById(Long id);
+   HttpEntity<?> findOneById(Long id);
 
-    public House findById(Long id);
+   House findById(Long id);
 
-    public HttpEntity<?> edit(Long id, HouseDto dto);
+   HttpEntity<?> edit(Long id, HouseDto dto);
 
-    public HttpEntity<?> delete(Long id);
+   HttpEntity<?> delete(Long id);
 
     HttpEntity<?> findMyHouses(String houseName, Boolean status, LocalDateTime createdAt, Pageable pageable);
 }

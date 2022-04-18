@@ -11,11 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import uz.digitalone.houzingapp.entity.Attachment;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.util.List;
 import java.util.Set;
 
 @Data
@@ -47,4 +44,7 @@ public class HouseDto {
     private Long categoryId;
     private Boolean status;
     private Boolean favorite;
+
+    private HomeAmenitiesDto homeAmenitiesDto;
+    private HouseComponentsDto componentsDto;
 }

@@ -7,11 +7,15 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import uz.digitalone.houzingapp.dto.request.*;
 import uz.digitalone.houzingapp.dto.response.Response;
 import uz.digitalone.houzingapp.entity.*;
-import uz.digitalone.houzingapp.mapper.AttachmentMapper;
+import uz.digitalone.houzingapp.mapper.HomeAmenitiesMapper;
+import uz.digitalone.houzingapp.mapper.HouseComponentMapper;
 import uz.digitalone.houzingapp.mapper.HouseMapper;
+import uz.digitalone.houzingapp.repository.HomeAmenitiesRepository;
+import uz.digitalone.houzingapp.repository.HouseComponentsRepository;
 import uz.digitalone.houzingapp.repository.HouseRepository;
 import uz.digitalone.houzingapp.service.*;
 
@@ -21,6 +25,7 @@ import java.util.*;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class HouseServiceImpl implements HouseService {
 
     private final HouseRepository houseRepository;
@@ -29,9 +34,11 @@ public class HouseServiceImpl implements HouseService {
     private final CategoryService categoryService;
     private final AttachmentService attachmentService;
     private final HouseMapper houseMapper;
-    private final AttachmentMapper attachmentMapper;
     private final MyUserService myUserService;
-
+    private final HouseComponentMapper houseComponentMapper;
+    private final HomeAmenitiesMapper homeAmenitiesMapper;
+    private final HouseComponentsRepository componentsRepository;
+    private final HomeAmenitiesRepository homeAmenitiesRepository;
 
     @Override
     public HttpEntity<?> create(HouseDto dto) {
@@ -47,6 +54,14 @@ public class HouseServiceImpl implements HouseService {
             if(details != null && details.getRoom()>0)
                 house.setHouseDetails(details);
         }
+        HomeAmenities homeAmenities = homeAmenitiesMapper.fromDto(dto.getHomeAmenitiesDto());
+        homeAmenitiesRepository.save(homeAmenities);
+        house.setHomeAmenities(homeAmenities);
+
+        HouseComponents houseComponents = houseComponentMapper.fromDto(dto.getComponentsDto());
+        componentsRepository.save(houseComponents);
+        house.setHouseComponents(houseComponents);
+
         house.setPrice(dto.getPrice());
         house.setSalePrice(dto.getSalePrice());
         LocationDto locationDto = dto.getLocations();
@@ -84,6 +99,8 @@ public class HouseServiceImpl implements HouseService {
         house.setFavorite(dto.getFavorite());
         houseRepository.save(house);
         uz.digitalone.houzingapp.dto.response.HouseDto result = houseMapper.fromEntity(house);
+        result.setHomeAmenitiesDto(homeAmenitiesMapper.toDto(homeAmenities));
+        result.setHouseComponentsDto(houseComponentMapper.toDto(houseComponents));
         Response response = new Response(true, "Successfully created.", result);
         return ResponseEntity.ok(response);
     }
@@ -329,8 +346,8 @@ public class HouseServiceImpl implements HouseService {
     @Override
     public HttpEntity<?> findMyHouses(String houseName, Boolean status, LocalDateTime createdAt, Pageable pageable) {
         User user = myUserService.getCurrentUser();
-        Response response = null;
-        List<uz.digitalone.houzingapp.dto.response.HouseDto> result = null;
+        Response response;
+        List<uz.digitalone.houzingapp.dto.response.HouseDto> result;
         if (user != null){
 
             Page<House> houseListPage = houseRepository.findAll(
