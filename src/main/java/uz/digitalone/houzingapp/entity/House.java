@@ -10,6 +10,7 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 import java.io.Serializable;
 import java.time.Instant;
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -94,6 +95,15 @@ public class House extends AbcEntity implements Serializable {
         this.isSold = isSold;
         this.favorite = favorite;
         this.status = status;
+        this.status = status;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        House house = (House) o;
+        return getId() != null && Objects.equals(getId(), house.getId());
     }
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "home_amenities_id", referencedColumnName = "id")
