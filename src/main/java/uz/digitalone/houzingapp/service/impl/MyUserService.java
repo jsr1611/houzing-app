@@ -59,20 +59,22 @@ public class MyUserService implements UserDetailsService {
     private final RefreshTokenService refreshTokenService;
     private final MailSerivce mailService;
     private final JwtProvider jwtProvider;
+    public static User currentUser = new User();
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(username).orElseThrow(()
                 -> new IllegalArgumentException("Email not found"));
-        return new org.springframework.security.core.userdetails.User(
-                user.getUsername(),
-                user.getPassword(),
-                user.getEnabled(),
-                true,
-                true,
-                true,
-                grantedAuthority("USER")
-        );
+//        return new org.springframework.security.core.userdetails.User(
+//                user.getUsername(),
+//                user.getPassword(),
+//                user.getEnabled(),
+//                true,
+//                true,
+//                true,
+//                grantedAuthority("USER")
+//        );
+        return user;
     }
 
     private Collection<? extends GrantedAuthority> grantedAuthority(String user) {
@@ -101,6 +103,7 @@ public class MyUserService implements UserDetailsService {
         }
         if(emailExists!= null && emailExists)
             return ResponseEntity.status(422).body(new Response(false, "Email is invalid or already taken", dto.getEmail()));
+
 
         assert dto != null;
         User user = new User();
@@ -189,7 +192,7 @@ public class MyUserService implements UserDetailsService {
                         new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authenticate);
-        String generateToken = jwtProvider.generateToken((org.springframework.security.core.userdetails.User) authenticate.getPrincipal());
+        String generateToken = jwtProvider.generateToken((User) authenticate.getPrincipal());
         // TODO: 2/25/22 check if user login details match, if not handle it.
 
         AuthenticationResponse response = AuthenticationResponse.builder()
@@ -234,6 +237,6 @@ public class MyUserService implements UserDetailsService {
 
     public ResponseEntity<String> logout(RefreshTokenRequest request) {
         refreshTokenService.refreshTokenDelete(request);
-        return ResponseEntity.status(200).body("Successfully logged auth");
+        return ResponseEntity.status(200).body("Successfully logged out");
     }
 }
