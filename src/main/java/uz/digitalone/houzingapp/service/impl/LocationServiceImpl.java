@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import uz.digitalone.houzingapp.dto.request.LocationDto;
 import uz.digitalone.houzingapp.entity.Location;
 import uz.digitalone.houzingapp.repository.LocationRepository;
@@ -14,6 +15,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class LocationServiceImpl implements LocationService {
 
     private final LocationRepository locationRepository;

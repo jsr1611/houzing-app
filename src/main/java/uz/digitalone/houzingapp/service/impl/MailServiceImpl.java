@@ -7,6 +7,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import uz.digitalone.houzingapp.dto.NotificationEmail;
 import uz.digitalone.houzingapp.service.MailSerivce;
 
@@ -16,6 +17,7 @@ import static uz.digitalone.houzingapp.config.SecurityConfiguration.senderEmail;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class MailServiceImpl implements MailSerivce {
     private final JavaMailSender javaMailSender;
 

@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import uz.digitalone.houzingapp.dto.request.RoleDto;
 import uz.digitalone.houzingapp.dto.response.Response;
 import uz.digitalone.houzingapp.entity.Role;
@@ -25,6 +26,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class RoleServiceImpl implements RoleService {
 
     private final RoleRepository roleRepository;
@@ -48,7 +50,7 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public HttpEntity<?> getOneById(Long id) {
-        Response response = null;
+        Response response;
         Role role = findById(id);
         if(role != null){
             response = new Response(true, "Role", roleMapper.fromEntity(role));
@@ -64,7 +66,7 @@ public class RoleServiceImpl implements RoleService {
         Page<Role> roles = roleRepository.findAll(pageable);
         List<Role> roleList = roles.getContent();
         List<RoleDto> result = null;
-        if(roleList != null && roleList.size() > 0)
+        if(roleList.size() > 0)
             result = roleMapper.fromEntities(roleList);
         Response response = new Response(true, "Role List", result);
         return ResponseEntity.ok(response);
@@ -81,7 +83,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public HttpEntity<?> updateRole(Long roleId, RoleDto dto) {
         Role role = findById(roleId);
-        Response response = null;
+        Response response;
         if (role != null) {
             if (!role.getName().equals(dto.getName())) {
                 role.setName(dto.getName());
@@ -99,7 +101,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public HttpEntity<?> removeRoleById(Long roleId) {
         Role role = findById(roleId);
-        Response response = null;
+        Response response;
         if(role != null){
             roleRepository.deleteById(roleId);
             response = new Response(true, "Successfully deleted.");
