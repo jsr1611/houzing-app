@@ -24,6 +24,8 @@ public class Response {
         this.message = message;
         if(success)
             this.status = HttpStatus.OK;
+        else
+            this.status = HttpStatus.NOT_FOUND;
     }
 
     public Response(boolean success, String message, Object data) {
