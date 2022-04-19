@@ -30,11 +30,17 @@ public class PublicController {
         return userService.register(dto);
     }
 
-    @GetMapping("/accountVerification/{verification_token}")
-    public HttpEntity<?> accountVerification(@PathVariable("verification_token") String token) {
-        userService.verifyAccount(token);
-        return ResponseEntity.ok("Account Active!!!");
+    @GetMapping("/verification/{token}")
+    public HttpEntity<?> accountVerification(@PathVariable("token") String token) {
+        return userService.verifyAccount(token);
+
     }
+
+//    @PostMapping("/verification/{token}")
+//    public ResponseEntity<?> verification(@PathVariable String token){
+//        userService.verification(token);
+//        return ResponseEntity.ok().body("Account active");
+//    }
 
     @PostMapping("/auth/login")
     public HttpEntity<?> login(@Valid @RequestBody LoginRequest dto, Errors errors){
@@ -44,11 +50,6 @@ public class PublicController {
         return userService.login(dto);
     }
 
-    @PostMapping("/verification/{token}")
-    public ResponseEntity<?> verification(@PathVariable String token){
-        userService.verification(token);
-        return ResponseEntity.ok().body("Account active");
-    }
 
     @PostMapping("/logout")
     public ResponseEntity<String> logout(@Valid @RequestBody RefreshTokenRequest request){
