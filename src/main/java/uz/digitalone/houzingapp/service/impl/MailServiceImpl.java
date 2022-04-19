@@ -45,9 +45,10 @@ public class MailServiceImpl implements MailSerivce {
 //        message.setText(notificationEmail.getBody());
 
 //        try {
+            javaMailSender.send(msg);
             log.info("Activation successfully");
 //            javaMailSender.send(message);
-            javaMailSender.send(msg);
+
         }catch (MessagingException | UnsupportedEncodingException e){
             log.error(e.getMessage());
         }catch (MailException e) {
