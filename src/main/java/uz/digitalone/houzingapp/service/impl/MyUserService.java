@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,10 +20,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
 import uz.digitalone.houzingapp.Exception.VerifyTokenNotFound;
 import uz.digitalone.houzingapp.dto.NotificationEmail;
+import uz.digitalone.houzingapp.dto.VerificationLink;
 import uz.digitalone.houzingapp.dto.request.RefreshTokenRequest;
 import uz.digitalone.houzingapp.dto.request.LoginRequest;
 import uz.digitalone.houzingapp.dto.request.RegUserDto;
@@ -41,11 +45,14 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class MyUserService implements UserDetailsService {
 
+    private final JavaMailSender javaMailSender;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
@@ -55,6 +62,10 @@ public class MyUserService implements UserDetailsService {
     private final MailSerivce mailService;
     private final JwtProvider jwtProvider;
     public static User currentUser = new User();
+    private NotificationEmail notificationEmail = null;
+
+    @Value("${server.port}")
+    private Integer port;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -76,17 +87,46 @@ public class MyUserService implements UserDetailsService {
         return Collections.singletonList(new SimpleGrantedAuthority(user));
     }
 
-    public void verification(String token) {
-        Optional<VerificationToken> refreshToken = verificationTokenRepository.findByToken(token);
-        if (refreshToken.isPresent()){
-            VerificationToken refreshToken1 = refreshToken.get();
-            if (refreshToken1.getExpirationData().isBefore(Instant.now())){
-                log.error("Token expiration Data {}", refreshToken1.getExpirationData());
-                throw new RuntimeException("Token expiration");
+//    public void verification(String token) {
+//        Optional<VerificationToken> refreshToken = verificationTokenRepository.findByToken(token);
+//        if (refreshToken.isPresent()){
+//            VerificationToken refreshToken1 = refreshToken.get();
+//            if (refreshToken1.getExpirationData().isBefore(Instant.now())){
+//                log.error("Token expiration Data {}", refreshToken1.getExpirationData());
+//                throw new RuntimeException("Token expiration");
+//            }
+//            User user = refreshToken1.getUser();
+//            user.setEnabled(true);
+//            userRepository.save(user);
+//        }
+//    }
+    public HttpEntity<?> verifyAccount(String token) {
+        Optional<VerificationToken> optionalVerificationToken = verificationTokenRepository.findByToken(token);
+        if(optionalVerificationToken.isPresent()){
+            VerificationToken verificationToken = optionalVerificationToken.get();
+            if(verificationToken.getExpirationData().isBefore(Instant.now())){
+                log.error("Token expired: {}", verificationToken.getExpirationData());
+                log.info("Sending the verification token again...");
+
+//                throw new RuntimeException("Verification token expired");
+                // TODO: 2022-04-19 Agar token expired bo`lsa qayta email jo'natish kerakmi?
+                User user = verificationToken.getUser();
+                token = generateTokenForVerification(user);
+                VerificationLink link = new VerificationLink(token, "link");
+                notificationEmail = new NotificationEmail(
+                        "Please, activate your account again!",
+                        user.getEmail(),
+                        link.getLink());
+                    mailService.send(notificationEmail);
+                    return ResponseEntity.status(401).body("Verification token expired! Please, check your email for new verification token, and try again.");
+
             }
-            User user = refreshToken1.getUser();
+            User user = verificationToken.getUser();
             user.setEnabled(true);
             userRepository.save(user);
+            return ResponseEntity.ok("Verification Success");
+        }else {
+            throw new VerifyTokenNotFound("Verification token not found");
         }
     }
 
@@ -99,8 +139,9 @@ public class MyUserService implements UserDetailsService {
         if(emailExists!= null && emailExists)
             return ResponseEntity.status(422).body(new Response(false, "Email is invalid or already taken", dto.getEmail()));
 
-        User user = currentUser;
+
         assert dto != null;
+        User user = new User();
         user.setFirstname(dto.getFirstname());
         user.setLastname(dto.getLastname());
         user.setEmail(dto.getEmail());
@@ -115,41 +156,28 @@ public class MyUserService implements UserDetailsService {
                 user.setRoles(roles);
             }
             user.setRoles(roles);
-//            User savedUser = userRepository.save(user);
-//            Response response = new Response(true, "Successfully registered",savedUser.getEmail());
-//            return ResponseEntity.status(response.getStatus()).body(response);
 
             user.setEnabled(false);
             userRepository.save(user);
             String token = generateTokenForVerification(user);
+            VerificationLink link = new VerificationLink(token, "link");
+//            String link = "<a href=\"http://localhost:" +port+"/api/public/verification/" + token + "\", target=\"_blank\">Faollashtirish uchun havola</a>";
+            notificationEmail = new NotificationEmail(
+                    "Please, activate your account",
+                    user.getEmail(),
+                    link.getLink());
 
-            mailService.send(new NotificationEmail("Accountingizni activatsia qiling",
-                    user.getEmail(), "<h1> Ushbu link orqali </h1>" +
-                    "http://loaclhost:9090/api/v1/auth/verification/" + token));
+            mailService.send(notificationEmail);
             return ResponseEntity.status(HttpStatus.CREATED).body(token);
         }
-
 
     public User getCurrentUser() {
         Jwt principal = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return userRepository.findByEmail(principal.getSubject()).orElseThrow(()
-                -> new UsernameNotFoundException("username Not found"));
+                -> new UsernameNotFoundException("Username Not Found"));
     }
 
-    public void verifyAccount(String token) {
-        Optional<VerificationToken> optionalVerificationToken = verificationTokenRepository.findByToken(token);
-        if(optionalVerificationToken.isPresent()){
-            VerificationToken verificationToken = optionalVerificationToken.get();
-            if(verificationToken.getExpirationData().isBefore(Instant.now())){
-                throw new RuntimeException("Verification token expired");
-            }
-            User user = verificationToken.getUser();
-            user.setEnabled(true);
-            userRepository.save(user);
-        }else {
-            throw new VerifyTokenNotFound("Verify token not found");
-        }
-    }
+
 
     /**
      * Check if user exists by email

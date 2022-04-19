@@ -2,9 +2,14 @@ package uz.digitalone.houzingapp.entity.auth;
 
 import lombok.*;
 import org.hibernate.Hibernate;
+import uz.digitalone.houzingapp.entity.Location;
 import uz.digitalone.houzingapp.entity.template.AbcEntity;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import java.time.Instant;
 import java.util.Objects;
 
 @Getter
@@ -14,18 +19,13 @@ import java.util.Objects;
 @NoArgsConstructor
 public class RefreshToken extends AbcEntity {
 
+    /*@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;*/
+
     private String refreshToken;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        RefreshToken that = (RefreshToken) o;
-        return id != null && Objects.equals(id, that.id);
-    }
+    private Instant expirationTime;
 
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
+
 }

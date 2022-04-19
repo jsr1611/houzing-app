@@ -68,12 +68,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     RSAPrivateKey privateKey;
 
     private final MyUserService myUserService;
-//    private final JwtFilter jwtFilter;
 
     @Autowired
     public SecurityConfiguration(@Lazy MyUserService myUserService) {
         this.myUserService = myUserService;
-//        this.jwtFilter = jwtFilter;
     }
 
     @Override
@@ -141,6 +139,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.debug", "true");
+
+//        Properties props = mailSender.getJavaMailProperties();
+//        props.put("mail.smtp.starttls.enable", "true");
+//        mailSender.setJavaMailProperties(props);
 
         return mailSender;
     }
