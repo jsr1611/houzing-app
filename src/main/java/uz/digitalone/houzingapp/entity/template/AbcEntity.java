@@ -7,8 +7,10 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.time.Instant;
 
 @Data
@@ -25,10 +27,10 @@ public abstract class AbcEntity {
     @Column(name = "created_at",
             nullable = false,
             updatable = false)
-    private Instant createdAt;
+    private Timestamp createdAt;
 
     @LastModifiedDate
-    private Instant updateAt;
+    private Timestamp updateAt;
 
     @CreatedBy
     private Long createdBy;

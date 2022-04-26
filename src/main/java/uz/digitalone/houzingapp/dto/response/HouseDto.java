@@ -28,8 +28,9 @@ public class HouseDto {
     private String zipCode;
     private Set<AttachmentDto> attachments;
     private CategoryDto category;
-    private Boolean status;
+    private Boolean isSold;
     private Boolean favorite;
+    private String status;
     private HouseComponentsResponseDto houseComponentsDto;
     private HomeAmenitiesResponseDto homeAmenitiesDto;
 }
