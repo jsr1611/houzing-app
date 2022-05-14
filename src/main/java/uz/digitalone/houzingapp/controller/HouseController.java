@@ -88,7 +88,7 @@ public class HouseController {
         return houseService.findMyHouses(houseName, status, createdAt, pageable);
     }
 
-    @ApiOperation(value = "Ushbu API sistemaga login qilgan userga tegishli house larni qayataradi")
+    @ApiOperation(value = "Ushbu API CategoryId orqali Shu Categoryga Tegishli uylarni qaytaradi")
     @ApiPageable
     @GetMapping("/category/{category_id}")
     public HttpEntity<?> getAllHousesByCategoryId(@PathVariable Long category_id, Pageable pageable){
