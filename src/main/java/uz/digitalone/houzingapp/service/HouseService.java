@@ -26,4 +26,6 @@ public interface HouseService {
    HttpEntity<?> delete(Long id);
 
     HttpEntity<?> findMyHouses(String houseName, Boolean status, LocalDateTime createdAt, Pageable pageable);
+
+    HttpEntity<?> getAllHousesByCategoryId(Long category_id, Pageable pageable);
 }
