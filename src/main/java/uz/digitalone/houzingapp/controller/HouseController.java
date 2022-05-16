@@ -1,5 +1,6 @@
 package uz.digitalone.houzingapp.controller;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -85,6 +86,13 @@ public class HouseController {
                                         @RequestParam(value = "created_at", required = false) LocalDateTime createdAt,
                                         @ApiIgnore Pageable pageable){
         return houseService.findMyHouses(houseName, status, createdAt, pageable);
+    }
+
+    @ApiOperation(value = "Ushbu API CategoryId orqali Shu Categoryga Tegishli uylarni qaytaradi")
+    @ApiPageable
+    @GetMapping("/category/{category_id}")
+    public HttpEntity<?> getAllHousesByCategoryId(@PathVariable Long category_id, Pageable pageable){
+        return houseService.getAllHousesByCategoryId(category_id, pageable);
     }
 
 }
