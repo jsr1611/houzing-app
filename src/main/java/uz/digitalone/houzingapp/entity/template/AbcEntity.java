@@ -17,7 +17,6 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 @MappedSuperclass
-@EntityListeners(value = {AuditingEntityListener.class})
 public abstract class AbcEntity {
 
     @Id
