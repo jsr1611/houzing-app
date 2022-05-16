@@ -38,7 +38,7 @@ public class MailServiceImpl implements MailSerivce {
             msg.addRecipient(
                     Message.RecipientType.TO,
                     new InternetAddress(notificationEmail.getReceiver(),
-                            "fork",
+                            notificationEmail.getReceiver(),
                             "UTF-8"));
 
 
