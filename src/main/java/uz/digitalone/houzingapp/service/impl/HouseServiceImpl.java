@@ -15,6 +15,7 @@ import uz.digitalone.houzingapp.entity.*;
 import uz.digitalone.houzingapp.mapper.HomeAmenitiesMapper;
 import uz.digitalone.houzingapp.mapper.HouseComponentMapper;
 import uz.digitalone.houzingapp.mapper.HouseMapper;
+import uz.digitalone.houzingapp.repository.CategoryRepository;
 import uz.digitalone.houzingapp.repository.HomeAmenitiesRepository;
 import uz.digitalone.houzingapp.repository.HouseComponentsRepository;
 import uz.digitalone.houzingapp.repository.HouseRepository;
@@ -40,6 +41,7 @@ public class HouseServiceImpl implements HouseService {
     private final HomeAmenitiesMapper homeAmenitiesMapper;
     private final HouseComponentsRepository componentsRepository;
     private final HomeAmenitiesRepository homeAmenitiesRepository;
+    private final CategoryRepository categoryRepository;
 
     @Override
     public HttpEntity<?> create(HouseDto dto) {
@@ -367,6 +369,38 @@ public class HouseServiceImpl implements HouseService {
         }else {
             response = new Response(false, "Unauthorized access. Please, login first and then try again.");
         }
+        return ResponseEntity.status(response.isSuccess() ? 200:401).body(response);
+    }
+
+    @Override
+    public HttpEntity<?> getAllHousesByCategoryId(Long category_id, Pageable pageable) {
+        Response response;
+
+        Page<House> houseList = houseRepository.findAllByCategoryId(category_id, pageable);
+
+        /*Optional<Category> optionalCategory = categoryRepository.findById(category_id);
+        Category category;
+        if (optionalCategory.isPresent()) {
+            category = optionalCategory.get();
+        }
+
+        else {
+            response = new Response(true, "Category Not Found");
+        }*/
+
+        List<House> listContent = houseList.getContent();
+
+        if (listContent.size() > 0) {
+            response = new Response(true, "Houses List", listContent);
+            response.getMap().put("size", houseList.getSize());
+            response.getMap().put("total_elements", houseList.getTotalElements());
+            response.getMap().put("total_pages", houseList.getTotalPages());
+        }
+
+        else {
+            response = new Response(true, "No houses found.");
+        }
+
         return ResponseEntity.status(response.isSuccess() ? 200:401).body(response);
     }
 }
