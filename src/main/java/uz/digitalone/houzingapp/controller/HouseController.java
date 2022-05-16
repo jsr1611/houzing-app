@@ -49,11 +49,12 @@ public class HouseController {
                         @RequestParam(value = "region",required = false) String region,
                         @RequestParam(value = "country",required = false) String country,
                         @RequestParam(value = "zip_code",required = false) String zipCode,
+                        @RequestParam(value = "category_id", required = false) Long categoryId,
                         @ApiIgnore Pageable pageable){
         return houseService.findAll(
                 houseName, firstName, lastName, room,
                 minPrice, maxPrice, address,
-                city, region, country, zipCode, pageable
+                city, region, country, zipCode, categoryId, pageable
         );
     }
 

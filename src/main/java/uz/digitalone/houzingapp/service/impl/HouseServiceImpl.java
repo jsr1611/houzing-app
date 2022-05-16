@@ -112,11 +112,11 @@ public class HouseServiceImpl implements HouseService {
     public HttpEntity<?> findAll(
             String houseName, String firstName, String lastName, Integer room,
             Double minPrice, Double maxPrice, String address, String city, String region,
-            String country, String zipCode, Pageable pageable) {
+            String country, String zipCode, Long categoryId, Pageable pageable) {
         Response response;
         Page<House> incomingAll = houseRepository.findAll(
                 getSpecification(houseName, firstName, lastName, room, minPrice, maxPrice, address,
-                        city, region, country, zipCode),
+                        city, region, country, zipCode, categoryId),
                 pageable);
         List<House> incomingList = incomingAll.getContent();
         List<uz.digitalone.houzingapp.dto.response.HouseDto> result;
@@ -144,7 +144,8 @@ public class HouseServiceImpl implements HouseService {
            final String city,
            final String region,
            final String country,
-           final String zipCode) {
+           final String zipCode,
+           final Long categoryId) {
 
         return (root, criteriaQuery, criteriaBuilder) -> {
 
@@ -213,6 +214,9 @@ public class HouseServiceImpl implements HouseService {
             }
             if(zipCode != null){
                 predicateList.add(criteriaBuilder.like(root.get("zipCode"), zipCode+"%"));
+            }
+            if(categoryId != null){
+                predicateList.add(criteriaBuilder.equal(root.get("category"), categoryId));
             }
 
             return criteriaBuilder.and(predicateList.toArray(new Predicate[0]));
