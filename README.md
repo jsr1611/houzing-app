@@ -29,5 +29,5 @@ This is a backend project for a real estate e-commerce website business.
 
 
 ### Deployment
-- Backend API Endpoint documentation is live at this [heroku website](http://houzing-app.herokuapp.com/swagger-ui.html)
+- Backend API Endpoint documentation is live at this [website](http://houzing.uzdevjs.online/swagger-ui.html)
 - Frontend is TBD soon
