@@ -35,7 +35,11 @@ public class MailServiceImpl implements MailSerivce {
             msg.setSubject(notificationEmail.getSubject());
             msg.setFrom(senderEmail);
             msg.setText(notificationEmail.getBody(), "UTF-8", "html");
-            msg.addRecipient(Message.RecipientType.TO, new InternetAddress(notificationEmail.getReceiver(), "fork", "UTF-8"));
+            msg.addRecipient(
+                    Message.RecipientType.TO,
+                    new InternetAddress(notificationEmail.getReceiver(),
+                            "fork",
+                            "UTF-8"));
 
 
 //        SimpleMailMessage message = new SimpleMailMessage();

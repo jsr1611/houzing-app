@@ -15,7 +15,7 @@ public interface HouseService {
    HttpEntity<?> findAll(
     String houseName, String firstName, String lastName, Integer room,
     Double minPrice, Double maxPrice, String address, String city,
-    String region, String country, String zipCode, @ApiIgnore Pageable pageable);
+    String region, String country, String zipCode, Long categoryId, @ApiIgnore Pageable pageable);
 
    HttpEntity<?> findOneById(Long id);
 
