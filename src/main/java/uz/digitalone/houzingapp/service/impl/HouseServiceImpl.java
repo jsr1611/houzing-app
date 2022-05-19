@@ -5,11 +5,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import uz.digitalone.houzingapp.dto.request.*;
+import uz.digitalone.houzingapp.dto.request.AttachmentDto;
+import uz.digitalone.houzingapp.dto.request.HouseDetailsDto;
+import uz.digitalone.houzingapp.dto.request.HouseDto;
+import uz.digitalone.houzingapp.dto.request.LocationDto;
 import uz.digitalone.houzingapp.dto.response.Response;
 import uz.digitalone.houzingapp.entity.*;
 import uz.digitalone.houzingapp.mapper.HomeAmenitiesMapper;
@@ -152,7 +154,7 @@ public class HouseServiceImpl implements HouseService {
             List<Predicate> predicateList = new ArrayList<>();
 
             if(houseName != null){
-                predicateList.add(criteriaBuilder.like(root.get("name"),"%"+ houseName + "%"));
+                predicateList.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + houseName.toLowerCase() + "%"));
             }
             if(minPrice != null && maxPrice != null){
                 predicateList.add(criteriaBuilder.greaterThanOrEqualTo(root.get("price"), minPrice));
@@ -189,11 +191,11 @@ public class HouseServiceImpl implements HouseService {
                 String name = "";
                 if(firstName != null){
                     name = firstName.toLowerCase();
-                    predicateList.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("user").get("firstname")), "%"+name+"%"));
+                    predicateList.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("user").get("firstname")), "%"+name.toLowerCase()+"%"));
                 }
                 if(lastName != null){
                     name = lastName.toLowerCase();
-                    predicateList.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("user").get("lastname")), "%"+name+"%"));
+                    predicateList.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("user").get("lastname")), "%"+name.toLowerCase()+"%"));
                 }
             }
 
@@ -201,24 +203,23 @@ public class HouseServiceImpl implements HouseService {
                 predicateList.add(criteriaBuilder.equal(root.get("houseDetails").get("room"), room));
             }
             if(address != null){
-                predicateList.add(criteriaBuilder.like(root.get("address"), "%"+address+"%"));
+                predicateList.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("address")), "%"+address.toLowerCase()+"%"));
             }
             if(city != null){
-                predicateList.add(criteriaBuilder.like(root.get("city"), city+"%"));
+                predicateList.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("city")), "%"+city.toLowerCase()+"%"));
             }
             if(region != null){
-                predicateList.add(criteriaBuilder.like(root.get("region"), region+"%"));
+                predicateList.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("region")), "%"+region.toLowerCase()+"%"));
             }
             if(country != null){
-                predicateList.add(criteriaBuilder.like(root.get("country"), country+"%"));
+                predicateList.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("country")), "%"+country.toLowerCase()+"%"));
             }
             if(zipCode != null){
-                predicateList.add(criteriaBuilder.like(root.get("zipCode"), zipCode+"%"));
+                predicateList.add(criteriaBuilder.like(root.get("zipCode"), "%"+zipCode+"%"));
             }
             if(categoryId != null){
                 predicateList.add(criteriaBuilder.equal(root.get("category"), categoryId));
             }
-
             return criteriaBuilder.and(predicateList.toArray(new Predicate[0]));
         };
     }
@@ -237,7 +238,7 @@ public class HouseServiceImpl implements HouseService {
             predicateList.add(criteriaBuilder.equal(root.get("user"), user));
 
             if(houseName != null){
-                predicateList.add(criteriaBuilder.like(root.get("name"),"%"+ houseName + "%"));
+                predicateList.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("name")),"%"+ houseName.toLowerCase() + "%"));
             }
             if(status != null){
                 predicateList.add(criteriaBuilder.equal(root.get("status"), status));
@@ -245,7 +246,6 @@ public class HouseServiceImpl implements HouseService {
             if(createdAt != null){
                 predicateList.add(criteriaBuilder.equal(root.get("createdAt"), createdAt));
             }
-
             return criteriaBuilder.and(predicateList.toArray(new Predicate[0]));
         };
     }
