@@ -60,7 +60,7 @@ public class HouseController {
 
     @ApiOperation("Ushbu API mavjud uy e`lonini ID bo`yicha qidirib, yangilash/o'zgartirish uchun mo`ljallangan. ")
     @PutMapping("/{id}")
-    public HttpEntity<?> edit(@PathVariable Long id, @RequestBody HouseDto dto, Errors errors){
+    public HttpEntity<?> edit(@PathVariable Long id, @RequestBody HouseDto dto,@ApiIgnore Errors errors){
         if (errors.hasErrors()) {
             return ResponseEntity.status(400).body(userService.getErrors(errors));
         }

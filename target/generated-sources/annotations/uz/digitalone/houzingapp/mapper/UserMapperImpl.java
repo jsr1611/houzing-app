@@ -10,8 +10,8 @@ import uz.digitalone.houzingapp.entity.User;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2022-05-20T00:00:22+0900",
-    comments = "version: 1.4.2.Final, compiler: javac, environment: Java 1.8.0_302 (Amazon.com Inc.)"
+    date = "2022-05-26T21:21:00+0500",
+    comments = "version: 1.4.2.Final, compiler: javac, environment: Java 1.8.0_301 (Oracle Corporation)"
 )
 @Component
 public class UserMapperImpl implements UserMapper {
