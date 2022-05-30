@@ -60,16 +60,12 @@ public class CategoryServiceImpl implements CategoryService {
     public HttpEntity<?> getAll() {
         Response response = null;
         List<Category> categories = categoryRepository.findAll();
-        List<String> result = categories
-                .stream()
-                .sorted(Comparator.comparing(Category::getName))
-                .map(category -> category.getName().toUpperCase())
-                .collect(Collectors.toList());
+
         if (categories.size() == 0){
             response = new Response(true, "Categories Not Found");
         }
         else {
-            response = new Response(true, "Category List", new ArrayList<>(result));
+            response = new Response(true, "Category List", new ArrayList<>(categories));
         }
         return ResponseEntity.status(response.getStatus()).body(response);
     }

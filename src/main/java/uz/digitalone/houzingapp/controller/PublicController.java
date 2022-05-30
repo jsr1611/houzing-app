@@ -5,6 +5,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 import uz.digitalone.houzingapp.dto.request.RefreshTokenRequest;
 import uz.digitalone.houzingapp.dto.request.LoginRequest;
 import uz.digitalone.houzingapp.dto.request.RegUserDto;
@@ -23,7 +24,7 @@ public class PublicController {
     private final RoleService roleService;
 
     @PostMapping("/auth/register")
-    public HttpEntity<?> register(@Valid @RequestBody RegUserDto dto, Errors errors){
+    public HttpEntity<?> register(@Valid @RequestBody RegUserDto dto, @ApiIgnore Errors errors){
         if (errors.hasErrors()) {
             return ResponseEntity.status(400).body(userService.getErrors(errors));
         }
@@ -43,7 +44,7 @@ public class PublicController {
 //    }
 
     @PostMapping("/auth/login")
-    public HttpEntity<?> login(@Valid @RequestBody LoginRequest dto, Errors errors){
+    public HttpEntity<?> login(@Valid @RequestBody LoginRequest dto,@ApiIgnore Errors errors){
         if (errors.hasErrors()) {
             return ResponseEntity.status(400).body(userService.getErrors(errors));
         }
@@ -62,7 +63,7 @@ public class PublicController {
     }
 
     @PostMapping("/roles")
-    public HttpEntity<?> createRole(@Valid @RequestBody RoleDto dto, Errors errors){
+    public HttpEntity<?> createRole(@Valid @RequestBody RoleDto dto,@ApiIgnore Errors errors){
         if (errors.hasErrors()) {
             return ResponseEntity.status(400).body(userService.getErrors(errors));
         }
