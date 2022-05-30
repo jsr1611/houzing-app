@@ -2,7 +2,6 @@ package uz.digitalone.houzingapp.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 import java.util.*;
@@ -14,7 +13,6 @@ public class Response {
     private boolean success;
     private String message;
     private Object data;
-    private List<Object> dataList = new ArrayList<>();
     private Map<Object, Object> map = new HashMap<>();
     private HttpStatus status;
 
@@ -31,11 +29,7 @@ public class Response {
     public Response(boolean success, String message, Object data) {
         this.success = success;
         this.message = message;
-        if(data instanceof List){
-            this.dataList = Collections.singletonList(data);
-        }else {
-            this.data = data;
-        }
+        this.data = data;
         if(success)
             this.status = HttpStatus.OK;
     }
