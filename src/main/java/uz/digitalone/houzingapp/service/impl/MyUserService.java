@@ -41,7 +41,9 @@ import uz.digitalone.houzingapp.security.JwtProvider;
 import uz.digitalone.houzingapp.service.MailSerivce;
 import uz.digitalone.houzingapp.service.RefreshTokenService;
 
+import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
@@ -63,6 +65,8 @@ public class MyUserService implements UserDetailsService {
     private final JwtProvider jwtProvider;
     public static User currentUser = new User();
     private NotificationEmail notificationEmail = null;
+
+    private static final long EXPIRE_TOKEN_AFTER_MINUTES = 30;
 
     @Value("${server.port}")
     private Integer port;
@@ -264,5 +268,52 @@ public class MyUserService implements UserDetailsService {
     public ResponseEntity<String> logout(RefreshTokenRequest request) {
         refreshTokenService.refreshTokenDelete(request);
         return ResponseEntity.status(200).body("Successfully logged out");
+    }
+
+    public String forgotPassword(String email) {
+
+        User user = userRepository.findByEmail(email).orElseThrow(()
+                -> new IllegalArgumentException("Email not found"));
+
+        user.setToken(generateToken());
+        user.setTokenCreationDate(LocalDateTime.now());
+
+        user = userRepository.save(user);
+
+        return user.getToken();
+    }
+
+    public String resetPassword(String token, String password) {
+
+        User user = userRepository.findByToken(token).orElseThrow(()
+                -> new IllegalArgumentException("Email not found"));
+
+
+        LocalDateTime tokenCreationDate = user.getTokenCreationDate();
+
+        if (isTokenExpired(tokenCreationDate)) {
+            return "Token expired.";
+        }
+        user.setPassword(passwordEncoder.encode(password));
+        user.setToken(null);
+        user.setTokenCreationDate(null);
+
+        userRepository.save(user);
+
+        return "Your password successfully updated.";
+    }
+
+
+    private String generateToken() {
+        return String.valueOf(UUID.randomUUID()) +
+                UUID.randomUUID();
+    }
+
+    private boolean isTokenExpired(final LocalDateTime tokenCreationDate) {
+
+        LocalDateTime now = LocalDateTime.now();
+        Duration diff = Duration.between(tokenCreationDate, now);
+
+        return diff.toMinutes() >= EXPIRE_TOKEN_AFTER_MINUTES;
     }
 }

@@ -47,6 +47,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private static final String[] WHITE_LIST = {
             "/api/public/**",
+            "/api/public/auth/login",
             "/api/v1/houses/list",
             "/api/v1/categories/list",
             "/api/v1/categories",
