@@ -270,8 +270,8 @@ public class MyUserService implements UserDetailsService {
         return ResponseEntity.status(200).body("Successfully logged out");
     }
 
-    public String forgotPassword(String email) {
-
+    public HttpEntity<?> forgotPassword(String email) {
+        Response response;
         User user = userRepository.findByEmail(email).orElseThrow(()
                 -> new IllegalArgumentException("Email not found"));
 
@@ -280,27 +280,29 @@ public class MyUserService implements UserDetailsService {
 
         user = userRepository.save(user);
 
-        return user.getToken();
+        response = new Response(true, user.getToken());
+
+        return ResponseEntity.ok(response);
     }
 
-    public String resetPassword(String token, String password) {
-
+    public HttpEntity<?> resetPassword(String token, String password) {
+        Response response;
         User user = userRepository.findByToken(token).orElseThrow(()
                 -> new IllegalArgumentException("Email not found"));
-
 
         LocalDateTime tokenCreationDate = user.getTokenCreationDate();
 
         if (isTokenExpired(tokenCreationDate)) {
-            return "Token expired.";
+            return ResponseEntity.ok(new Response(false, "Token Expired"));
         }
         user.setPassword(passwordEncoder.encode(password));
         user.setToken(null);
         user.setTokenCreationDate(null);
-
         userRepository.save(user);
 
-        return "Your password successfully updated.";
+        response = new Response(true, "Your password successfully updated");
+
+        return ResponseEntity.ok(response);
     }
 
 
