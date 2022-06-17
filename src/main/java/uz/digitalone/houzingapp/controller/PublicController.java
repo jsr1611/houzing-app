@@ -69,4 +69,18 @@ public class PublicController {
         }
         return roleService.saveRole(dto);
     }
+
+    @PostMapping("/forgot-password")
+    public HttpEntity<?> forgotPassword(@RequestParam String email) {
+
+        return userService.forgotPassword(email);
+
+    }
+
+    @PutMapping("/reset-password")
+    public HttpEntity<?> resetPassword(@RequestParam String token,
+                                @RequestParam String password) {
+
+        return userService.resetPassword(token, password);
+    }
 }

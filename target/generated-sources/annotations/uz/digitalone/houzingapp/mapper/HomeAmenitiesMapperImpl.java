@@ -12,8 +12,8 @@ import uz.digitalone.houzingapp.entity.HomeAmenities;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2022-05-26T21:21:00+0500",
-    comments = "version: 1.4.2.Final, compiler: javac, environment: Java 1.8.0_301 (Oracle Corporation)"
+    date = "2022-06-17T17:12:19+0500",
+    comments = "version: 1.4.2.Final, compiler: javac, environment: Java 11.0.14 (Oracle Corporation)"
 )
 @Component
 public class HomeAmenitiesMapperImpl implements HomeAmenitiesMapper {
