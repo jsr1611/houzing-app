@@ -37,12 +37,6 @@ public class PublicController {
 
     }
 
-//    @PostMapping("/verification/{token}")
-//    public ResponseEntity<?> verification(@PathVariable String token){
-//        userService.verification(token);
-//        return ResponseEntity.ok().body("Account active");
-//    }
-
     @PostMapping("/auth/login")
     public HttpEntity<?> login(@Valid @RequestBody LoginRequest dto,@ApiIgnore Errors errors){
         if (errors.hasErrors()) {

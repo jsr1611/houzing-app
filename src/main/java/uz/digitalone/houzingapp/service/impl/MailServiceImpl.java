@@ -2,23 +2,20 @@ package uz.digitalone.houzingapp.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.mail.MailException;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uz.digitalone.houzingapp.dto.NotificationEmail;
 import uz.digitalone.houzingapp.service.MailSerivce;
-
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-
 import java.io.UnsupportedEncodingException;
-
-import static uz.digitalone.houzingapp.config.SecurityConfiguration.senderEmail;
+import java.util.Properties;
 
 
 @Service
@@ -26,14 +23,30 @@ import static uz.digitalone.houzingapp.config.SecurityConfiguration.senderEmail;
 @Slf4j
 @Transactional
 public class MailServiceImpl implements MailSerivce {
-    private final JavaMailSender javaMailSender;
+    final String senderEmail = "uzbdevjs@gmail.com";
+    final String somethingElse = "lbvfdcglnzluctbp";
 
     @Async
     public void send(NotificationEmail notificationEmail){
-        MimeMessage msg = javaMailSender.createMimeMessage();
+
+
+        Properties set = new Properties();
+        //Set values to the property
+        set.put("mail.smtp.starttls.enable", "true");
+        set.put("mail.smtp.auth", "true");
+        set.put("mail.smtp.host", "smtp.gmail.com");
+        set.put("mail.smtp.port", "587");
+
+        Session session = Session.getInstance(set,new javax.mail.Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(senderEmail, somethingElse);
+            }});
+        session.setDebug(true);
+
         try {
+            MimeMessage msg = new MimeMessage(session);
             msg.setSubject(notificationEmail.getSubject());
-            msg.setFrom(senderEmail);
+            msg.setFrom(new InternetAddress(senderEmail));
             msg.setText(notificationEmail.getBody(), "UTF-8", "html");
             msg.addRecipient(
                     Message.RecipientType.TO,
@@ -41,22 +54,11 @@ public class MailServiceImpl implements MailSerivce {
                             notificationEmail.getReceiver(),
                             "UTF-8"));
 
-
-//        SimpleMailMessage message = new SimpleMailMessage();
-//        message.setFrom(senderEmail);
-//        message.setSubject(notificationEmail.getSubject());
-//        message.setTo(notificationEmail.getReceiver());
-//        message.setText(notificationEmail.getBody());
-
-//        try {
-            javaMailSender.send(msg);
-            log.info("Activation successfully");
-//            javaMailSender.send(message);
+            Transport.send(msg);
+            log.info("Activation email sent successfully");
 
         }catch (MessagingException | UnsupportedEncodingException e){
-            log.error(e.getMessage());
-        }catch (MailException e) {
-            log.error("Email not found" + e);
+            e.printStackTrace();
         }
     }
 

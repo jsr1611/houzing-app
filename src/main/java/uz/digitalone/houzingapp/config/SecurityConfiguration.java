@@ -42,9 +42,6 @@ import java.util.Properties;
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    public static String senderEmail = "uzbdevjs@gmail.com";
-    public String senderEmailPassword = "parol2022$$";
-
     private static final String[] WHITE_LIST = {
             "/api/public/**",
             "/api/public/auth/login",
@@ -128,25 +125,4 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return new NimbusJwtEncoder(contextJWKSource);
     }
 
-    @Bean
-    public JavaMailSender javaMailSender() {
-        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost("smtp.gmail.com");
-        mailSender.setPort(587);
-
-        mailSender.setUsername(senderEmail);
-        mailSender.setPassword(senderEmailPassword);
-
-        Properties props = mailSender.getJavaMailProperties();
-        props.put("mail.transport.protocol", "smtp");
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.debug", "true");
-
-//        Properties props = mailSender.getJavaMailProperties();
-//        props.put("mail.smtp.starttls.enable", "true");
-//        mailSender.setJavaMailProperties(props);
-
-        return mailSender;
-    }
 }
