@@ -28,8 +28,6 @@ public class MailServiceImpl implements MailSerivce {
 
     @Async
     public void send(NotificationEmail notificationEmail){
-
-
         Properties set = new Properties();
         //Set values to the property
         set.put("mail.smtp.starttls.enable", "true");
@@ -37,7 +35,7 @@ public class MailServiceImpl implements MailSerivce {
         set.put("mail.smtp.host", "smtp.gmail.com");
         set.put("mail.smtp.port", "587");
 
-        Session session = Session.getInstance(set,new javax.mail.Authenticator() {
+        Session session = Session.getInstance(set, new javax.mail.Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(senderEmail, somethingElse);
             }});

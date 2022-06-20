@@ -42,6 +42,8 @@ import java.util.Properties;
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    public static String senderEmail = "uzbdevjs@gmail.com";
+
     private static final String[] WHITE_LIST = {
             "/api/public/**",
             "/api/public/auth/login",
@@ -123,6 +125,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         JWK jwk = new RSAKey.Builder(this.publicKey).privateKey(this.privateKey).build();
         JWKSource<SecurityContext> contextJWKSource = new ImmutableJWKSet<>(new JWKSet(jwk));
         return new NimbusJwtEncoder(contextJWKSource);
+    }
+
+    @Bean
+    public JavaMailSender javaMailSender() {
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        mailSender.setHost("smtp.gmail.com");
+        mailSender.setPort(587);
+        return mailSender;
     }
 
 }
