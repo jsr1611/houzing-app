@@ -28,4 +28,9 @@ public interface HouseService {
     HttpEntity<?> findMyHouses(String houseName, Boolean status, LocalDateTime createdAt, Pageable pageable);
 
     HttpEntity<?> getAllHousesByCategoryId(Long category_id, Pageable pageable);
+
+    HttpEntity<?> addFavourite(Long id, Boolean favourite);
+
+    HttpEntity<?> getAllFavourite();
+
 }

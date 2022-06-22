@@ -129,6 +129,14 @@ public class HouseDetailsServiceImpl implements HouseDetailsService {
             if (dto.getArea() != null) {
                 houseDetails.setArea(dto.getArea());
             }
+            if(dto.getBeds() != null){
+                houseDetails.setBeds(dto.getBeds());
+            }
+
+            if(dto.getYearBuilt() != null){
+                houseDetails.setYearBuilt(dto.getYearBuilt());
+            }
+
             houseDetails = houseDetailsRepository.save(houseDetails);
             return houseDetails;
         }

@@ -45,6 +45,8 @@ public class HouseServiceImpl implements HouseService {
     private final HomeAmenitiesRepository homeAmenitiesRepository;
     private final CategoryRepository categoryRepository;
 
+    public Response response;
+
     @Override
     public HttpEntity<?> create(HouseDto dto) {
         House house = new House();
@@ -101,7 +103,6 @@ public class HouseServiceImpl implements HouseService {
         if(house.getHouseDetails() == null)
             return ResponseEntity.status(400).body(new Response(false, "Error with house Details or status info", detailsDto));
         house.setStatus(true);
-        house.setFavorite(dto.getFavorite());
         houseRepository.save(house);
         uz.digitalone.houzingapp.dto.response.HouseDto result = houseMapper.fromEntity(house);
         result.setHomeAmenitiesDto(homeAmenitiesMapper.toDto(homeAmenities));
@@ -303,9 +304,7 @@ public class HouseServiceImpl implements HouseService {
                 house.setSalePrice(dto.getSalePrice());
             if(dto.getStatus() != null && !dto.getStatus().equals(house.getStatus()))
                 house.setStatus(dto.getStatus());
-            if(dto.getFavorite() != null && !dto.getFavorite().equals(house.getFavorite())){
-                house.setFavorite(dto.getFavorite());
-            }
+
             if(dto.getHouseDetails() != null){
                 HouseDetails houseDetails = houseDetailsService.updateById(house.getHouseDetails().getId(), dto.getHouseDetails());
                 if(houseDetails != null)
@@ -406,5 +405,21 @@ public class HouseServiceImpl implements HouseService {
         }
 
         return ResponseEntity.status(response.isSuccess() ? 200:401).body(response);
+    }
+
+    @Override
+    public HttpEntity<?> addFavourite(Long id, Boolean favorite) {
+        House house = findById(id);
+        house.setFavorite(favorite);
+        House save = houseRepository.save(house);
+        response = new Response(true, "House added favourite list", save);
+        return ResponseEntity.ok(response);
+    }
+
+    @Override
+    public HttpEntity<?> getAllFavourite() {
+        List<House> allByFavourite = houseRepository.findAllByFavourite();
+        response = new Response(true, "House List", allByFavourite);
+        return ResponseEntity.ok(response);
     }
 }

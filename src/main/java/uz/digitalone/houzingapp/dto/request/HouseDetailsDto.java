@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.*;
+import java.time.LocalDate;
 import java.time.Year;
 import java.util.Date;
 
@@ -22,5 +23,5 @@ public class HouseDetailsDto {
     private Integer garage;
     private Double area;
     private Integer beds;
-    private Integer yearBuilt;
+    private LocalDate yearBuilt;
 }
