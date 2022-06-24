@@ -29,7 +29,6 @@ public class HouseDto {
     private Set<AttachmentDto> attachments;
     private CategoryDto category;
     private Boolean status;
-    private Boolean favorite;
     private HouseComponentsResponseDto houseComponentsDto;
     private HomeAmenitiesResponseDto homeAmenitiesDto;
 }

@@ -10,6 +10,7 @@ import javax.mail.search.IntegerComparisonTerm;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
@@ -24,15 +25,13 @@ public class HouseDetails extends AbcEntity {
     @Column(nullable = false)
     private Integer bath;
 
-    @Column(nullable = true)
+
     private Integer garage;
 
     @Column(nullable = false)
     private Double area;
 
-    @Column(nullable = true)
     private Integer beds;
 
-    @Column(nullable = true)
-    private Integer yearBuilt;
+    private LocalDate yearBuilt;
 }

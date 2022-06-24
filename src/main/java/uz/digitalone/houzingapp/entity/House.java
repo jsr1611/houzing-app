@@ -55,7 +55,7 @@ public class House extends AbcEntity implements Serializable {
     private Boolean status;
 
     @Column(nullable = true)
-    private Boolean favorite;
+    private Boolean favorite = false;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "home_amenities_id", referencedColumnName = "id")

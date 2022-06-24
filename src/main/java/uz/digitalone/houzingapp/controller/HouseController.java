@@ -96,4 +96,14 @@ public class HouseController {
         return houseService.getAllHousesByCategoryId(category_id, pageable);
     }
 
+    @PutMapping("/addFavourite/{id}")
+    public HttpEntity<?> addFavourite(@PathVariable Long id, @RequestParam Boolean favourite){
+        return houseService.addFavourite(id, favourite);
+    }
+
+    @GetMapping("/getAll/favouriteList")
+    public HttpEntity<?> getAllFavourite(){
+        return houseService.getAllFavourite();
+    }
+
 }
