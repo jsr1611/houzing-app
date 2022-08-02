@@ -24,7 +24,6 @@ public class HouseDetailsDto {
     private Double area;
     private Integer beds;
 
-    @Null
     @Positive
     @Range(min = 1000, max = 2999)
     private Integer yearBuilt;
