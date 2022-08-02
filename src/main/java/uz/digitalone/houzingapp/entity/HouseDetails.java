@@ -4,12 +4,16 @@ import javassist.bytecode.annotation.IntegerMemberValue;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Value;
+import org.springframework.validation.annotation.Validated;
 import uz.digitalone.houzingapp.entity.template.AbcEntity;
 
 import javax.mail.search.IntegerComparisonTerm;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.validation.Valid;
+import javax.validation.constraints.Email;
 import java.time.LocalDate;
 
 @Data
@@ -33,5 +37,6 @@ public class HouseDetails extends AbcEntity {
 
     private Integer beds;
 
-    private LocalDate yearBuilt;
+    @Column(nullable = true)
+    private Integer yearBuilt;
 }
