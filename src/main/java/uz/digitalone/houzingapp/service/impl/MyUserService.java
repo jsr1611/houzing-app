@@ -91,19 +91,6 @@ public class MyUserService implements UserDetailsService {
         return Collections.singletonList(new SimpleGrantedAuthority(user));
     }
 
-//    public void verification(String token) {
-//        Optional<VerificationToken> refreshToken = verificationTokenRepository.findByToken(token);
-//        if (refreshToken.isPresent()){
-//            VerificationToken refreshToken1 = refreshToken.get();
-//            if (refreshToken1.getExpirationData().isBefore(Instant.now())){
-//                log.error("Token expiration Data {}", refreshToken1.getExpirationData());
-//                throw new RuntimeException("Token expiration");
-//            }
-//            User user = refreshToken1.getUser();
-//            user.setEnabled(true);
-//            userRepository.save(user);
-//        }
-//    }
     public HttpEntity<?> verifyAccount(String token) {
         Optional<VerificationToken> optionalVerificationToken = verificationTokenRepository.findByToken(token);
         if(optionalVerificationToken.isPresent()){
@@ -130,7 +117,8 @@ public class MyUserService implements UserDetailsService {
             userRepository.save(user);
             return ResponseEntity.ok("Verification Success");
         }else {
-            throw new VerifyTokenNotFound("Verification token not found");
+//            throw new VerifyTokenNotFound("Verification token not found");
+            return ResponseEntity.status(404).body("Verification token not found");
         }
     }
 
