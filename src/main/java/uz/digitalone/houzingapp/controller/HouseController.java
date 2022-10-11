@@ -74,7 +74,7 @@ public class HouseController {
 
     }
 
-    @GetMapping("/{house_id}")
+    @GetMapping("/id/{house_id}")
     public HttpEntity<?> getOneById(@PathVariable Long house_id){
         return houseService.findOneById(house_id);
     }
