@@ -130,7 +130,8 @@ public class MyUserService implements UserDetailsService {
             userRepository.save(user);
             return ResponseEntity.ok("Verification Success");
         }else {
-            throw new VerifyTokenNotFound("Verification token not found");
+//            throw new VerifyTokenNotFound("Verification token not found");
+            return ResponseEntity.status(404).body("Verification token not found");
         }
     }
 
