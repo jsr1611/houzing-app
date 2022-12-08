@@ -66,33 +66,28 @@
 
 	<!--				SWAGGER CONFIGURATION DEPENDENCIES    			    	 -->
 		<dependency>
-			<groupId>org.springdoc</groupId>
-			<artifactId>springdoc-openapi-ui</artifactId>
-			<version>1.6.9</version>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>${io.springfox.version}</version>
 		</dependency>
-		<!--		<dependency>-->
-<!--			<groupId>io.springfox</groupId>-->
-<!--			<artifactId>springfox-swagger2</artifactId>-->
-<!--			<version>${io.springfox.version}</version>-->
-<!--		</dependency>-->
 
-<!--		<dependency>-->
-<!--		<groupId>io.springfox</groupId>-->
-<!--		<artifactId>springfox-data-rest</artifactId>-->
-<!--		<version>${io.springfox.version}</version>-->
-<!--		</dependency>-->
+		<dependency>
+		<groupId>io.springfox</groupId>
+		<artifactId>springfox-data-rest</artifactId>
+		<version>${io.springfox.version}</version>
+		</dependency>
 
-<!--		<dependency>-->
-<!--			<groupId>io.springfox</groupId>-->
-<!--			<artifactId>springfox-boot-starter</artifactId>-->
-<!--			<version>${io.springfox.version}</version>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-boot-starter</artifactId>
+			<version>${io.springfox.version}</version>
+		</dependency>
 
-<!--		<dependency>-->
-<!--			<groupId>io.springfox</groupId>-->
-<!--			<artifactId>springfox-swagger-ui</artifactId>-->
-<!--			<version>${io.springfox.version.ui}</version>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>${io.springfox.version.ui}</version>
+		</dependency>
 	<!--				SWAGGER CONFIGURATION DEPENDENCIES    					 -->
 
 
