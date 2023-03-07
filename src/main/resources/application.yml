@@ -1,8 +1,8 @@
 spring:
   datasource:
-    username: htftedqdrkndfj
-    url: jdbc:postgresql://ec2-3-214-2-141.compute-1.amazonaws.com:5432/d11gl08dagaj4v
-    password: 9207a49cb2cf5b706a61870b0e5fd871fc2fb40d60429b259454f628a86fc935
+    username: postgres
+    url: jdbc:postgresql://localhost:5432/houzing_db
+    password: admin
 #    username: postgres
 #    url: jdbc:postgresql://localhost:5432/houzing_db
 #    password: 100604
@@ -11,7 +11,7 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-    #database-platform: org.hibernate.dialect.PostgreSQLDialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
 server:
   port: 8081
 jwt:
