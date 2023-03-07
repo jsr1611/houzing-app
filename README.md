@@ -29,5 +29,5 @@ This is a backend project for a real estate e-commerce website business.
 
 
 ### Deployment
-- Backend API Endpoint documentation is live at this <a target="_blank" href="http://houzing.uzdevjs.online/swagger-ui.html">[website]</a>
+- Backend API Endpoint documentation is live at this <a target="_blank" href="http://158.51.99.245:8081/swagger-ui.html">[website]</a>
 - Frontend is TBD soon
