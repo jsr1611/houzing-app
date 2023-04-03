@@ -24,7 +24,7 @@ import java.util.Properties;
 @Transactional
 public class MailServiceImpl implements MailSerivce {
     final String senderEmail = "uzbdevjs@gmail.com";
-    final String somethingElse = "lbvfdcglnzluctbp";
+    final String somethingElse = "jafjrolfogqgdgeo";
 
     @Async
     public void send(NotificationEmail notificationEmail){
