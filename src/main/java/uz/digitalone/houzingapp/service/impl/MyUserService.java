@@ -153,7 +153,7 @@ public class MyUserService implements UserDetailsService {
             }
             user.setRoles(roles);
 
-            user.setEnabled(false);
+            user.setEnabled(true); // FIXME: 4/5/2023 temporary changed to true. Change to false to fix it!
             userRepository.save(user);
             String token = generateTokenForVerification(user);
             address = host + ":" + port.toString();
@@ -163,8 +163,9 @@ public class MyUserService implements UserDetailsService {
                     "Please, activate your account",
                     user.getEmail(),
                     link.getLink());
-
-            mailService.send(notificationEmail);
+            System.out.println("Mail not sent due to server configs.");
+        System.out.println(notificationEmail);
+//            mailService.send(notificationEmail); // FIXME: 4/5/2023 temporarily commented out. Remove comment to fix it!
             return ResponseEntity.status(HttpStatus.CREATED).body(token);
         }
 
