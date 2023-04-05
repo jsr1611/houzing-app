@@ -70,6 +70,9 @@ public class MyUserService implements UserDetailsService {
 
     @Value("${server.port}")
     private Integer port;
+    @Value("${server.host}")
+    private String host; // = "158.51.99.245:"
+    private String address;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -103,7 +106,8 @@ public class MyUserService implements UserDetailsService {
                 // TODO: 2022-04-19 Agar token expired bo`lsa qayta email jo'natish kerakmi?
                 User user = verificationToken.getUser();
                 token = generateTokenForVerification(user);
-                VerificationLink link = new VerificationLink(token, "link");
+                address = host + ":" + port.toString();
+                VerificationLink link = new VerificationLink(token, "link", address);
                 notificationEmail = new NotificationEmail(
                         "Please, activate your account again!",
                         user.getEmail(),
@@ -152,7 +156,8 @@ public class MyUserService implements UserDetailsService {
             user.setEnabled(false);
             userRepository.save(user);
             String token = generateTokenForVerification(user);
-            VerificationLink link = new VerificationLink(token, "link");
+            address = host + ":" + port.toString();
+            VerificationLink link = new VerificationLink(token, "link", address);
 //            String link = "<a href=\"http://localhost:" +port+"/api/public/verification/" + token + "\", target=\"_blank\">Faollashtirish uchun havola</a>";
             notificationEmail = new NotificationEmail(
                     "Please, activate your account",
@@ -220,6 +225,23 @@ public class MyUserService implements UserDetailsService {
                 .expirationData(Instant.now().plusMillis(EXPIRATION_TIME))
                 .build();
         return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Check if user details match database records, if not return appropriate response
+     * @param dto
+     * @return
+     */
+    public Response findUser(LoginRequest dto) {
+        User user = findByEmail(dto.getEmail());
+        if(user != null){
+            if (!passwordEncoder.matches(dto.getPassword(), user.getPassword()))
+                return new Response(false, "Password didn't match with user's password. Please, check your input: " + dto.getPassword(), HttpStatus.valueOf(200));
+            else
+                return new Response(true, "OK");
+        }
+        else
+            return new Response(false, "User not found with email: " + dto.getEmail(), HttpStatus.NOT_FOUND);
     }
 
     /**

@@ -20,4 +20,12 @@ public class LoginRequest {
     @NotNull
     @NotBlank
     private String password;
+
+    @Override
+    public String toString() {
+        return "LoginRequest{" +
+                "email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
 }

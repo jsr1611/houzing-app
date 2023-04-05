@@ -37,4 +37,14 @@ public class RegUserDto {
 
     private Set<Long> roleIdSet = new HashSet<>();
 
+    @Override
+    public String toString() {
+        return "RegUserDto{" +
+                "firstname='" + firstname + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", roleIdSet=" + roleIdSet +
+                '}';
+    }
 }
