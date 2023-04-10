@@ -27,5 +27,6 @@ public class RefreshToken extends AbcEntity {
 
     private Instant expirationTime;
 
+    private Long userId;
 
 }

@@ -20,10 +20,11 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Override
-    public RefreshToken generateRefreshToken() {
+    public RefreshToken generateRefreshToken(Long id) {
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setRefreshToken(UUID.randomUUID().toString());
         refreshToken.setExpirationTime(Instant.now());
+        refreshToken.setUserId(id);
         refreshTokenRepository.save(refreshToken);
         return refreshToken;
     }

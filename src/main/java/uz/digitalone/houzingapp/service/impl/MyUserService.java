@@ -216,12 +216,13 @@ public class MyUserService implements UserDetailsService {
                         new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authenticate);
-        String generateToken = jwtProvider.generateToken((User) authenticate.getPrincipal());
+        User user = (User) authenticate.getPrincipal();
+        String generateToken = jwtProvider.generateToken(user);
         // TODO: 2/25/22 check if user login details match, if not handle it.
 
         AuthenticationResponse response = AuthenticationResponse.builder()
                 .authenticationToken(generateToken)
-                .refreshToken(refreshTokenService.generateRefreshToken().getRefreshToken())
+                .refreshToken(refreshTokenService.generateRefreshToken(user.getId()).getRefreshToken())
                 .username(dto.getEmail())
                 .expirationData(Instant.now().plusMillis(EXPIRATION_TIME))
                 .build();
@@ -328,5 +329,17 @@ public class MyUserService implements UserDetailsService {
         Duration diff = Duration.between(tokenCreationDate, now);
 
         return diff.toMinutes() >= EXPIRE_TOKEN_AFTER_MINUTES;
+    }
+
+    /**
+     * Get user id info
+     * @return
+     */
+    public String getUserIdInfo() {
+        User onlineUser = null;
+        try {
+            onlineUser = getCurrentUser();
+        }catch (Exception e){}
+        return onlineUser == null ? " (unknown user) " : " user-" + onlineUser.getId() + " ";
     }
 }

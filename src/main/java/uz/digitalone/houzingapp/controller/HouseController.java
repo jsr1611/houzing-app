@@ -30,7 +30,7 @@ public class HouseController {
     @ApiOperation(value = "Ushbu API yangi uy e`lonini qo`shish uchun ishlatiladi")
     @PostMapping
     public HttpEntity<?> create(@Valid @RequestBody HouseDto dto, @ApiIgnore Errors errors){
-      log.info("POST /houses -> create: " + dto);
+        log.info(userService.getUserIdInfo() +  "POST /houses -> create: " + dto);
         if (errors.hasErrors()) {
             return ResponseEntity.status(400).body(userService.getErrors(errors));
         }
@@ -54,7 +54,8 @@ public class HouseController {
                         @RequestParam(value = "zip_code",required = false) String zipCode,
                         @RequestParam(value = "category_id", required = false) Long categoryId,
                         @ApiIgnore Pageable pageable){
-        log.info("GET /houses/list ");
+
+        log.info(userService.getUserIdInfo() +  "GET /houses/list ");
         return houseService.findAll(
                 houseName, firstName, lastName, room,
                 minPrice, maxPrice, address,
@@ -65,7 +66,7 @@ public class HouseController {
     @ApiOperation("Ushbu API mavjud uy e`lonini ID bo`yicha qidirib, yangilash/o'zgartirish uchun mo`ljallangan. ")
     @PutMapping("/{id}")
     public HttpEntity<?> edit(@PathVariable Long id, @RequestBody HouseDto dto,@ApiIgnore Errors errors){
-        log.info("PUT /houses/" + id + " dto: " + dto);
+        log.info(userService.getUserIdInfo() +  "PUT /houses/" + id + " dto: " + dto);
         if (errors.hasErrors()) {
             return ResponseEntity.status(400).body(userService.getErrors(errors));
         }
@@ -75,14 +76,14 @@ public class HouseController {
     @ApiOperation("Ushbu API mavjud uy e`lonini ID bo`yicha qidirib ma`lumotlar omboridan o'chirib tashlashga mo`ljallangan.")
     @DeleteMapping("/{house_id}")
     public HttpEntity<?> delete(@PathVariable Long house_id){
-        log.info("DELETE /houses/ " + house_id);
+        log.info(userService.getUserIdInfo() +  "DELETE /houses/ " + house_id);
         return houseService.delete(house_id);
 
     }
 
     @GetMapping("/id/{house_id}")
     public HttpEntity<?> getOneById(@PathVariable Long house_id){
-        log.info("GET /houses/id/" +  house_id);
+        log.info(userService.getUserIdInfo() +  "GET /houses/id/" +  house_id);
         return houseService.findOneById(house_id);
     }
 
@@ -93,7 +94,7 @@ public class HouseController {
                                         @RequestParam(value = "status", required = false) Boolean status,
                                         @RequestParam(value = "created_at", required = false) LocalDateTime createdAt,
                                         @ApiIgnore Pageable pageable){
-        log.info("GET /houses/me");
+        log.info(userService.getUserIdInfo() +  "GET /houses/me");
         return houseService.findMyHouses(houseName, status, createdAt, pageable);
     }
 
@@ -101,19 +102,19 @@ public class HouseController {
     @ApiPageable
     @GetMapping("/category/{category_id}")
     public HttpEntity<?> getAllHousesByCategoryId(@PathVariable Long category_id, Pageable pageable){
-        log.info("GET /houses/category/" + category_id);
+        log.info(userService.getUserIdInfo() +  "GET /houses/category/" + category_id);
         return houseService.getAllHousesByCategoryId(category_id, pageable);
     }
 
     @PutMapping("/addFavourite/{id}")
     public HttpEntity<?> addFavourite(@PathVariable Long id, @RequestParam Boolean favourite){
-        log.info("GET /houses/addFavorite/" + id + "favorite: " + favourite);
+        log.info(userService.getUserIdInfo() +  "GET /houses/addFavorite/" + id + "favorite: " + favourite);
         return houseService.addFavourite(id, favourite);
     }
 
     @GetMapping("/getAll/favouriteList")
     public HttpEntity<?> getAllFavourite(){
-        log.info("GET /houses/getAll/favouriteList");
+        log.info(userService.getUserIdInfo() +  "GET /houses/getAll/favouriteList");
         return houseService.getAllFavourite();
     }
 

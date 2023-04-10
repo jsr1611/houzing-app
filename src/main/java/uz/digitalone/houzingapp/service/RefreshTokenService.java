@@ -5,7 +5,7 @@ import uz.digitalone.houzingapp.entity.auth.RefreshToken;
 
 public interface RefreshTokenService {
 
-    RefreshToken generateRefreshToken();
+    RefreshToken generateRefreshToken(Long id);
 
     void validationToken(String refreshToken);
 

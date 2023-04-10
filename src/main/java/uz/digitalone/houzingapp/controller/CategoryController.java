@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 import uz.digitalone.houzingapp.dto.request.CategoryDto;
 import uz.digitalone.houzingapp.service.CategoryService;
+import uz.digitalone.houzingapp.service.impl.MyUserService;
 import uz.digitalone.houzingapp.utils.ApiPageable;
 
 @Slf4j
@@ -18,39 +19,40 @@ import uz.digitalone.houzingapp.utils.ApiPageable;
 public class CategoryController {
 
     private final CategoryService categoryService;
+    private final MyUserService userService;
 
     @ApiOperation("Ushbu API yangi kategoriya qo`shish uchun ishlatiladi")
     @PostMapping
     public HttpEntity<?> saveCategory(@RequestBody CategoryDto categoryDto){
-        log.info("POST /categories: " + categoryDto);
+        log.info(userService.getUserIdInfo() +  "POST /categories: " + categoryDto);
         return categoryService.saveCategory(categoryDto);
     }
 
     @ApiOperation("Ushbu API Id bo'yicha kategoriyani topish uchun ishlatiladi")
     @GetMapping("/{id}")
     public HttpEntity<?> getOne(@PathVariable Long id){
-        log.info("GET /categories/"+ id);
+        log.info(userService.getUserIdInfo() +  "GET /categories/"+ id);
         return categoryService.getOne(id);
     }
 
     @ApiOperation("Ushbu API kategoriya listini ko'rish uchun ishlatiladi")
     @GetMapping("/list")
     public HttpEntity<?> getAll(){
-        log.info("GET /categories/list");
+        log.info(userService.getUserIdInfo() +  "GET /categories/list");
         return categoryService.getAll();
     }
 
     @ApiOperation("Ushbu API Id bo'yicha mavjud kategoriyani edit qilish uchun ishlatiladi")
     @PutMapping("/{id}")
     public HttpEntity<?> updateById(@RequestBody CategoryDto categoryDto, @PathVariable Long id){
-        log.info("PUT /categories/"+ id + " dto: "+ categoryDto);
+        log.info(userService.getUserIdInfo() +  "PUT /categories/"+ id + " dto: "+ categoryDto);
         return categoryService.updateById(categoryDto, id);
     }
 
     @ApiOperation("Ushbu API Id bo'yicha kategoriyani o'chirish uchun ishlatiladi")
     @DeleteMapping("/{id}")
     public HttpEntity<?> deleteCategory(@PathVariable Long id){
-        log.info("DELETE /categories/"+id);
+        log.info(userService.getUserIdInfo() +  "DELETE /categories/"+id);
         return categoryService.deleteCategory(id);
     }
 
@@ -58,7 +60,7 @@ public class CategoryController {
     @ApiPageable
     @GetMapping
     public HttpEntity<?> getAllAsPageable(@ApiIgnore Pageable pageable){
-        log.info("GET /categories pageable: " + pageable);
+        log.info(userService.getUserIdInfo() +  "GET /categories pageable: " + pageable);
         return categoryService.findAllPageable(pageable);
     }
 }
