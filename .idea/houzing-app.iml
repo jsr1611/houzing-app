@@ -20,7 +20,7 @@
         <setting name="provider-name" value="Hibernate" />
         <datasource-mapping>
           <factory-entry name="entityManagerFactory" />
-          <factory-entry name="houzing-app" />
+          <factory-entry name="houzing-app" value="1eec138b-5bc4-40f6-ac2d-a78fd7ddd0e1" />
         </datasource-mapping>
         <naming-strategy-map />
       </configuration>

@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,11 +22,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
-import uz.digitalone.houzingapp.Exception.VerifyTokenNotFound;
 import uz.digitalone.houzingapp.dto.NotificationEmail;
 import uz.digitalone.houzingapp.dto.VerificationLink;
-import uz.digitalone.houzingapp.dto.request.RefreshTokenRequest;
 import uz.digitalone.houzingapp.dto.request.LoginRequest;
+import uz.digitalone.houzingapp.dto.request.RefreshTokenRequest;
 import uz.digitalone.houzingapp.dto.request.RegUserDto;
 import uz.digitalone.houzingapp.dto.response.AuthenticationResponse;
 import uz.digitalone.houzingapp.dto.response.Response;
@@ -107,7 +105,7 @@ public class MyUserService implements UserDetailsService {
                 User user = verificationToken.getUser();
                 token = generateTokenForVerification(user);
                 address = host + ":" + port.toString();
-                VerificationLink link = new VerificationLink(token, "link", address);
+                VerificationLink link = new VerificationLink(token, "link");
                 notificationEmail = new NotificationEmail(
                         "Please, activate your account again!",
                         user.getEmail(),
@@ -153,19 +151,30 @@ public class MyUserService implements UserDetailsService {
             }
             user.setRoles(roles);
 
+            // No-Email-Verification
+            userRepository.save(user);
+            user.setEnabled(true);
+            Response response = new Response(true, "User has been successfully registered.");
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            // No-Email-Verification
+/*
+            //Email verification
             user.setEnabled(false);
             userRepository.save(user);
             String token = generateTokenForVerification(user);
-            address = host + ":" + port.toString();
-            VerificationLink link = new VerificationLink(token, "link", address);
+//            address = host + ":" + port.toString();
+            VerificationLink link = new VerificationLink(token, "link");
 //            String link = "<a href=\"http://localhost:" +port+"/api/public/verification/" + token + "\", target=\"_blank\">Faollashtirish uchun havola</a>";
             notificationEmail = new NotificationEmail(
                     "Please, activate your account",
                     user.getEmail(),
                     link.getLink());
-
             mailService.send(notificationEmail);
             return ResponseEntity.status(HttpStatus.CREATED).body(token);
+            //Email verification
+*/
+
+
         }
 
     public User getCurrentUser() {

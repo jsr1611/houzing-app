@@ -14,10 +14,12 @@ public class VerificationLink {
     private String text;
     private String link;
 
+    @Value("${server.port}")
+    private Integer port;
 
-    public VerificationLink(String token, String text, String host){
+    public VerificationLink(String token, String linkText){
         this.link = "<h1>Please, verify your account using this " +
-                    "<a href=\"http://"+host+"/api/public/verification/" + token + "\", target=\"_blank\">" + text + "</a>" +
+                    "<a href=\"http://houzing-app.herokuapp.com/api/public/verification/" + token + "\", target=\"_blank\">" + linkText + "</a>" +
                     "</h1>";
     }
     // String link = "<a href=\"http://localhost:" +port+"/api/public/verification/" + token + "\", target=\"_blank\">Faollashtirish uchun havola</a>";

@@ -1,51 +1,51 @@
 Manifest-Version: 1.0
 Main-Class: uz.digitalone.houzingapp.HouzingAppApplication
-Class-Path: springfox-core-3.0.0.jar byte-buddy-1.10.22.jar spring-secur
- ity-oauth2-jose-5.6.2.jar txw2-2.3.4.jar spring-boot-starter-web-2.5.2.
- jar spring-security-config-5.5.1.jar swagger-annotations-2.1.2.jar jaka
- rta.mail-1.6.7.jar hibernate-core-5.4.32.Final.jar swagger-annotations-
- 1.5.20.jar jandex-2.2.3.Final.jar springfox-bean-validators-3.0.0.jar s
- pring-plugin-core-2.0.0.RELEASE.jar spring-web-5.3.8.jar error_prone_an
- notations-2.11.0.jar postgresql-42.2.22.jar jakarta.annotation-api-1.3.
- 5.jar spring-boot-starter-validation-2.5.2.jar jakarta.transaction-api-
- 1.3.3.jar jakarta.activation-1.2.2.jar guava-31.1-jre.jar jackson-core-
- 2.12.3.jar spring-data-commons-2.5.2.jar accessors-smart-2.4.7.jar spri
- ng-security-crypto-5.5.1.jar spring-boot-starter-jdbc-2.5.2.jar dom4j-2
- .1.3.jar spring-boot-starter-mail-2.5.2.jar spring-context-5.3.8.jar sp
- ring-beans-5.3.8.jar jackson-datatype-jsr310-2.12.3.jar HikariCP-4.0.3.
- jar jsr305-3.0.2.jar springfox-boot-starter-3.0.0.jar log4j-api-2.14.1.
- jar spring-boot-starter-json-2.5.2.jar content-type-2.1.jar springfox-s
- chema-3.0.0.jar jcip-annotations-1.0-1.jar log4j-to-slf4j-2.14.1.jar lo
- gback-core-1.2.3.jar springfox-spring-webmvc-3.0.0.jar spring-boot-star
- ter-2.5.2.jar spring-boot-starter-oauth2-resource-server-2.5.2.jar logb
- ack-classic-1.2.3.jar spring-jdbc-5.3.8.jar springfox-spi-3.0.0.jar ist
- ack-commons-runtime-3.0.12.jar tomcat-embed-websocket-9.0.48.jar spring
- -jcl-5.3.8.jar springfox-swagger-common-3.0.0.jar spring-core-5.3.8.jar
-  spring-security-oauth2-core-5.5.1.jar springfox-swagger-ui-2.9.2.jar s
- nakeyaml-1.28.jar spring-data-jpa-2.5.2.jar spring-orm-5.3.8.jar jackso
- n-datatype-jdk8-2.12.3.jar jboss-logging-3.4.2.Final.jar spring-boot-st
- arter-data-jpa-2.5.2.jar swagger-models-1.5.20.jar failureaccess-1.0.1.
- jar checker-qual-3.12.0.jar spring-tx-5.3.8.jar spring-security-oauth2-
- resource-server-5.5.1.jar spring-boot-autoconfigure-2.5.2.jar mapstruct
- -1.4.2.Final.jar spring-security-web-5.5.1.jar lombok-1.18.22.jar sprin
- g-expression-5.3.8.jar springfox-spring-webflux-3.0.0.jar jakarta.persi
- stence-api-2.2.3.jar springfox-spring-web-3.0.0.jar spring-context-supp
- ort-5.3.8.jar spring-boot-starter-logging-2.5.2.jar classgraph-4.8.83.j
- ar swagger-models-2.1.2.jar spring-aop-5.3.8.jar tomcat-embed-el-9.0.48
- .jar asm-9.1.jar jackson-annotations-2.12.3.jar spring-security-oauth2-
- client-5.5.1.jar antlr-2.7.7.jar jakarta.activation-api-1.2.2.jar liste
- nablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar j2objc-annota
- tions-1.3.jar slf4j-simple-1.7.31.jar spring-boot-2.5.2.jar spring-boot
- -starter-tomcat-2.5.2.jar slf4j-api-1.7.31.jar hibernate-commons-annota
- tions-5.1.2.Final.jar json-smart-2.4.7.jar spring-boot-starter-security
- -2.5.2.jar aspectjweaver-1.9.6.jar spring-plugin-metadata-2.0.0.RELEASE
- .jar jakarta.xml.bind-api-2.3.3.jar classmate-1.5.1.jar jakarta.validat
- ion-api-2.0.2.jar jaxb-runtime-2.3.4.jar tomcat-embed-core-9.0.48.jar s
- pringfox-data-rest-3.0.0.jar javassist-3.27.0-GA.jar spring-boot-starte
- r-aop-2.5.2.jar jackson-databind-2.12.3.jar jul-to-slf4j-1.7.31.jar spr
- ing-security-core-5.5.1.jar spring-webmvc-5.3.8.jar spring-aspects-5.3.
- 8.jar annotations-24.0.1.jar nimbus-jose-jwt-9.10.jar hibernate-validat
- or-6.2.0.Final.jar jackson-module-parameter-names-2.12.3.jar oauth2-oid
- c-sdk-9.9.jar lang-tag-1.5.jar spring-boot-starter-oauth2-client-2.5.2.
- jar springfox-swagger2-3.0.0.jar springfox-oas-3.0.0.jar
+Class-Path: slf4j-api-1.7.31.jar spring-security-oauth2-resource-server-
+ 5.5.1.jar spring-security-core-5.5.1.jar jakarta.validation-api-2.0.2.j
+ ar spring-boot-autoconfigure-2.5.2.jar hibernate-core-5.4.32.Final.jar 
+ j2objc-annotations-1.3.jar springfox-spring-web-3.0.0.jar springfox-cor
+ e-3.0.0.jar annotations-24.0.1.jar spring-boot-2.5.2.jar jakarta.activa
+ tion-1.2.2.jar springfox-bean-validators-3.0.0.jar springfox-oas-3.0.0.
+ jar spring-boot-starter-logging-2.5.2.jar jandex-2.2.3.Final.jar access
+ ors-smart-2.4.7.jar swagger-models-1.5.20.jar spring-context-support-5.
+ 3.8.jar jackson-datatype-jdk8-2.12.3.jar spring-beans-5.3.8.jar spring-
+ aspects-5.3.8.jar spring-boot-starter-json-2.5.2.jar nimbus-jose-jwt-9.
+ 10.jar swagger-annotations-2.1.2.jar failureaccess-1.0.1.jar spring-boo
+ t-starter-web-2.5.2.jar springfox-spring-webmvc-3.0.0.jar listenablefut
+ ure-9999.0-empty-to-avoid-conflict-with-guava.jar tomcat-embed-websocke
+ t-9.0.48.jar jboss-logging-3.4.2.Final.jar postgresql-42.2.22.jar sprin
+ g-aop-5.3.8.jar springfox-swagger-ui-2.9.2.jar springfox-schema-3.0.0.j
+ ar spring-expression-5.3.8.jar spring-security-oauth2-core-5.5.1.jar sp
+ ring-boot-starter-aop-2.5.2.jar spring-orm-5.3.8.jar spring-security-oa
+ uth2-jose-5.6.2.jar spring-security-crypto-5.5.1.jar tomcat-embed-el-9.
+ 0.48.jar jackson-databind-2.12.3.jar aspectjweaver-1.9.6.jar lombok-1.1
+ 8.22.jar jakarta.xml.bind-api-2.3.3.jar springfox-spring-webflux-3.0.0.
+ jar guava-31.1-jre.jar log4j-api-2.14.1.jar jakarta.mail-1.6.7.jar dom4
+ j-2.1.3.jar spring-security-web-5.5.1.jar jackson-datatype-jsr310-2.12.
+ 3.jar hibernate-commons-annotations-5.1.2.Final.jar error_prone_annotat
+ ions-2.11.0.jar lang-tag-1.5.jar mapstruct-1.4.2.Final.jar jaxb-runtime
+ -2.3.4.jar checker-qual-3.12.0.jar spring-security-config-5.5.1.jar spr
+ ing-data-jpa-2.5.2.jar spring-context-5.3.8.jar spring-core-5.3.8.jar s
+ pring-boot-starter-tomcat-2.5.2.jar jsr305-3.0.2.jar spring-security-oa
+ uth2-client-5.5.1.jar springfox-data-rest-3.0.0.jar jakarta.activation-
+ api-1.2.2.jar springfox-swagger-common-3.0.0.jar spring-tx-5.3.8.jar oa
+ uth2-oidc-sdk-9.9.jar spring-plugin-metadata-2.0.0.RELEASE.jar snakeyam
+ l-1.28.jar springfox-boot-starter-3.0.0.jar spring-boot-starter-oauth2-
+ client-2.5.2.jar springfox-spi-3.0.0.jar byte-buddy-1.10.22.jar log4j-t
+ o-slf4j-2.14.1.jar hibernate-validator-6.2.0.Final.jar jakarta.transact
+ ion-api-1.3.3.jar spring-jdbc-5.3.8.jar spring-boot-starter-mail-2.5.2.
+ jar classgraph-4.8.83.jar springfox-swagger2-3.0.0.jar istack-commons-r
+ untime-3.0.12.jar jakarta.persistence-api-2.2.3.jar jackson-core-2.12.3
+ .jar spring-boot-starter-security-2.5.2.jar logback-classic-1.2.3.jar j
+ ackson-module-parameter-names-2.12.3.jar HikariCP-4.0.3.jar spring-boot
+ -starter-data-jpa-2.5.2.jar spring-jcl-5.3.8.jar jackson-annotations-2.
+ 12.3.jar spring-boot-starter-oauth2-resource-server-2.5.2.jar spring-bo
+ ot-starter-2.5.2.jar classmate-1.5.1.jar javassist-3.27.0-GA.jar antlr-
+ 2.7.7.jar content-type-2.1.jar json-smart-2.4.7.jar swagger-models-2.1.
+ 2.jar spring-boot-starter-jdbc-2.5.2.jar jul-to-slf4j-1.7.31.jar spring
+ -data-commons-2.5.2.jar tomcat-embed-core-9.0.48.jar spring-webmvc-5.3.
+ 8.jar swagger-annotations-1.5.20.jar spring-boot-starter-validation-2.5
+ .2.jar spring-web-5.3.8.jar spring-plugin-core-2.0.0.RELEASE.jar txw2-2
+ .3.4.jar asm-9.1.jar jakarta.annotation-api-1.3.5.jar logback-core-1.2.
+ 3.jar jcip-annotations-1.0-1.jar
 

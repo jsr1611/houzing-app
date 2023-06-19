@@ -1,10 +1,12 @@
 package uz.digitalone.houzingapp.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +29,7 @@ import javax.persistence.criteria.Predicate;
 import java.time.LocalDateTime;
 import java.util.*;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 @Transactional
@@ -280,54 +283,66 @@ public class HouseServiceImpl implements HouseService {
 
 
         if(house != null && dto != null){
-            if(dto.getName() != null && !dto.getName().equals(house.getName()))
-                house.setName(dto.getName());
+            try {
+                if (dto.getName() != null && !dto.getName().equals(house.getName()))
+                    house.setName(dto.getName());
 
-            if(dto.getDescription() != null && !dto.getDescription().equals(house.getDescription()))
-                house.setDescription(dto.getDescription());
+                if (dto.getDescription() != null && !dto.getDescription().equals(house.getDescription()))
+                    house.setDescription(dto.getDescription());
 
-            if(dto.getAddress() != null && !dto.getAddress().equals(house.getAddress()))
-                house.setAddress(dto.getAddress());
+                if (dto.getAddress() != null && !dto.getAddress().equals(house.getAddress()))
+                    house.setAddress(dto.getAddress());
 
-            if(dto.getCity() != null && !dto.getCity().equals(house.getCity()))
-                house.setCity(dto.getCity());
+                if (dto.getCity() != null && !dto.getCity().equals(house.getCity()))
+                    house.setCity(dto.getCity());
 
-            if(dto.getRegion() != null && !dto.getRegion().equals(house.getRegion()))
-                house.setRegion(dto.getRegion());
-            if(dto.getCountry() != null && !dto.getCountry().equals(house.getCountry()))
-                house.setCountry(dto.getCountry());
-            if(dto.getZipCode() != null && !dto.getZipCode().equals(house.getZipCode()))
-                house.setZipCode(dto.getZipCode());
-            if(dto.getPrice() != null && dto.getPrice() != house.getPrice())
-                house.setPrice(dto.getPrice());
-            if(dto.getSalePrice() != null && dto.getSalePrice() != house.getSalePrice())
-                house.setSalePrice(dto.getSalePrice());
-            if(dto.getStatus() != null && !dto.getStatus().equals(house.getStatus()))
-                house.setStatus(dto.getStatus());
+                if (dto.getRegion() != null && !dto.getRegion().equals(house.getRegion()))
+                    house.setRegion(dto.getRegion());
+                if (dto.getCountry() != null && !dto.getCountry().equals(house.getCountry()))
+                    house.setCountry(dto.getCountry());
+                if (dto.getZipCode() != null && !dto.getZipCode().equals(house.getZipCode()))
+                    house.setZipCode(dto.getZipCode());
+                if (dto.getPrice() != null && dto.getPrice() != house.getPrice())
+                    house.setPrice(dto.getPrice());
+                if (dto.getSalePrice() != null && dto.getSalePrice() != house.getSalePrice())
+                    house.setSalePrice(dto.getSalePrice());
+                if (dto.getStatus() != null && !dto.getStatus().equals(house.getStatus()))
+                    house.setStatus(dto.getStatus());
 
-            if(dto.getHouseDetails() != null){
-                HouseDetails houseDetails = houseDetailsService.updateById(house.getHouseDetails().getId(), dto.getHouseDetails());
-                if(houseDetails != null)
-                    house.setHouseDetails(houseDetails);
-            }
-            if(dto.getLocations() != null){
-                Location location = locationService.updateById(house.getLocation().getId(), dto.getLocations());
-                if(location != null)
-                    house.setLocation(location);
-            }
-            if(dto.getAttachments() != null){
-                Set<Attachment> attachments = attachmentService.update(house.getAttachments(), dto.getAttachments());
-                if(attachments != null)
-                    house.getAttachments().clear();
+                if (dto.getHouseDetails() != null) {
+                    HouseDetails houseDetails = houseDetailsService.updateById(house.getHouseDetails().getId(), dto.getHouseDetails());
+                    if (houseDetails != null)
+                        house.setHouseDetails(houseDetails);
+                }
+                if (dto.getLocations() != null) {
+                    Location location = locationService.updateById(house.getLocation().getId(), dto.getLocations());
+                    if (location != null)
+                        house.setLocation(location);
+                }
+                if (dto.getAttachments() != null) {
+                    Set<Attachment> attachments = attachmentService.update(house.getAttachments(), dto.getAttachments());
+                    if (attachments != null)
+                        house.getAttachments().clear();
                     house.setAttachments(attachments);
+                }
+                if (dto.getCategoryId() != null) {
+                    Category category = categoryService.findById(dto.getCategoryId());
+                    if (category != null && !house.getCategory().equals(category))
+                        house.setCategory(category);
+                }
+                house = houseRepository.save(house);
+                response = new Response(true, "Successfully updated.", houseMapper.fromEntity(house));
+            }catch (NullPointerException e){
+                Object errObj = e.getStackTrace()[0];
+                log.error("NullPointerException Error!", errObj);
+                response = new Response(false, "NullPointerException Error!", errObj);
+                response.setStatus(HttpStatus.UNPROCESSABLE_ENTITY);
+            }catch (Exception e){
+                Object errObj = e.getStackTrace()[0];
+                log.error("Error!", errObj);
+                response = new Response(false, "Error!", errObj);
+                response.setStatus(HttpStatus.UNPROCESSABLE_ENTITY);
             }
-            if(dto.getCategoryId() != null){
-                Category category = categoryService.findById(dto.getCategoryId());
-                if(!house.getCategory().equals(category))
-                    house.setCategory(category);
-            }
-            house = houseRepository.save(house);
-            response = new Response(true, "Successfully updated.", houseMapper.fromEntity(house));
         }
         else {
             response = new Response(false, "House with id {"+id+"} does not exist");
