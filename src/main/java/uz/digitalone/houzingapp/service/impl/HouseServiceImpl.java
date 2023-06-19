@@ -281,7 +281,6 @@ public class HouseServiceImpl implements HouseService {
         Response response;
         House house = findById(id);
 
-
         if(house != null && dto != null){
             try {
                 if (dto.getName() != null && !dto.getName().equals(house.getName()))
