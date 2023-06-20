@@ -58,10 +58,10 @@ public class House extends AbcEntity implements Serializable {
     private Boolean favorite = false;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "home_amenities_id", referencedColumnName = "id")
+    @JoinColumn(name = "home_amenities_id")
     private HomeAmenities homeAmenities;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "house_components_id", referencedColumnName = "id")
+    @JoinColumn(name = "house_components_id")
     private HouseComponents houseComponents;
 }

@@ -9,7 +9,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class HouseComponentsResponseDto {
+public class HouseComponentsDto {
 
     private Long id;
     private boolean tv;

@@ -3,8 +3,7 @@ package uz.digitalone.houzingapp.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
-import uz.digitalone.houzingapp.dto.request.HouseComponentsDto;
-import uz.digitalone.houzingapp.dto.response.HouseComponentsResponseDto;
+import uz.digitalone.houzingapp.dto.response.HouseComponentsDto;
 import uz.digitalone.houzingapp.entity.HouseComponents;
 
 import java.util.List;
@@ -14,13 +13,13 @@ public interface HouseComponentMapper {
 
     HouseComponentMapper INSTANCE = Mappers.getMapper(HouseComponentMapper.class);
 
-    HouseComponentsDto fromEntity(HouseComponents houseComponents);
+    uz.digitalone.houzingapp.dto.request.HouseComponentsDto fromEntity(HouseComponents houseComponents);
 
-    List<HouseComponentsDto> fromEntities(List<HouseComponents> houseComponents);
+    List<uz.digitalone.houzingapp.dto.request.HouseComponentsDto> fromEntities(List<HouseComponents> houseComponents);
 
     @Mapping(target = "id", ignore = true)
-    HouseComponents fromDto(HouseComponentsDto houseComponentsDto);
+    HouseComponents fromDto(uz.digitalone.houzingapp.dto.request.HouseComponentsDto houseComponentsDto);
 
-    HouseComponentsResponseDto toDto(HouseComponents houseComponents);
+    HouseComponentsDto toDto(HouseComponents houseComponents);
 
 }

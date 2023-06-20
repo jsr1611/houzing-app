@@ -65,11 +65,11 @@ public class HouseServiceImpl implements HouseService {
                 house.setHouseDetails(details);
         }
         HomeAmenities homeAmenities = homeAmenitiesMapper.fromDto(dto.getHomeAmenitiesDto());
-        homeAmenitiesRepository.save(homeAmenities);
+        homeAmenities = homeAmenitiesRepository.save(homeAmenities);
         house.setHomeAmenities(homeAmenities);
 
         HouseComponents houseComponents = houseComponentMapper.fromDto(dto.getComponentsDto());
-        componentsRepository.save(houseComponents);
+        houseComponents = componentsRepository.save(houseComponents);
         house.setHouseComponents(houseComponents);
 
         house.setPrice(dto.getPrice());
@@ -108,8 +108,8 @@ public class HouseServiceImpl implements HouseService {
         house.setStatus(true);
         houseRepository.save(house);
         uz.digitalone.houzingapp.dto.response.HouseDto result = houseMapper.fromEntity(house);
-        result.setHomeAmenitiesDto(homeAmenitiesMapper.toDto(homeAmenities));
-        result.setHouseComponentsDto(houseComponentMapper.toDto(houseComponents));
+        result.setHomeAmenities(homeAmenitiesMapper.toDto(homeAmenities));
+        result.setHouseComponents(houseComponentMapper.toDto(houseComponents));
         Response response = new Response(true, "Successfully created.", result);
         return ResponseEntity.ok(response);
     }
